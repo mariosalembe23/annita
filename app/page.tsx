@@ -1,66 +1,21 @@
 import {
   RiEqualizerLine,
-  RiGithubFill,
   RiMailSendFill,
   RiSearchLine,
   RiStackFill,
   RiStickyNoteAddFill,
 } from "@remixicon/react";
-import Image from "next/image";
-import Link from "next/link";
 import { EventCard } from "@/components/EventCard";
+import { Footer } from "@/components/Footer";
+import { Nav } from "@/components/Nav";
 import { events } from "@/data/events";
-
-const navigation = [
-  { name: "Eventos", href: "/events" },
-  { name: "Contacto", href: "/contact" },
-  { name: "Contribuir", href: "/contribute" },
-];
 
 export default function Home() {
   return (
     <div className="overflow-x-hidden relative">
-      <header className="">
-        <div className="w-full fixed bg-white z-50 right-0 top-0 left-0">
-          <nav className="max-w-7xl bg-white  border-b border-gray-100 py-5 mx-auto flex items-center justify-between">
-            <div>
-              <Link href={"/"} className="flex items-center gap-2">
-                <Image
-                  src={"img-logo/simple-logo.svg"}
-                  alt={"Logo"}
-                  width={100}
-                  className="w-5 mt-1"
-                  height={100}
-                />
-                <p className=" text-3xl">annita</p>
-              </Link>
-            </div>
-            <div className="flex items-center gap-10">
-              <div className="flex items-center gap-16">
-                {navigation.map((item) => (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    className="text-[15px] font-normal text-zinc-900 hover:text-gray-900"
-                  >
-                    {item.name}
-                  </Link>
-                ))}
-              </div>
-              <div className="flex items-center gap-2">
-                <button className="text-base border-gray-200 border rounded-lg px-3 py-1.5 font-normal text-zinc-900 hover:text-gray-900 flex items-center gap-2 font-mono">
-                  1.2K
-                  <RiGithubFill className="size-5 text-gray-800" />
-                </button>
-                <button className="text-base transition-all hover:opacity-75 text-white bg-design-2 border-design-2 border rounded-lg px-3 py-1.5 font-normal  flex items-center gap-2 ">
-                  <RiMailSendFill className="size-4" />
-                  Newsletter
-                </button>
-              </div>
-            </div>
-          </nav>
-        </div>
+      <Nav />
 
+      <header className="">
         <section className="grid pt-24 max-w-7xl mt-16 gap-32 items-center mx-auto grid-cols-[50%_50%]">
           <div className="max-w-3xl">
             <p className="px-4 py-2 rounded-full text-sm font-normal bg-design-2/10 gap-2 items-center gap- text-design-3 inline-flex mb-6">
@@ -146,69 +101,7 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="border-t border-gray-100 mt-28">
-        <div className="max-w-7xl mx-auto w-full py-16 grid grid-cols-4 gap-8">
-          <div className="col-span-2">
-            <Link href={"/"} className="flex items-center gap-2 mb-4">
-              <Image
-                src={"img-logo/simple-logo.svg"}
-                alt={"Logo"}
-                width={100}
-                className="w-5 mt-1"
-                height={100}
-              />
-              <p className="text-3xl">annita</p>
-            </Link>
-            <p className="text-zinc-500 max-w-sm text-[15px] leading-relaxed">
-              A plataforma de eventos de tecnologia em Angola. Publica, descobre
-              e participa nos melhores eventos tech do país.
-            </p>
-          </div>
-          <div>
-            <h4 className="font-medium text-sm mb-4">Navegação</h4>
-            <ul className="space-y-3">
-              {navigation.map((item) => (
-                <li key={item.name}>
-                  <Link
-                    href={item.href}
-                    className="text-[15px] text-zinc-500 hover:text-design-2 transition-colors"
-                  >
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-medium text-sm mb-4">Contacto</h4>
-            <ul className="space-y-3">
-              <li>
-                <a
-                  href="mailto:ola@annita.co"
-                  className="text-[15px] text-zinc-500 hover:text-design-2 transition-colors"
-                >
-                  ola@annita.co
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-[15px] text-zinc-500 hover:text-design-2 transition-colors flex items-center gap-2"
-                >
-                  <RiGithubFill className="size-4" />
-                  GitHub
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div className="border-t border-gray-100">
-          <p className="max-w-7xl mx-auto w-full text-center text-sm text-zinc-400 py-6">
-            &copy; {new Date().getFullYear()} annita. Todos os direitos
-            reservados.
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
