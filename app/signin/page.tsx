@@ -9,9 +9,16 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { EmailVerificationModal } from "@/components/EmailVerificationModal";
 
 export default function SignInPage() {
   const [showPassword, setShowPassword] = useState(false);
+  const [showVerification, setShowVerification] = useState(false);
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setShowVerification(true);
+  }
 
   return (
     <div className="overflow-x-hidden">
@@ -33,7 +40,7 @@ export default function SignInPage() {
             </p>
           </div>
 
-          <form className="flex flex-col gap-4">
+          <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
             <button
               type="button"
               className="w-full flex items-center justify-center gap-3 px-3 py-2.5 rounded-lg border border-gray-200 text-base font-normal text-zinc-900 hover:bg-gray-50 transition-colors"
@@ -102,6 +109,11 @@ export default function SignInPage() {
           </p>
         </div>
       </main>
+
+      <EmailVerificationModal
+        open={showVerification}
+        onClose={() => setShowVerification(false)}
+      />
     </div>
   );
 }
