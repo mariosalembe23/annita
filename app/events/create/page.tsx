@@ -15,6 +15,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { PublishConfirmationModal } from "@/components/PublishConfirmationModal";
 
 const categoryGroups = [
   {
@@ -87,6 +88,7 @@ export default function CreateEventPage() {
   const [date, setDate] = useState("");
   const [type, setType] = useState("");
   const [eventUrl, setEventUrl] = useState("");
+  const [showPublishModal, setShowPublishModal] = useState(false);
   const categoryRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -110,6 +112,11 @@ export default function CreateEventPage() {
 
   function removeImage(index: number) {
     setImages((prev) => prev.filter((_, i) => i !== index));
+  }
+
+  function handlePublish() {
+    setShowPublishModal(false);
+    // submit logic
   }
 
   return (
@@ -148,7 +155,13 @@ export default function CreateEventPage() {
               </p>
             </header>
 
-            <form className="flex flex-col gap-5">
+            <form
+              className="flex flex-col gap-5"
+              onSubmit={(e) => {
+                e.preventDefault();
+                setShowPublishModal(true);
+              }}
+            >
               <div>
                 <label className="text-sm font-medium text-zinc-700 mb-2 block">
                   Título do evento
@@ -368,6 +381,12 @@ export default function CreateEventPage() {
           </div>
         </section>
       </main>
+
+      <PublishConfirmationModal
+        open={showPublishModal}
+        onClose={() => setShowPublishModal(false)}
+        onConfirm={handlePublish}
+      />
     </div>
   );
 }
