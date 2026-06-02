@@ -41,8 +41,14 @@ export function EventCard({ event, className }: EventCardProps) {
       </header>
       <div className="h-full w-full flex-col flex justify-between p-5 rounded-t-2xl shadow-2xl bg-white -mt-5">
         <div>
-          <p className="text-sm text-gray-500 mb-2">{event.subtitle}</p>
-          <h3 className="text-xl line-clamp-3">{event.title}</h3>
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-gray-500 mb-2">{event.subtitle}</p>
+            <div className="flex items-center ">
+              <div className="size-9 rounded-full bg-gray-100 border-2 border-white" />
+              <div className="size-9 rounded-full -ms-4 bg-gray-100 border-2 border-white" />
+            </div>
+          </div>
+          <h3 className="text-xl mt-3 line-clamp-3">{event.title}</h3>
           {event.badges.length > 0 && (
             <div className="flex items-center gap-1">
               {event.badges.map((badge, i) => (

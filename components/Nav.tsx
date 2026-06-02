@@ -31,7 +31,7 @@ export function Nav({ links = defaultLinks }: NavProps) {
               className="w-5 mt-1"
               height={100}
             />
-            <p className="text-3xl">annita</p>
+            <p className="text-3xl text-design-3">annita</p>
           </Link>
         </div>
         <div className="flex items-center gap-10">
@@ -52,7 +52,7 @@ export function Nav({ links = defaultLinks }: NavProps) {
             ))}
           </div>
           <div className="flex items-center gap-2">
-            <button className="text-base border-gray-200 border rounded-lg px-3 py-1.5 font-normal text-zinc-900 hover:text-gray-900 flex items-center gap-2 font-mono">
+            <button className="text-base border-gray-200 border rounded-lg px-3 py-1.5 font-normal text-zinc-900 hover:text-gray-900 flex items-center gap-2 ">
               1.2K
               <RiGithubFill className="size-5 text-gray-800" />
             </button>

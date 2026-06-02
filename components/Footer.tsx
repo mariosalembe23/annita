@@ -21,7 +21,7 @@ export function Footer() {
               className="w-5 mt-1"
               height={100}
             />
-            <p className="text-3xl">annita</p>
+            <p className="text-3xl text-design-3">annita</p>
           </Link>
           <p className="text-zinc-500 max-w-sm text-[15px] leading-relaxed">
             A plataforma de eventos de tecnologia em Angola. Publica, descobre e
