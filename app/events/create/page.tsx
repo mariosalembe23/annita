@@ -16,6 +16,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { PublishConfirmationModal } from "@/components/PublishConfirmationModal";
+import { X } from "lucide-react";
 
 const categoryGroups = [
   {
@@ -81,6 +82,7 @@ const types = [
 
 export default function CreateEventPage() {
   const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [categoryOpen, setCategoryOpen] = useState(false);
   const [images, setImages] = useState<File[]>([]);
@@ -90,6 +92,14 @@ export default function CreateEventPage() {
   const [eventUrl, setEventUrl] = useState("");
   const [showPublishModal, setShowPublishModal] = useState(false);
   const categoryRef = useRef<HTMLDivElement>(null);
+  const descriptionRef = useRef<HTMLTextAreaElement>(null);
+
+  function resizeDescription() {
+    const el = descriptionRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${Math.min(el.scrollHeight, 200)}px`;
+  }
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -135,7 +145,13 @@ export default function CreateEventPage() {
             </Link>
           </div>
         </header>
-        <section className="h-full overflow-y-auto py-20 w-full">
+        <section className="h-full overflow-y-auto py-20 relative w-full">
+          <button
+            onClick={() => window.history.back()}
+            className="absolute size-9 rounded-full bg-gray-100 flex items-center justify-center top-6 right-6 text-zinc-600 hover:text-zinc-700 transition-opacity"
+          >
+            <X className="size-5" />
+          </button>
           <div className="max-w-lg  mx-auto px-4">
             <header className="mb-8">
               <div className="pot:hidden inline-flex">
@@ -173,6 +189,26 @@ export default function CreateEventPage() {
                     placeholder="Ex.: Hackathon Angola 2026"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-zinc-700 mb-2 block">
+                  Descrição
+                </label>
+                <div className="flex transition-all focus-within:ring-4 focus-within:ring-blue-100 focus-within:border-blue-400 items-start px-3 py-2.5 rounded-lg border border-gray-200">
+                  <textarea
+                    ref={descriptionRef}
+                    className="w-full outline-none text-[15px] resize-none overflow-y-auto"
+                    rows={3}
+                    placeholder="Descreve o teu evento..."
+                    value={description}
+                    onChange={(e) => {
+                      setDescription(e.target.value);
+                      resizeDescription();
+                    }}
+                    style={{ maxHeight: "200px" }}
                   />
                 </div>
               </div>

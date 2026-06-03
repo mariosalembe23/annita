@@ -1,0 +1,84 @@
+"use client";
+
+import { AnimatePresence, motion } from "framer-motion";
+import { RiEyeLine, RiEditLine, RiDeleteBinLine, RiFlagLine } from "@remixicon/react";
+
+interface ActionOption {
+  key: string;
+  label: string;
+  icon: React.ReactNode;
+  onClick: () => void;
+  danger?: boolean;
+}
+
+interface EventActionsDropdownProps {
+  open: boolean;
+  onClose: () => void;
+  onViewDetails: () => void;
+  onEdit: () => void;
+  onDelete: () => void;
+  onReport: () => void;
+  triggerRef: React.RefObject<HTMLButtonElement | null>;
+}
+
+export function EventActionsDropdown({
+  open,
+  onClose,
+  onViewDetails,
+  onEdit,
+  onDelete,
+  onReport,
+  triggerRef,
+}: EventActionsDropdownProps) {
+  const actions: ActionOption[] = [
+    { key: "view", label: "Ver detalhes", icon: <RiEyeLine className="size-4" />, onClick: onViewDetails },
+    { key: "edit", label: "Editar", icon: <RiEditLine className="size-4" />, onClick: onEdit },
+    { key: "delete", label: "Eliminar", icon: <RiDeleteBinLine className="size-4" />, onClick: onDelete, danger: true },
+    { key: "report", label: "Denunciar", icon: <RiFlagLine className="size-4" />, onClick: onReport, danger: true },
+  ];
+
+  return (
+    <AnimatePresence>
+      {open && (
+        <>
+          <motion.div
+            key="dropdown-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-40"
+            onClick={onClose}
+          />
+          <motion.div
+            key="dropdown-menu"
+            initial={{ opacity: 0, scale: 0.9, y: -8 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: -8 }}
+            transition={{ duration: 0.15, ease: "easeOut" }}
+            className="absolute right-0 top-10 z-50 min-w-44 bg-white rounded-xl shadow-xl border border-gray-100 py-1 overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {actions.map((action) => (
+              <button
+                key={action.key}
+                type="button"
+                onClick={() => {
+                  action.onClick();
+                  onClose();
+                }}
+                className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors ${
+                  action.danger
+                    ? "text-red-600 hover:bg-red-50"
+                    : "text-zinc-700 hover:bg-zinc-50"
+                }`}
+              >
+                {action.icon}
+                {action.label}
+              </button>
+            ))}
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
+  );
+}
