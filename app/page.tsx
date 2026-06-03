@@ -9,6 +9,7 @@ import { EventCard } from "@/components/EventCard";
 import { Footer } from "@/components/Footer";
 import { Nav } from "@/components/Nav";
 import { events } from "@/data/events";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -37,10 +38,12 @@ export default function Home() {
                 <RiStackFill className="size-4" />
                 Explorar eventos
               </button>
-              <button className="text-base transition-all hover:opacity-75 bg-white text-design-3 border-gray-200 border rounded-lg px-3 py-1.5 font-normal  flex items-center gap-2 ">
-                <RiStickyNoteAddFill className="size-4" />
-                Publicar evento
-              </button>
+              <Link href={"/events/create"}>
+                <button className="text-base transition-all hover:opacity-75 bg-white text-design-3 border-gray-200 border rounded-lg px-3 py-1.5 font-normal  flex items-center gap-2 ">
+                  <RiStickyNoteAddFill className="size-4" />
+                  Publicar evento
+                </button>
+              </Link>
             </div>
             <footer className="flex items-center gap-12">
               <div className="flex flex-col gap-1">
