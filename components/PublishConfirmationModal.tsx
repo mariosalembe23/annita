@@ -74,14 +74,14 @@ export function PublishConfirmationModal({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="flex-1 text-base transition-all hover:bg-gray-50 text-zinc-700 border border-gray-200 rounded-lg px-3 py-2.5 font-normal"
+                  className="text-base transition-all hover:bg-gray-50 text-zinc-700 border border-gray-200 rounded-lg px-3 py-1.5 font-normal"
                 >
                   Cancelar
                 </button>
                 <button
                   type="button"
                   onClick={onConfirm}
-                  className="flex-1 text-base transition-all hover:opacity-75 text-white bg-design-2 border-design-2 border rounded-lg px-3 py-2.5 font-normal"
+                  className=" text-base transition-all hover:opacity-75 text-white bg-design-2 border-design-2 border rounded-lg px-3 py-1.5 font-normal"
                 >
                   Confirmar e publicar
                 </button>
