@@ -1,7 +1,13 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { RiEyeLine, RiEditLine, RiDeleteBinLine, RiFlagLine } from "@remixicon/react";
+import {
+  RiEyeLine,
+  RiEditLine,
+  RiDeleteBinLine,
+  RiFlagLine,
+} from "@remixicon/react";
 
 interface ActionOption {
   key: string;
@@ -30,11 +36,54 @@ export function EventActionsDropdown({
   onReport,
   triggerRef,
 }: EventActionsDropdownProps) {
+  const [position, setPosition] = useState({ top: 0, right: 0 });
+
+  useEffect(() => {
+    if (open && triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect();
+      setPosition({
+        top: rect.bottom + 4,
+        right: window.innerWidth - rect.right,
+      });
+    }
+  }, [open, triggerRef]);
+
+  useEffect(() => {
+    if (!open) return;
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") onClose();
+    }
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [open, onClose]);
+
   const actions: ActionOption[] = [
-    { key: "view", label: "Ver detalhes", icon: <RiEyeLine className="size-4" />, onClick: onViewDetails },
-    { key: "edit", label: "Editar", icon: <RiEditLine className="size-4" />, onClick: onEdit },
-    { key: "delete", label: "Eliminar", icon: <RiDeleteBinLine className="size-4" />, onClick: onDelete, danger: true },
-    { key: "report", label: "Denunciar", icon: <RiFlagLine className="size-4" />, onClick: onReport, danger: true },
+    {
+      key: "view",
+      label: "Ver detalhes",
+      icon: <RiEyeLine className="size-4" />,
+      onClick: onViewDetails,
+    },
+    {
+      key: "edit",
+      label: "Editar",
+      icon: <RiEditLine className="size-4" />,
+      onClick: onEdit,
+    },
+    {
+      key: "delete",
+      label: "Eliminar",
+      icon: <RiDeleteBinLine className="size-4" />,
+      onClick: onDelete,
+      danger: true,
+    },
+    {
+      key: "report",
+      label: "Denunciar",
+      icon: <RiFlagLine className="size-4" />,
+      onClick: onReport,
+      danger: true,
+    },
   ];
 
   return (
@@ -55,7 +104,8 @@ export function EventActionsDropdown({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: -8 }}
             transition={{ duration: 0.15, ease: "easeOut" }}
-            className="absolute right-0 top-10 z-50 min-w-44 bg-white rounded-xl shadow-xl border border-gray-100 py-1 overflow-hidden"
+            style={{ top: position.top, right: position.right }}
+            className="fixed z-50 min-w-44 bg-white rounded-xl shadow-xl border border-gray-100 py-1 overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             {actions.map((action) => (
