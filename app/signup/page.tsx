@@ -1,6 +1,12 @@
 "use client";
 
-import { RiEyeLine, RiEyeOffLine, RiLockLine, RiMailLine } from "@remixicon/react";
+import {
+  RiEyeLine,
+  RiEyeOffLine,
+  RiLockLine,
+  RiMailLine,
+  RiUser6Line,
+} from "@remixicon/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -24,9 +30,7 @@ export default function SignUpPage() {
               />
               <p className="text-3xl text-design-3">annita</p>
             </Link>
-            <p className="text-zinc-800 text-[15px]">
-              Crie a sua conta
-            </p>
+            <p className="text-zinc-800 text-[15px]">Crie a sua conta</p>
           </div>
 
           <form className="flex flex-col gap-4">
@@ -47,6 +51,17 @@ export default function SignUpPage() {
               <div className="h-px flex-1 bg-gray-200" />
               <span className="text-sm text-zinc-400">ou</span>
               <div className="h-px flex-1 bg-gray-200" />
+            </div>
+
+            <div>
+              <div className="flex transition-all focus-within:ring-4 focus-within:ring-blue-100 focus-within:border-blue-400 items-center px-3 py-2.5 rounded-lg border border-gray-200">
+                <RiUser6Line className="size-5 text-zinc-400 shrink-0" />
+                <input
+                  className="w-full outline-none ps-2 text-[15px]"
+                  type="text"
+                  placeholder="Nome Completo"
+                />
+              </div>
             </div>
 
             <div>

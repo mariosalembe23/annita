@@ -1,6 +1,6 @@
 "use client";
 
-import { RiGithubFill, RiMailSendFill } from "@remixicon/react";
+import { RiGithubFill, RiMailSendFill, RiUser6Fill } from "@remixicon/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -10,6 +10,7 @@ const defaultLinks = [
   { name: "Eventos", href: "/events" },
   { name: "Contacto", href: "/contact" },
   { name: "Contribuir", href: "/contribute" },
+  { name: "Newsletter", href: "/newsletter" },
 ];
 
 interface NavProps {
@@ -56,10 +57,12 @@ export function Nav({ links = defaultLinks }: NavProps) {
               1.2K
               <RiGithubFill className="size-5 text-gray-800" />
             </button>
-            <button className="text-base transition-all hover:opacity-75 text-white bg-design-2 border-design-2 border rounded-lg px-3 py-1.5 font-normal flex items-center gap-2">
-              <RiMailSendFill className="size-4" />
-              Newsletter
-            </button>
+            <Link href={"/signin"}>
+              <button className="text-base transition-all hover:opacity-75 text-white bg-design-2 border-design-2 border rounded-lg px-3 py-1.5 font-normal flex items-center gap-2">
+                <RiUser6Fill className="size-4" />
+                Entrar
+              </button>
+            </Link>
           </div>
         </div>
       </nav>

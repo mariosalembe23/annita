@@ -7,6 +7,7 @@ import {
   RiEditLine,
   RiDeleteBinLine,
   RiFlagLine,
+  RiFunctionAddFill,
 } from "@remixicon/react";
 
 interface ActionOption {
@@ -61,7 +62,7 @@ export function EventActionsDropdown({
     {
       key: "view",
       label: "Ver detalhes",
-      icon: <RiEyeLine className="size-4" />,
+      icon: <RiFunctionAddFill className="size-4" />,
       onClick: onViewDetails,
     },
     {
