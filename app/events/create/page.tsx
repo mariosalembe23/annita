@@ -81,6 +81,10 @@ const types = [
 ];
 
 export default function CreateEventPage() {
+  useEffect(() => {
+    document.title = "Criar Evento — Annita";
+  }, []);
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");

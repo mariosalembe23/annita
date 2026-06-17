@@ -8,10 +8,13 @@ import {
 } from "@remixicon/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { EmailVerificationModal } from "@/components/EmailVerificationModal";
 
 export default function SignInPage() {
+  useEffect(() => {
+    document.title = "Iniciar Sessão — Annita";
+  }, []);
   const [showPassword, setShowPassword] = useState(false);
   const [showVerification, setShowVerification] = useState(false);
 

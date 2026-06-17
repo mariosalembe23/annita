@@ -1,8 +1,20 @@
 import { RiEqualizerLine, RiSearchLine } from "@remixicon/react";
+import type { Metadata } from "next";
 import { EventCard } from "@/components/EventCard";
 import { Footer } from "@/components/Footer";
 import { Nav } from "@/components/Nav";
 import { events } from "@/data/events";
+
+export const metadata: Metadata = {
+  title: "Eventos",
+  description:
+    "Explora todos os eventos de tecnologia em Angola. Hackathons, workshops, conferências, meetups e muito mais.",
+  openGraph: {
+    title: "Eventos de Tecnologia em Angola — Annita",
+    description:
+      "Explora todos os eventos de tecnologia em Angola. Encontra o teu próximo evento tech.",
+  },
+};
 
 export default function EventsPage() {
   return (
