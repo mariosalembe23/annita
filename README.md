@@ -1,36 +1,101 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<div align="center">
+  <img src="/public/img-logo/white-logo.svg" alt="Annita" width="200" />
+  <p><strong>A plataforma de eventos de tecnologia em Angola.</strong></p>
+  <p>Publica, descobre e participa nos melhores eventos tech do país.</p>
+</div>
 
-## Getting Started
+---
 
-First, run the development server:
+## Sobre
+
+**Annita** é uma plataforma angolana de descoberta e publicação de eventos de tecnologia. O objectivo é centralizar tudo o que acontece no ecossistema tech de Angola — hackathons, workshops, conferências, meetups, bootcamps e muito mais — num só lugar.
+
+### Funcionalidades actuais
+
+- **Navegar eventos** — grid de eventos com busca e filtros
+- **Ver detalhes** — modal com descrição completa, data, local, imagens
+- **Criar eventos** — formulário multi-campo com categorias, modalidade, tipo, imagens
+- **Galeria de imagens** — visualizador full-screen com navegação
+- **Compromisso de veracidade** — modal de confirmação antes de publicar
+
+---
+
+## Tech Stack
+
+| Camada | Tecnologia |
+|---|---|
+| **Framework** | Next.js 16 (App Router) |
+| **Linguagem** | TypeScript 5 (strict) |
+| **UI** | React 19 + shadcn/ui + Radix UI |
+| **Estilos** | Tailwind CSS v4 |
+| **Animação** | Framer Motion |
+| **Gráficos** | Three.js (shader art) |
+| **Ícones** | Remixicon + Lucide |
+| **Package manager** | pnpm |
+
+---
+
+## Primeiros passos
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abre [http://localhost:3000](http://localhost:3000) no teu browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Scripts
 
-## Learn More
+| Comando | Descrição |
+|---|---|
+| `pnpm dev` | Inicia servidor de desenvolvimento (Turbopack) |
+| `pnpm build` | Faz build de produção |
+| `pnpm start` | Inicia servidor de produção |
+| `pnpm lint` | Correr ESLint |
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Projecto
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+annita/
+├── app/                  # Páginas (Next.js App Router)
+│   ├── page.tsx          # Home / Landing page
+│   ├── events/           # Listagem e criação de eventos
+│   ├── signin/           # Autenticação (UI)
+│   └── signup/           # Registo (UI)
+├── components/           # Componentes React
+│   ├── EventCard.tsx     # Card de evento
+│   ├── EventDetailModal.tsx
+│   ├── EventActionsDropdown.tsx
+│   ├── PublishConfirmationModal.tsx
+│   ├── Nav.tsx / Footer.tsx
+│   └── ColorBends.tsx    # Arte generativa Three.js
+├── data/
+│   └── events.ts         # Dados mockados + interfaces
+└── public/
+    └── img-logo/         # Logótipos
+```
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Estado
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+🔄 **MVP — Frontend.** A plataforma está numa fase inicial de desenvolvimento.
+Ainda não tem backend, base de dados nem autenticação funcional.
+
+### Próximos passos
+
+- [ ] Backend e API
+- [ ] Autenticação (NextAuth / lucia / Clerk)
+- [ ] Base de dados (PostgreSQL + Prisma)
+- [ ] Sistema de denúncias e moderação
+- [ ] Painel para moderadores
+
+---
+
+<div align="center">
+  <p>Feito com 💙 para a comunidade tech angolana</p>
+</div>
