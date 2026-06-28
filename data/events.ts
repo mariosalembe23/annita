@@ -157,3 +157,79 @@ export const events: EventCardData[] = [
     ],
   },
 ];
+
+import type { ApiEvent } from "@/lib/api/events";
+
+const badgeVariantFromStatus = (status: string) => {
+  if (status === "PENDING") return "status" as const;
+  if (status === "APPROVED") return "status" as const;
+  return "status" as const;
+};
+
+const badgeVariantFromType = (type: string) => {
+  if (type === "FREE") return "free" as const;
+  return "paid" as const;
+};
+
+const badgeLabelFromStatus = (status: string) => {
+  if (status === "PENDING") return "A Confirmar";
+  if (status === "APPROVED") return "Confirmado";
+  if (status === "REJECTED") return "Rejeitado";
+  if (status === "REPORTED") return "Denunciado";
+  return status;
+};
+
+const modalityLabel = (modality: string[]) => {
+  if (modality.includes("PRESENTIAL") && modality.length === 1)
+    return "Presencial";
+  if (modality.includes("REMOTE") && modality.length === 1) return "Remoto";
+  if (modality.includes("HYBRID")) return "Híbrido";
+  return modality.join(", ");
+};
+
+export function adaptApiEvent(apiEvent: ApiEvent): EventCardData {
+  const badges = [
+    { label: badgeLabelFromStatus(apiEvent.status), variant: badgeVariantFromStatus(apiEvent.status) },
+    { label: apiEvent.type === "FREE" ? "Gratuito" : "Pago", variant: badgeVariantFromType(apiEvent.type) },
+  ];
+
+  const timeAgo = timeAgoFromDate(apiEvent.createdAt);
+
+  return {
+    id: parseInt(apiEvent.id.replace(/-/g, "").slice(0, 8), 16) || Math.random(),
+    category: apiEvent.category.name,
+    timeAgo,
+    subtitle: modalityLabel(apiEvent.modality),
+    title: apiEvent.title,
+    badges,
+    date: formatDate(apiEvent.startDate),
+    interest: 0,
+    buttonLabel: "Participar",
+    description: apiEvent.description,
+    location: "",
+    images: apiEvent.coverImage
+      ? [{ src: apiEvent.coverImage, alt: apiEvent.title }]
+      : [],
+  };
+}
+
+function timeAgoFromDate(dateStr: string): string {
+  const now = Date.now();
+  const date = new Date(dateStr).getTime();
+  const diff = now - date;
+  const days = Math.floor(diff / 86400000);
+  if (days === 0) return "Hoje";
+  if (days === 1) return "Há 1d";
+  if (days < 7) return `Há ${days}d`;
+  if (days < 30) return `Há ${Math.floor(days / 7)}sem`;
+  return `Há ${Math.floor(days / 30)}m`;
+}
+
+function formatDate(dateStr: string): string {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString("pt-PT", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
