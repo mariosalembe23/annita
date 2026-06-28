@@ -1,10 +1,19 @@
 "use client";
 
-import { RiGithubFill, RiMailSendFill, RiUser6Fill } from "@remixicon/react";
+import {
+  RiGithubFill,
+  RiSettings3Line,
+  RiUser6Fill,
+  RiUserLine,
+  RiLogoutCircleRLine,
+  RiUser6Line,
+} from "@remixicon/react";
+import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { cn, removeCookie } from "@/lib/utils";
 import { useUser } from "@/hooks/use-user";
 
 const defaultLinks = [
@@ -20,7 +29,29 @@ interface NavProps {
 
 export function Nav({ links = defaultLinks }: NavProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const { isLoggedIn, user, isLoading } = useUser();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node)
+      ) {
+        setDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  function handleLogout() {
+    setDropdownOpen(false);
+    removeCookie("token");
+    router.push("/");
+  }
 
   return (
     <div className="w-full fixed bg-white z-50 right-0 top-0 left-0">
@@ -60,24 +91,60 @@ export function Nav({ links = defaultLinks }: NavProps) {
               <RiGithubFill className="size-5 text-gray-800" />
             </button>
             {isLoggedIn && user ? (
-              <Link href={"/profile"}>
-                <div className="px-3 py-1.5 gap-2 border hover:bg-zinc-100 transition-all border-gray-200 rounded-lg text-white flex items-center justify-center text-sm font-medium">
-                  <div>
-                    <div className=" flex items-center justify-center overflow-hidden">
-                      <Image
-                        src={"/img/avatar.png"}
-                        alt={"Logo"}
-                        width={100}
-                        className="w-6 h-6 "
-                        height={100}
-                      />
-                    </div>
-                  </div>
-                  <div className="text-zinc-900">
-                    <p>{user.username}</p>
-                  </div>
-                </div>
-              </Link>
+              <div className="relative" ref={dropdownRef}>
+                <button
+                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                  className="px-3 py-1.5 gap-2 border hover:bg-zinc-100 transition-all border-gray-200 rounded-lg flex items-center"
+                >
+                  <Image
+                    src={"/img/avatar.png"}
+                    alt={"Avatar"}
+                    width={100}
+                    className="w-6 h-6"
+                    height={100}
+                  />
+                  <span className="text-zinc-900 text-sm">{user.username}</span>
+                </button>
+
+                <AnimatePresence>
+                  {dropdownOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -8, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -8, scale: 0.95 }}
+                      transition={{ duration: 0.15, ease: "easeOut" }}
+                      className="absolute border border-zinc-200 right-0 mt-2 w-56 bg-white rounded-xl shadow-lg overflow-hidden"
+                    >
+                      <div className="py-1">
+                        <Link
+                          href={"/profile"}
+                          onClick={() => setDropdownOpen(false)}
+                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-700 hover:bg-gray-50 transition-colors"
+                        >
+                          <RiUser6Line className="size-4" />
+                          Perfil
+                        </Link>
+                        <Link
+                          href={"/settings"}
+                          onClick={() => setDropdownOpen(false)}
+                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-700 hover:bg-gray-50 transition-colors"
+                        >
+                          <RiSettings3Line className="size-4" />
+                          Configurações
+                        </Link>
+                        <hr className="my-1 border-gray-100" />
+                        <button
+                          onClick={handleLogout}
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                        >
+                          <RiLogoutCircleRLine className="size-4" />
+                          Terminar Sessão
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             ) : isLoading ? (
               <div className="w-24 py-4.5 rounded-lg bg-gray-200 animate-pulse" />
             ) : (
