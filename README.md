@@ -12,6 +12,11 @@
 
 ### Funcionalidades actuais
 
+- **Autenticação** — registo e login com email/username + token JWT
+- **Verificação de email** — envio e confirmação de código de verificação
+- **Sessão persistente** — token armazenado em cookies, reconhecido entre páginas
+- **Força de palavra-passe** — indicador visual em tempo real enquanto o utilizador digita
+- **Notificações toast** — feedback centralizado com ícones para erro, sucesso e info
 - **Navegar eventos** — grid de eventos com busca e filtros
 - **Ver detalhes** — modal com descrição completa, data, local, imagens
 - **Criar eventos** — formulário multi-campo com categorias, modalidade, tipo, imagens
@@ -31,6 +36,9 @@
 | **Animação** | Framer Motion |
 | **Gráficos** | Three.js (shader art) |
 | **Ícones** | Remixicon + Lucide |
+| **HTTP** | Axios (com `withCredentials`) |
+| **Data Fetching** | TanStack Query (React Query) |
+| **Formulários** | react-hook-form |
 | **Package manager** | pnpm |
 
 ---
@@ -43,6 +51,18 @@ pnpm dev
 ```
 
 Abre [http://localhost:3000](http://localhost:3000) no teu browser.
+
+### Variáveis de ambiente
+
+Copia `.env.example` para `.env.local` e preenche:
+
+```bash
+cp .env.example .env.local
+```
+
+| Variável | Descrição |
+|---|---|
+| `NEXT_PUBLIC_API_URL` | URL base da API (ex: `http://localhost:8080/api`) |
 
 ---
 
@@ -57,42 +77,77 @@ Abre [http://localhost:3000](http://localhost:3000) no teu browser.
 
 ---
 
+## Fluxo de autenticação
+
+1. O utilizador faz **login** ou **registo** através dos formulários em `/signin` ou `/signup`
+2. A API devolve um **token JWT**
+3. Se o email ainda não estiver verificado, o token fica pendente e abre-se um modal para **enviar e confirmar o código de verificação**
+4. Após verificação (ou se já estiver verificado), o token é **guardado num cookie** (`token`) com `Secure; SameSite=Lax`
+5. Nas requisições seguintes, o token é enviado no header `Authorization: Bearer <token>`
+6. O hook `useUser()` descodifica o token, faz fetch dos dados do utilizador via `GET /api/users/{id}` e expõe `{ user, isLoggedIn, isLoading, ... }`
+7. Se o token estiver expirado ou for inválido, o `isLoggedIn` fica `false` e o utilizador vê o botão **Entrar**
+
+---
+
 ## Projecto
 
 ```
 annita/
-├── app/                  # Páginas (Next.js App Router)
-│   ├── page.tsx          # Home / Landing page
-│   ├── events/           # Listagem e criação de eventos
-│   ├── signin/           # Autenticação (UI)
-│   └── signup/           # Registo (UI)
-├── components/           # Componentes React
-│   ├── EventCard.tsx     # Card de evento
+├── app/                       # Páginas (Next.js App Router)
+│   ├── page.tsx               # Home / Landing page
+│   ├── layout.tsx             # Layout global com Providers
+│   ├── events/
+│   │   ├── page.tsx           # Listagem de eventos
+│   │   └── create/page.tsx    # Criar evento
+│   ├── signin/page.tsx        # Login
+│   └── signup/page.tsx        # Registo
+├── components/
+│   ├── ui/
+│   │   ├── toast.tsx          # Componente de toast individual
+│   │   └── toaster.tsx        # Contentor de toasts
+│   ├── Nav.tsx                # Navbar com avatar/dropdown/logout
+│   ├── Footer.tsx
+│   ├── EventCard.tsx
 │   ├── EventDetailModal.tsx
 │   ├── EventActionsDropdown.tsx
+│   ├── EmailVerificationModal.tsx
+│   ├── NotificationPreferenceModal.tsx
 │   ├── PublishConfirmationModal.tsx
-│   ├── Nav.tsx / Footer.tsx
-│   └── ColorBends.tsx    # Arte generativa Three.js
+│   ├── ImageViewerModal.tsx
+│   ├── ColorBends.tsx         # Arte generativa Three.js
+│   └── Providers.tsx          # QueryClient + ToastProvider
+├── hooks/
+│   ├── use-toast.tsx          # Hook + contexto de toasts
+│   └── use-user.ts            # Hook de sessão do utilizador
+├── lib/
+│   ├── api.ts                 # Instância Axios configurada
+│   ├── utils.ts               # cn(), decodeToken, cookies
+│   └── api/
+│       └── auth.ts            # Funções da API de autenticação
 ├── data/
-│   └── events.ts         # Dados mockados + interfaces
-└── public/
-    └── img-logo/         # Logótipos
+│   └── events.ts              # Dados mockados + interfaces
+├── public/
+│   ├── img-logo/              # Logótipos
+│   └── img/                   # Imagens (avatar, google, etc.)
+├── .env.example               # Exemplo de variáveis de ambiente
+└── docs/
+    └── SEGURANCA-E-MODERACAO.md
 ```
 
 ---
 
 ## Estado
 
-🔄 **MVP — Frontend.** A plataforma está numa fase inicial de desenvolvimento.
-Ainda não tem backend, base de dados nem autenticação funcional.
+🔄 **MVP em desenvolvimento.** A plataforma já conta com autenticação funcional com backend real e está a evoluir continuamente.
 
 ### Próximos passos
 
-- [ ] Backend e API
-- [ ] Autenticação (NextAuth / lucia / Clerk)
-- [ ] Base de dados (PostgreSQL + Prisma)
-- [ ] Sistema de denúncias e moderação
+- [ ] Perfil do utilizador (/profile)
+- [ ] Página de configurações (/settings)
+- [ ] Upload de foto de perfil
 - [ ] Painel para moderadores
+- [ ] Sistema de denúncias
+- [ ] Gestão de eventos (editar, cancelar)
 
 ---
 
