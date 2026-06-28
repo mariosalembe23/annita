@@ -4,23 +4,84 @@ import {
   RiEyeLine,
   RiEyeOffLine,
   RiLockLine,
-  RiMailLine,
+  RiUser6Line,
 } from "@remixicon/react";
+import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { EmailVerificationModal } from "@/components/EmailVerificationModal";
+import { login as loginUser } from "@/lib/api/auth";
+import { decodeToken, setCookie } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
+
+interface SignInForm {
+  username: string;
+  password: string;
+}
 
 export default function SignInPage() {
   useEffect(() => {
     document.title = "Iniciar Sessão — Annita";
   }, []);
+
+  const { toast } = useToast();
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [showVerification, setShowVerification] = useState(false);
+  const [pendingToken, setPendingToken] = useState<string | null>(null);
+  const [pendingEmail, setPendingEmail] = useState<string>("");
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setShowVerification(true);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignInForm>({
+    mode: "onChange",
+  });
+
+  const mutation = useMutation({
+    mutationFn: (data: SignInForm) => loginUser(data),
+  });
+
+  function onSubmit(data: SignInForm) {
+    mutation.mutate(data, {
+      onSuccess: (response) => {
+        const token =
+          typeof response === "string"
+            ? response
+            : (response as any)?.token;
+        if (!token) return;
+        const payload = decodeToken(token);
+        if (payload && !payload.is_email_verified) {
+          setPendingToken(token);
+          setPendingEmail(payload.email);
+          setShowVerification(true);
+        } else {
+          setCookie("token", token);
+          toast("success", "Sessão iniciada com sucesso!");
+          router.push("/");
+        }
+      },
+      onError: (error) => {
+        const message =
+          (error as any)?.response?.data?.message ||
+          (error as Error)?.message ||
+          "Erro ao iniciar sessão";
+        toast("error", message);
+      },
+    });
+  }
+
+  function handleVerified() {
+    if (pendingToken) {
+      setCookie("token", pendingToken);
+    }
+    setShowVerification(false);
+    toast("success", "Sessão iniciada com sucesso!");
+    router.push("/");
   }
 
   return (
@@ -43,7 +104,10 @@ export default function SignInPage() {
             </p>
           </div>
 
-          <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+          <form
+            className="flex flex-col gap-4"
+            onSubmit={handleSubmit(onSubmit)}
+          >
             <button
               type="button"
               className="w-full flex items-center justify-center gap-3 px-3 py-2.5 rounded-lg border border-gray-200 text-base font-normal text-zinc-900 hover:bg-gray-50 transition-colors"
@@ -64,23 +128,46 @@ export default function SignInPage() {
             </div>
 
             <div>
-              <div className="flex transition-all focus-within:ring-4 focus-within:ring-blue-100 focus-within:border-blue-400 items-center px-3 py-2.5 rounded-lg border border-gray-200">
-                <RiMailLine className="size-5 text-zinc-400 shrink-0" />
+              <div
+                className={`flex transition-all focus-within:ring-4 items-center px-3 py-2.5 rounded-lg border ${
+                  errors.username
+                    ? "border-red-400 focus-within:ring-red-100 focus-within:border-red-400"
+                    : "focus-within:ring-blue-100 focus-within:border-blue-400 border-gray-200"
+                }`}
+              >
+                <RiUser6Line className="size-5 text-zinc-400 shrink-0" />
                 <input
                   className="w-full outline-none ps-2 text-[15px]"
-                  type="email"
-                  placeholder="Email"
+                  type="text"
+                  placeholder="Email ou nome de utilizador"
+                  {...register("username", {
+                    required: "O email ou nome de utilizador é obrigatório",
+                  })}
                 />
               </div>
+              {errors.username && (
+                <p className="text-red-500 text-sm mt-3">
+                  {errors.username.message}
+                </p>
+              )}
             </div>
 
             <div>
-              <div className="flex transition-all focus-within:ring-4 focus-within:ring-blue-100 focus-within:border-blue-400 items-center px-3 py-2.5 rounded-lg border border-gray-200">
+              <div
+                className={`flex transition-all focus-within:ring-4 items-center px-3 py-2.5 rounded-lg border ${
+                  errors.password
+                    ? "border-red-400 focus-within:ring-red-100 focus-within:border-red-400"
+                    : "focus-within:ring-blue-100 focus-within:border-blue-400 border-gray-200"
+                }`}
+              >
                 <RiLockLine className="size-5 text-zinc-400 shrink-0" />
                 <input
                   className="w-full outline-none ps-2 text-[15px]"
                   type={showPassword ? "text" : "password"}
                   placeholder="Palavra-chave"
+                  {...register("password", {
+                    required: "A palavra-chave é obrigatória",
+                  })}
                 />
                 <button
                   type="button"
@@ -94,13 +181,19 @@ export default function SignInPage() {
                   )}
                 </button>
               </div>
+              {errors.password && (
+                <p className="text-red-500 text-sm mt-3">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
 
             <button
               type="submit"
-              className="w-full text-base transition-all hover:opacity-75 text-white bg-design-2 border-design-2 border rounded-lg px-3 py-2.5 font-normal flex items-center justify-center gap-2"
+              disabled={mutation.isPending}
+              className="w-full text-base transition-all hover:opacity-75 disabled:opacity-50 text-white bg-design-2 border-design-2 border rounded-lg px-3 py-2.5 font-normal flex items-center justify-center gap-2"
             >
-              Entrar
+              {mutation.isPending ? "A entrar..." : "Entrar"}
             </button>
           </form>
 
@@ -113,10 +206,15 @@ export default function SignInPage() {
         </div>
       </main>
 
-      <EmailVerificationModal
-        open={showVerification}
-        onClose={() => setShowVerification(false)}
-      />
+      {pendingToken && (
+        <EmailVerificationModal
+          open={showVerification}
+          token={pendingToken}
+          email={pendingEmail}
+          onVerified={handleVerified}
+          onClose={() => setShowVerification(false)}
+        />
+      )}
     </div>
   );
 }

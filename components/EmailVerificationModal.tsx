@@ -3,18 +3,84 @@
 import { RiCloseLine, RiPhoneLockLine } from "@remixicon/react";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { sendVerificationCode, verifyEmailCode } from "@/lib/api/auth";
+import { useToast } from "@/hooks/use-toast";
 
 interface EmailVerificationModalProps {
   open: boolean;
+  token: string;
+  email: string;
+  onVerified: () => void;
   onClose: () => void;
 }
 
 export function EmailVerificationModal({
   open,
+  token,
+  email,
+  onVerified,
   onClose,
 }: EmailVerificationModalProps) {
+  const { toast } = useToast();
   const [code, setCode] = useState("");
+  const [sending, setSending] = useState(false);
+  const [verifying, setVerifying] = useState(false);
+  const [cooldown, setCooldown] = useState(0);
+  const intervalRef = useRef<ReturnType<typeof setInterval>>(undefined);
+
+  function startCooldown() {
+    setCooldown(30);
+    clearInterval(intervalRef.current);
+    intervalRef.current = setInterval(() => {
+      setCooldown((prev) => {
+        if (prev <= 1) {
+          clearInterval(intervalRef.current);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  }
+
+  useEffect(() => {
+    return () => clearInterval(intervalRef.current);
+  }, []);
+
+  useEffect(() => {
+    if (!open) {
+      setCode("");
+      setCooldown(0);
+      clearInterval(intervalRef.current);
+      return;
+    }
+    setSending(true);
+    sendVerificationCode(token)
+      .then(() => {
+        toast("info", "Código de verificação enviado para o teu email");
+        startCooldown();
+      })
+      .catch((err) => {
+        const msg = err?.response?.data?.message || "Erro ao enviar código";
+        toast("error", msg);
+      })
+      .finally(() => setSending(false));
+  }, [open, token, toast]);
+
+  async function handleConfirm() {
+    if (!code) return;
+    setVerifying(true);
+    try {
+      await verifyEmailCode(token, code);
+      toast("success", "Email verificado com sucesso!");
+      onVerified();
+    } catch (err: any) {
+      const msg = err?.response?.data?.message || "Código inválido";
+      toast("error", msg);
+    } finally {
+      setVerifying(false);
+    }
+  }
 
   return (
     <AnimatePresence>
@@ -72,8 +138,9 @@ export function EmailVerificationModal({
                 Verifica o teu email
               </h2>
               <p className="text-[15px] text-zinc-500 mt-2 leading-relaxed">
-                Enviámos um código de confirmação para o teu email. Insere-o
-                abaixo para continuares.
+                {sending
+                  ? "A enviar código de verificação..."
+                  : `Enviámos um código de confirmação para ${email}. Insere-o abaixo para continuares.`}
               </p>
 
               <div className="mt-8">
@@ -90,30 +157,47 @@ export function EmailVerificationModal({
                     maxLength={6}
                     value={code}
                     onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
+                    disabled={sending || verifying}
                   />
                 </div>
               </div>
 
               <button
                 type="button"
-                className="w-full mt-6 text-base transition-all hover:opacity-75 text-white bg-design-2 border-design-2 border rounded-lg px-3 py-2.5 font-normal"
-                onClick={() => {
-                  // confirm email
-                }}
+                disabled={sending || verifying || code.length < 6}
+                className="w-full mt-6 text-base transition-all hover:opacity-75 disabled:opacity-50 text-white bg-design-2 border-design-2 border rounded-lg px-3 py-2.5 font-normal"
+                onClick={handleConfirm}
               >
-                Confirmar
+                {verifying ? "A verificar..." : "Confirmar"}
               </button>
 
               <p className="text-center text-[15px] text-zinc-500 mt-6">
                 Não recebeste?{" "}
                 <button
                   type="button"
-                  className="text-design-2 hover:underline font-medium"
+                  disabled={sending || cooldown > 0}
+                  className="text-design-2 hover:underline font-medium disabled:opacity-50"
                   onClick={() => {
-                    // resend code
+                    setSending(true);
+                    sendVerificationCode(token)
+                      .then(() => {
+                        toast("info", "Código reenviado para o teu email");
+                        startCooldown();
+                      })
+                      .catch((err) => {
+                        const msg =
+                          err?.response?.data?.message ||
+                          "Erro ao reenviar código";
+                        toast("error", msg);
+                      })
+                      .finally(() => setSending(false));
                   }}
                 >
-                  Reenviar código
+                  {sending
+                    ? "A enviar..."
+                    : cooldown > 0
+                      ? `Reenviar (${cooldown}s)`
+                      : "Reenviar código"}
                 </button>
               </p>
             </div>

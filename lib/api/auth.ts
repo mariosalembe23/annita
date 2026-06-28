@@ -20,3 +20,31 @@ export async function register(payload: RegisterPayload) {
   );
   return data;
 }
+
+export interface LoginPayload {
+  username: string;
+  password: string;
+}
+
+export async function login(payload: LoginPayload) {
+  const { data } = await api.post("/auth/login", payload);
+  return data;
+}
+
+export async function sendVerificationCode(token: string) {
+  const { data } = await api.post(
+    "/auth/send-verification-code",
+    {},
+    { headers: { Authorization: `Bearer ${token}` } },
+  );
+  return data;
+}
+
+export async function verifyEmailCode(token: string, code: string) {
+  const { data } = await api.post(
+    "/auth/verify-email",
+    { code },
+    { headers: { Authorization: `Bearer ${token}` } },
+  );
+  return data;
+}
