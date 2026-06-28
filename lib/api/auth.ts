@@ -48,3 +48,22 @@ export async function verifyEmailCode(token: string, code: string) {
   );
   return data;
 }
+
+export interface UserData {
+  id: string;
+  username: string;
+  email: string;
+  role: string;
+  receiveNotifications: boolean;
+  createdAt: string;
+  updatedAt: string;
+  active: boolean;
+  emailVerified: boolean;
+}
+
+export async function getUser(id: string, token: string) {
+  const { data } = await api.get<UserData>(`/users/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return data;
+}

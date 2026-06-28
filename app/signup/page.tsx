@@ -11,11 +11,12 @@ import { useMutation } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { NotificationPreferenceModal } from "@/components/NotificationPreferenceModal";
 import { register as registerUser } from "@/lib/api/auth";
 import { useToast } from "@/hooks/use-toast";
+import { useUser } from "@/hooks/use-user";
 import { useRouter } from "next/navigation";
 
 interface SignUpForm {
@@ -26,15 +27,21 @@ interface SignUpForm {
 }
 
 export default function SignUpPage() {
+  const { toast } = useToast();
+  const { isLoggedIn } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isLoggedIn) router.push("/");
+  }, [isLoggedIn, router]);
+
   useEffect(() => {
     document.title = "Criar Conta — Annita";
   }, []);
 
-  const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
-  const router = useRouter();
 
   const {
     register,
@@ -57,6 +64,8 @@ export default function SignUpPage() {
     if (/[^a-zA-Z0-9]/.test(password)) score++;
     return score;
   }, [password]);
+
+  const handingRef = useRef(false);
 
   const strengthLabel =
     password.length === 0
@@ -109,6 +118,8 @@ export default function SignUpPage() {
   }
 
   function submitForm(notifications: boolean) {
+    if (handingRef.current) return;
+    handingRef.current = true;
     const data = getValues();
     mutation.mutate(
       {
@@ -119,10 +130,11 @@ export default function SignUpPage() {
       },
       {
         onSuccess: () => {
+          handingRef.current = false;
           toast("success", "Conta criada com sucesso!");
-          router.push("/signin");
         },
         onError: (error) => {
+          handingRef.current = false;
           const message =
             (error as any)?.response?.data?.message ||
             (error as Error)?.message ||
@@ -132,10 +144,6 @@ export default function SignUpPage() {
       },
     );
   }
-
-  const showToast = () => {
-    toast("error", "Hello");
-  };
 
   return (
     <div className="overflow-x-hidden">
@@ -152,7 +160,6 @@ export default function SignUpPage() {
               />
               <p className="text-3xl text-design-3">annita</p>
             </Link>
-            <button onClick={showToast}>hey</button>
             <p className="text-zinc-800 text-[15px]">Crie a sua conta</p>
           </div>
 

@@ -10,12 +10,13 @@ import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { EmailVerificationModal } from "@/components/EmailVerificationModal";
 import { login as loginUser } from "@/lib/api/auth";
 import { decodeToken, setCookie } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { useUser } from "@/hooks/use-user";
 
 interface SignInForm {
   username: string;
@@ -23,16 +24,22 @@ interface SignInForm {
 }
 
 export default function SignInPage() {
+  const { toast } = useToast();
+  const { isLoggedIn } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isLoggedIn) router.push("/");
+  }, [isLoggedIn, router]);
+
   useEffect(() => {
     document.title = "Iniciar Sessão — Annita";
   }, []);
-
-  const { toast } = useToast();
-  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [showVerification, setShowVerification] = useState(false);
   const [pendingToken, setPendingToken] = useState<string | null>(null);
   const [pendingEmail, setPendingEmail] = useState<string>("");
+  const handingRef = useRef(false);
 
   const {
     register,
@@ -47,13 +54,19 @@ export default function SignInPage() {
   });
 
   function onSubmit(data: SignInForm) {
+    if (handingRef.current) return;
+    handingRef.current = true;
     mutation.mutate(data, {
       onSuccess: (response) => {
+        handingRef.current = false;
         const token =
           typeof response === "string"
             ? response
             : (response as any)?.token;
-        if (!token) return;
+        if (!token) {
+          handingRef.current = false;
+          return;
+        }
         const payload = decodeToken(token);
         if (payload && !payload.is_email_verified) {
           setPendingToken(token);
@@ -66,6 +79,7 @@ export default function SignInPage() {
         }
       },
       onError: (error) => {
+        handingRef.current = false;
         const message =
           (error as any)?.response?.data?.message ||
           (error as Error)?.message ||

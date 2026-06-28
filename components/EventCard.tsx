@@ -18,9 +18,14 @@ const pastBadgeStyle = "bg-red-500/10 text-red-700";
 interface EventCardProps {
   event: EventCardData;
   className?: string;
+  type?: "usual" | "presentation";
 }
 
-export function EventCard({ event, className }: EventCardProps) {
+export function EventCard({
+  event,
+  className,
+  type = "usual",
+}: EventCardProps) {
   const [detailOpen, setDetailOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dotsRef = useRef<HTMLButtonElement | null>(null);
@@ -44,16 +49,18 @@ export function EventCard({ event, className }: EventCardProps) {
             <p className="text-white text-sm">{event.category}</p>
             <div className="flex items-center gap-4">
               <p className="text-white text-sm">{event.timeAgo}</p>
-              <button
-                ref={dotsRef}
-                className="text-white rotate-90 opacity-50 hover:opacity-100 transition-opacity relative"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setDropdownOpen((prev) => !prev);
-                }}
-              >
-                <RiMore2Fill />
-              </button>
+              {type === "usual" && (
+                <button
+                  ref={dotsRef}
+                  className="text-white rotate-90 opacity-50 hover:opacity-100 transition-opacity relative"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setDropdownOpen((prev) => !prev);
+                  }}
+                >
+                  <RiMore2Fill />
+                </button>
+              )}
             </div>
           </div>
         </header>
@@ -97,12 +104,14 @@ export function EventCard({ event, className }: EventCardProps) {
               </p>
             </div>
             <div>
-              <button
-                className="text-base transition-all hover:opacity-75 text-white bg-design-2 border-design-2 border rounded-lg px-3 py-1.5 font-normal flex items-center gap-2"
-                onClick={(e) => e.stopPropagation()}
-              >
-                {event.buttonLabel}
-              </button>
+              {type === "usual" && (
+                <button
+                  className="text-base transition-all hover:opacity-75 text-white bg-design-2 border-design-2 border rounded-lg px-3 py-1.5 font-normal flex items-center gap-2"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {event.buttonLabel}
+                </button>
+              )}
             </div>
           </footer>
         </div>

@@ -1,3 +1,5 @@
+"use client";
+
 import {
   RiEqualizerLine,
   RiMailSendFill,
@@ -9,9 +11,12 @@ import { EventCard } from "@/components/EventCard";
 import { Footer } from "@/components/Footer";
 import { Nav } from "@/components/Nav";
 import { events } from "@/data/events";
+import { useUser } from "@/hooks/use-user";
 import Link from "next/link";
 
 export default function Home() {
+  const { isLoggedIn, user, isLoading } = useUser();
+
   return (
     <div className="overflow-x-hidden relative">
       <Nav />
@@ -69,7 +74,7 @@ export default function Home() {
           <div className="relative mt-20">
             <div className="flex items-center ms-20 gap-2 relative justify-center">
               {events.slice(0, 3).map((event) => (
-                <EventCard key={event.id} event={event} />
+                <EventCard type="presentation" key={event.id} event={event} />
               ))}
             </div>
           </div>
