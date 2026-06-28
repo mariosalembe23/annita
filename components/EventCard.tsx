@@ -101,7 +101,6 @@ export function EventCard({ event, className }: EventCardProps) {
                 className="text-base transition-all hover:opacity-75 text-white bg-design-2 border-design-2 border rounded-lg px-3 py-1.5 font-normal flex items-center gap-2"
                 onClick={(e) => e.stopPropagation()}
               >
-                <RiCursorHand className="size-4" />
                 {event.buttonLabel}
               </button>
             </div>

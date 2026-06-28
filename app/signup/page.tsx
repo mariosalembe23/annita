@@ -7,16 +7,135 @@ import {
   RiMailLine,
   RiUser6Line,
 } from "@remixicon/react";
+import { useMutation } from "@tanstack/react-query";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+import { NotificationPreferenceModal } from "@/components/NotificationPreferenceModal";
+import { register as registerUser } from "@/lib/api/auth";
+import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
+
+interface SignUpForm {
+  username: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
 
 export default function SignUpPage() {
   useEffect(() => {
     document.title = "Criar Conta — Annita";
   }, []);
+
+  const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
+  const router = useRouter();
+
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    watch,
+    formState: { errors },
+  } = useForm<SignUpForm>({
+    mode: "onChange",
+  });
+
+  const password = watch("password") || "";
+
+  const passwordStrength = useMemo(() => {
+    let score = 0;
+    if (password.length >= 8) score++;
+    if (/[a-z]/.test(password)) score++;
+    if (/[A-Z]/.test(password)) score++;
+    if (/[0-9]/.test(password)) score++;
+    if (/[^a-zA-Z0-9]/.test(password)) score++;
+    return score;
+  }, [password]);
+
+  const strengthLabel =
+    password.length === 0
+      ? ""
+      : passwordStrength <= 2
+        ? "Fraca"
+        : passwordStrength <= 3
+          ? "Média"
+          : "Forte";
+
+  const strengthColors =
+    password.length === 0
+      ? []
+      : passwordStrength <= 2
+        ? ["bg-red-500", "bg-gray-200", "bg-gray-200"]
+        : passwordStrength <= 3
+          ? ["bg-amber-500", "bg-amber-500", "bg-gray-200"]
+          : ["bg-green-500", "bg-green-500", "bg-green-500"];
+
+  const strengthTextColor =
+    password.length === 0
+      ? ""
+      : passwordStrength <= 2
+        ? "text-red-600"
+        : passwordStrength <= 3
+          ? "text-amber-600"
+          : "text-green-600";
+
+  const mutation = useMutation({
+    mutationFn: (data: {
+      username: string;
+      email: string;
+      password: string;
+      receiveNotifications: boolean;
+    }) => registerUser(data),
+  });
+
+  function onSubmit() {
+    setShowNotificationModal(true);
+  }
+
+  function handleConfirmNotifications() {
+    setShowNotificationModal(false);
+    submitForm(true);
+  }
+
+  function handleDeclineNotifications() {
+    setShowNotificationModal(false);
+    submitForm(false);
+  }
+
+  function submitForm(notifications: boolean) {
+    const data = getValues();
+    mutation.mutate(
+      {
+        username: data.username,
+        email: data.email,
+        password: data.password,
+        receiveNotifications: notifications,
+      },
+      {
+        onSuccess: () => {
+          toast("success", "Conta criada com sucesso!");
+          router.push("/signin");
+        },
+        onError: (error) => {
+          const message =
+            (error as any)?.response?.data?.message ||
+            (error as Error)?.message ||
+            "Erro ao criar conta";
+          toast("error", message);
+        },
+      },
+    );
+  }
+
+  const showToast = () => {
+    toast("error", "Hello");
+  };
 
   return (
     <div className="overflow-x-hidden">
@@ -33,10 +152,14 @@ export default function SignUpPage() {
               />
               <p className="text-3xl text-design-3">annita</p>
             </Link>
+            <button onClick={showToast}>hey</button>
             <p className="text-zinc-800 text-[15px]">Crie a sua conta</p>
           </div>
 
-          <form className="flex flex-col gap-4">
+          <form
+            className="flex flex-col gap-4"
+            onSubmit={handleSubmit(onSubmit)}
+          >
             <button
               type="button"
               className="w-full flex items-center justify-center gap-3 px-3 py-2.5 rounded-lg border border-gray-200 text-base font-normal text-zinc-900 hover:bg-gray-50 transition-colors"
@@ -57,34 +180,95 @@ export default function SignUpPage() {
             </div>
 
             <div>
-              <div className="flex transition-all focus-within:ring-4 focus-within:ring-blue-100 focus-within:border-blue-400 items-center px-3 py-2.5 rounded-lg border border-gray-200">
+              <div
+                className={`flex transition-all focus-within:ring-4 items-center px-3 py-2.5 rounded-lg border ${
+                  errors.username
+                    ? "border-red-400 focus-within:ring-red-100 focus-within:border-red-400"
+                    : "focus-within:ring-blue-100 focus-within:border-blue-400 border-gray-200"
+                }`}
+              >
                 <RiUser6Line className="size-5 text-zinc-400 shrink-0" />
                 <input
                   className="w-full outline-none ps-2 text-[15px]"
                   type="text"
-                  placeholder="Nome Completo"
+                  placeholder="Nome de Utilizador"
+                  {...register("username", {
+                    required: "O nome de utilizador é obrigatório",
+                    minLength: {
+                      value: 3,
+                      message: "Mínimo de 3 caracteres",
+                    },
+                    maxLength: {
+                      value: 15,
+                      message: "Máximo de 15 caracteres",
+                    },
+                    pattern: {
+                      value: /^[a-z0-9_]+$/,
+                      message:
+                        "Apenas letras minúsculas, números e _ são permitidos",
+                    },
+                    onChange: (e) => {
+                      e.target.value = e.target.value.toLowerCase();
+                    },
+                  })}
                 />
               </div>
+              {errors.username && (
+                <p className="text-red-500 text-sm mt-3">
+                  {errors.username.message}
+                </p>
+              )}
             </div>
 
             <div>
-              <div className="flex transition-all focus-within:ring-4 focus-within:ring-blue-100 focus-within:border-blue-400 items-center px-3 py-2.5 rounded-lg border border-gray-200">
+              <div
+                className={`flex transition-all focus-within:ring-4 items-center px-3 py-2.5 rounded-lg border ${
+                  errors.email
+                    ? "border-red-400 focus-within:ring-red-100 focus-within:border-red-400"
+                    : "focus-within:ring-blue-100 focus-within:border-blue-400 border-gray-200"
+                }`}
+              >
                 <RiMailLine className="size-5 text-zinc-400 shrink-0" />
                 <input
                   className="w-full outline-none ps-2 text-[15px]"
                   type="email"
                   placeholder="Email"
+                  {...register("email", {
+                    required: "O email é obrigatório",
+                    pattern: {
+                      value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                      message: "Formato de email inválido",
+                    },
+                  })}
                 />
               </div>
+              {errors.email && (
+                <p className="text-red-500 text-sm mt-3">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
 
             <div>
-              <div className="flex transition-all focus-within:ring-4 focus-within:ring-blue-100 focus-within:border-blue-400 items-center px-3 py-2.5 rounded-lg border border-gray-200">
+              <div
+                className={`flex transition-all focus-within:ring-4 items-center px-3 py-2.5 rounded-lg border ${
+                  errors.password
+                    ? "border-red-400 focus-within:ring-red-100 focus-within:border-red-400"
+                    : "focus-within:ring-blue-100 focus-within:border-blue-400 border-gray-200"
+                }`}
+              >
                 <RiLockLine className="size-5 text-zinc-400 shrink-0" />
                 <input
                   className="w-full outline-none ps-2 text-[15px]"
                   type={showPassword ? "text" : "password"}
                   placeholder="Palavra-chave"
+                  {...register("password", {
+                    required: "A palavra-chave é obrigatória",
+                    minLength: {
+                      value: 6,
+                      message: "Mínimo de 6 caracteres",
+                    },
+                  })}
                 />
                 <button
                   type="button"
@@ -98,15 +282,51 @@ export default function SignUpPage() {
                   )}
                 </button>
               </div>
+              {errors.password && (
+                <p className="text-red-500 text-sm mt-3">
+                  {errors.password.message}
+                </p>
+              )}
+
+              {password.length > 0 && (
+                <div className="mt-3 space-y-1.5">
+                  <div className="flex gap-1.5">
+                    {[0, 1, 2].map((i) => (
+                      <motion.div
+                        key={i}
+                        initial={{ width: 0, opacity: 0 }}
+                        animate={{ width: "100%", opacity: 1 }}
+                        transition={{ duration: 0.3, delay: i * 0.08 }}
+                        className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${strengthColors[i]}`}
+                      />
+                    ))}
+                  </div>
+                  <p className={`text-xs font-medium ${strengthTextColor}`}>
+                    {strengthLabel}
+                  </p>
+                </div>
+              )}
             </div>
 
             <div>
-              <div className="flex transition-all focus-within:ring-4 focus-within:ring-blue-100 focus-within:border-blue-400 items-center px-3 py-2.5 rounded-lg border border-gray-200">
+              <div
+                className={`flex transition-all focus-within:ring-4 items-center px-3 py-2.5 rounded-lg border ${
+                  errors.confirmPassword
+                    ? "border-red-400 focus-within:ring-red-100 focus-within:border-red-400"
+                    : "focus-within:ring-blue-100 focus-within:border-blue-400 border-gray-200"
+                }`}
+              >
                 <RiLockLine className="size-5 text-zinc-400 shrink-0" />
                 <input
                   className="w-full outline-none ps-2 text-[15px]"
                   type={showConfirmPassword ? "text" : "password"}
                   placeholder="Confirmar palavra-chave"
+                  {...register("confirmPassword", {
+                    required: "Confirma a palavra-chave",
+                    validate: (value) =>
+                      value === getValues("password") ||
+                      "As palavras-chave não coincidem",
+                  })}
                 />
                 <button
                   type="button"
@@ -120,13 +340,19 @@ export default function SignUpPage() {
                   )}
                 </button>
               </div>
+              {errors.confirmPassword && (
+                <p className="text-red-500 text-sm mt-3">
+                  {errors.confirmPassword.message}
+                </p>
+              )}
             </div>
 
             <button
               type="submit"
-              className="w-full text-base transition-all hover:opacity-75 text-white bg-design-2 border-design-2 border rounded-lg px-3 py-2.5 font-normal flex items-center justify-center gap-2"
+              disabled={mutation.isPending}
+              className="w-full text-base transition-all hover:opacity-75 disabled:opacity-50 text-white bg-design-2 border-design-2 border rounded-lg px-3 py-2.5 font-normal flex items-center justify-center gap-2"
             >
-              Criar conta
+              {mutation.isPending ? "A criar conta..." : "Criar conta"}
             </button>
           </form>
 
@@ -138,6 +364,13 @@ export default function SignUpPage() {
           </p>
         </div>
       </main>
+
+      <NotificationPreferenceModal
+        open={showNotificationModal}
+        onClose={handleDeclineNotifications}
+        onConfirm={handleConfirmNotifications}
+        loading={mutation.isPending}
+      />
     </div>
   );
 }
