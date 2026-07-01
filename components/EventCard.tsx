@@ -37,7 +37,7 @@ export function EventCard({
           "h-96 bg-transparent shrink-0 overflow-hidden flex flex-col justify-between border border-gray-200 shadow-2xl shadow-gray-200 z-20 rounded-3xl w-80 cursor-pointer transition-all hover:shadow-gray-300 hover:-translate-y-0.5",
           className,
         )}
-        onClick={() => setDetailOpen(true)}
+        onClick={() => (type === "usual" ? setDetailOpen(true) : null)}
       >
         <header
           className={cn(
