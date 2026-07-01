@@ -179,12 +179,12 @@ const badgeLabelFromStatus = (status: string) => {
   return status;
 };
 
-const modalityLabel = (modality: string[]) => {
-  if (modality.includes("PRESENTIAL") && modality.length === 1)
-    return "Presencial";
-  if (modality.includes("REMOTE") && modality.length === 1) return "Remoto";
-  if (modality.includes("HYBRID")) return "Híbrido";
-  return modality.join(", ");
+const modalityLabel = (modality: string | string[]) => {
+  const list = Array.isArray(modality) ? modality : [modality];
+  if (list.includes("PRESENTIAL") && list.length === 1) return "Presencial";
+  if (list.includes("REMOTE") && list.length === 1) return "Remoto";
+  if (list.includes("HYBRID")) return "Híbrido";
+  return list.join(", ");
 };
 
 export function adaptApiEvent(apiEvent: ApiEvent): EventCardData {

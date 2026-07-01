@@ -121,8 +121,6 @@ export function EventCard({
         open={dropdownOpen}
         onClose={() => setDropdownOpen(false)}
         onViewDetails={() => setDetailOpen(true)}
-        onEdit={() => {}}
-        onDelete={() => {}}
         onReport={() => {}}
         triggerRef={dotsRef}
       />

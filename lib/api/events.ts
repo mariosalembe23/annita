@@ -89,6 +89,24 @@ export async function createEvent(payload: CreateEventPayload, token: string) {
 
 export type UpdateEventPayload = CreateEventPayload;
 
+export async function approveEvent(id: string, token: string) {
+  const { data } = await api.put<ApiEvent>(
+    `/events/${id}/approve`,
+    {},
+    { headers: { Authorization: `Bearer ${token}` } },
+  );
+  return data;
+}
+
+export async function rejectEvent(id: string, token: string) {
+  const { data } = await api.put<ApiEvent>(
+    `/events/${id}/reject`,
+    {},
+    { headers: { Authorization: `Bearer ${token}` } },
+  );
+  return data;
+}
+
 export async function updateEvent(
   id: string,
   payload: UpdateEventPayload,

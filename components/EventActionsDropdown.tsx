@@ -2,13 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  RiEyeLine,
-  RiEditLine,
-  RiDeleteBinLine,
-  RiFlagLine,
-  RiFunctionAddFill,
-} from "@remixicon/react";
+import { RiFlagLine, RiFunctionAddFill } from "@remixicon/react";
 
 interface ActionOption {
   key: string;
@@ -22,8 +16,6 @@ interface EventActionsDropdownProps {
   open: boolean;
   onClose: () => void;
   onViewDetails: () => void;
-  onEdit: () => void;
-  onDelete: () => void;
   onReport: () => void;
   triggerRef: React.RefObject<HTMLButtonElement | null>;
 }
@@ -32,8 +24,6 @@ export function EventActionsDropdown({
   open,
   onClose,
   onViewDetails,
-  onEdit,
-  onDelete,
   onReport,
   triggerRef,
 }: EventActionsDropdownProps) {
@@ -64,19 +54,6 @@ export function EventActionsDropdown({
       label: "Ver detalhes",
       icon: <RiFunctionAddFill className="size-4" />,
       onClick: onViewDetails,
-    },
-    {
-      key: "edit",
-      label: "Editar",
-      icon: <RiEditLine className="size-4" />,
-      onClick: onEdit,
-    },
-    {
-      key: "delete",
-      label: "Eliminar",
-      icon: <RiDeleteBinLine className="size-4" />,
-      onClick: onDelete,
-      danger: true,
     },
     {
       key: "report",
