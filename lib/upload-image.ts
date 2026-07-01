@@ -1,21 +1,24 @@
 import { createClient } from "@supabase/supabase-js";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-);
+const BUCKET = "annita-events";
 
-const BUCKET = "annita-events"; // ✅ um só lugar para mudar
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  );
+}
 
 const sanitizeFilename = (filename: string): string => {
   return filename
-    .normalize("NFD") // separa acentos das letras
-    .replace(/[\u0300-\u036f]/g, "") // remove acentos
-    .replace(/[^a-zA-Z0-9._-]/g, "_") // substitui caracteres inválidos por _
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-zA-Z0-9._-]/g, "_")
     .toLowerCase();
 };
 
 export const uploadEventImage = async (file: File): Promise<string> => {
+  const supabase = getSupabase();
   const sanitizedName = sanitizeFilename(file.name);
   const filename = `events/${Date.now()}_${sanitizedName}`;
 
@@ -26,13 +29,14 @@ export const uploadEventImage = async (file: File): Promise<string> => {
   if (error) throw new Error(error.message);
 
   const { data } = supabase.storage
-    .from(BUCKET) // ✅ mesmo bucket
+    .from(BUCKET)
     .getPublicUrl(filename);
 
   return data.publicUrl;
 };
 
 export const uploadImage = async (file: File): Promise<string> => {
+  const supabase = getSupabase();
   const sanitizedName = sanitizeFilename(file.name);
   const filename = `events/${Date.now()}_${sanitizedName}`;
 
