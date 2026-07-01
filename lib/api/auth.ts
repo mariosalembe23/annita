@@ -14,10 +14,7 @@ export interface RegisterResponse {
 }
 
 export async function register(payload: RegisterPayload) {
-  const { data } = await api.post<RegisterResponse>(
-    "/auth/register",
-    payload
-  );
+  const { data } = await api.post<RegisterResponse>("/auth/register", payload);
   return data;
 }
 
@@ -53,7 +50,7 @@ export interface UserData {
   id: string;
   username: string;
   email: string;
-  role: string;
+  role: "CONTRIBUTOR" | "MODERATOR" | "ADMIN";
   receiveNotifications: boolean;
   createdAt: string;
   updatedAt: string;
