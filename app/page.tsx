@@ -103,9 +103,9 @@ export default function Home() {
             <motion.footer variants={item} className="flex items-center gap-12">
               <div className="flex flex-col gap-1">
                 <p className="flex items-center text-gray-500 gap-0.5 mt-10">
-                  Visitas
+                  Inscritos
                 </p>
-                <p className="text-xl text-black gap-0.5">10K</p>
+                <p className="text-xl text-black gap-0.5">2K</p>
               </div>
               <div className="flex flex-col gap-1">
                 <p className="flex items-center text-gray-500 gap-0.5 mt-10">

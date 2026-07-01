@@ -22,7 +22,11 @@ export function useUser() {
     }
   }, []);
 
-  const { data: user, isLoading, error } = useQuery({
+  const {
+    data: user,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["user", session?.userId],
     queryFn: () => getUser(session!.userId, session!.token),
     enabled: !!session?.userId,

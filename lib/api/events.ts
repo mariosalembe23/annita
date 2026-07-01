@@ -60,3 +60,28 @@ export async function getEvents(filters: EventsFilters = {}) {
   const { data } = await api.get<EventsResponse>("/events", { params });
   return data;
 }
+
+export interface CreateEventPayload {
+  title: string;
+  description: string;
+  link: string;
+  categoryId: string;
+  modality: EventModality;
+  startDate: string;
+  type: EventType;
+  coverImage: string;
+}
+
+export async function createEvent(payload: CreateEventPayload, token: string) {
+  const { data } = await api.post<ApiEvent>("/events", payload, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return data;
+}
+
+export async function getCategories(token: string) {
+  const { data } = await api.get<ApiEventCategory[]>("/categories", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return data;
+}

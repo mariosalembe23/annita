@@ -11,63 +11,49 @@ import {
   RiImageAddLine,
   RiTeamLine,
 } from "@remixicon/react";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
+import { format } from "date-fns";
+import { ChevronDownIcon, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { PublishConfirmationModal } from "@/components/PublishConfirmationModal";
-import { X } from "lucide-react";
+import { createEvent, getCategories } from "@/lib/api/events";
+import { uploadEventCover } from "@/lib/supabase";
+import { useToast } from "@/hooks/use-toast";
+import { useUser } from "@/hooks/use-user";
 
-const categoryGroups = [
-  {
-    label: "Formação",
-    items: [
-      "Palestra / Talk",
-      "Workshop",
-      "Webinar",
-      "Bootcamp",
-      "Curso intensivo",
-    ],
-  },
-  {
-    label: "Competição & Inovação",
-    items: [
-      "Hackathon",
-      "Maratona de dados (Datathon)",
-      "Competição de startups",
-      "Pitch de ideias",
-    ],
-  },
-  {
-    label: "Networking & Comunidade",
-    items: [
-      "Meetup",
-      "Conferência",
-      "Summit",
-      "Tech Fest",
-      "Comunidade open source",
-    ],
-  },
-  {
-    label: "Negócios & Empreendedorismo",
-    items: [
-      "Demo Day",
-      "Lançamento de produto",
-      "Feira de tecnologia",
-      "Expo tech",
-    ],
-  },
-  {
-    label: "Especializadas",
-    items: [
-      "CTF",
-      "Game Jam",
-      "AI & Machine Learning",
-      "Blockchain & Web3",
-      "Robótica & Hardware",
-    ],
-  },
-];
+interface CreateEventForm {
+  title: string;
+  description: string;
+  link: string;
+  categoryId: string;
+  coverImage: File | null;
+  modality: string;
+  startDate: Date | null;
+  type: string;
+}
+
+const MODALITY_MAP: Record<string, string> = {
+  presencial: "PRESENTIAL",
+  digital: "REMOTE",
+  hibrido: "HYBRID",
+};
+
+const TYPE_MAP: Record<string, string> = {
+  gratuito: "FREE",
+  pago: "PAID",
+};
 
 const modalities = [
   { value: "presencial", label: "Presencial", icon: RiGroup3Line },
@@ -87,41 +73,104 @@ const STEPS = [
   { num: 4, title: "Data" },
 ];
 
-const STEP_INFO = [
-  {
-    title: "Informação básica",
-    desc: "Conta-nos o nome e os detalhes do teu evento",
-  },
-  { title: "Categorização", desc: "Define a categoria e o link do evento" },
-  { title: "Apresentação", desc: "Adiciona imagens e escolhe a modalidade" },
-  { title: "Finalização", desc: "Define a data e o tipo de ingresso" },
-];
-
 export default function CreateEventPage() {
+  const { toast } = useToast();
+  const { user, token, isLoggedIn, isLoading } = useUser();
+  const router = useRouter();
+
   useEffect(() => {
     document.title = "Criar Evento — Annita";
   }, []);
 
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("");
-  const [categoryOpen, setCategoryOpen] = useState(false);
-  const [images, setImages] = useState<File[]>([]);
-  const [modality, setModality] = useState("");
-  const [date, setDate] = useState("");
-  const [type, setType] = useState("");
-  const [eventUrl, setEventUrl] = useState("");
-  const [showPublishModal, setShowPublishModal] = useState(false);
-  const [[step, direction], setStep] = useState([0, 0]);
-  const categoryRef = useRef<HTMLDivElement>(null);
-  const descriptionRef = useRef<HTMLTextAreaElement>(null);
+  useEffect(() => {
+    if (!isLoading && !isLoggedIn) router.push("/signin");
+  }, [isLoading, isLoggedIn, router]);
 
-  function resizeDescription() {
-    const el = descriptionRef.current;
-    if (!el) return;
-    el.style.height = "auto";
-    el.style.height = `${Math.min(el.scrollHeight, 200)}px`;
-  }
+  const [[step, direction], setStep] = useState([0, 0]);
+  const [categoryOpen, setCategoryOpen] = useState(false);
+  const [showPublishModal, setShowPublishModal] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const categoryRef = useRef<HTMLDivElement>(null);
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    trigger,
+    formState: { errors },
+  } = useForm<CreateEventForm>({
+    mode: "onChange",
+    defaultValues: {
+      title: "",
+      description: "",
+      link: "",
+      categoryId: "",
+      coverImage: null,
+      modality: "",
+      startDate: null,
+      type: "",
+    },
+  });
+
+  const categoryId = watch("categoryId");
+  const modality = watch("modality");
+  const type = watch("type");
+  const startDate = watch("startDate");
+  const coverImage = watch("coverImage");
+
+  useEffect(() => {
+    register("startDate", { required: "A data do evento é obrigatória" });
+    register("type", { required: "O tipo de ingresso é obrigatório" });
+    register("modality", { required: "A modalidade é obrigatória" });
+    register("categoryId", { required: "A categoria é obrigatória" });
+  }, [register]);
+
+  const { data } = useQuery({
+    queryKey: ["categories"],
+    queryFn: () => getCategories(token!),
+    enabled: !!token,
+  });
+
+  const categories = Array.isArray(data) ? data : [];
+
+  const createMutation = useMutation({
+    mutationFn: async (formData: CreateEventForm) => {
+      if (!token || !user) throw new Error("Não autenticado");
+
+      let coverImageUrl = "";
+      if (formData.coverImage) {
+        coverImageUrl = await uploadEventCover(formData.coverImage, user.id);
+      }
+
+      const payload = {
+        title: formData.title.trim(),
+        description: formData.description.trim(),
+        link: formData.link.trim(),
+        categoryId: formData.categoryId,
+        modality: MODALITY_MAP[formData.modality] as "PRESENTIAL" | "REMOTE" | "HYBRID",
+        startDate: (formData.startDate as Date).toISOString(),
+        type: TYPE_MAP[formData.type] as "PAID" | "FREE",
+        coverImage: coverImageUrl,
+      };
+
+      return createEvent(payload, token);
+    },
+    onSuccess: () => {
+      toast("success", "Evento publicado com sucesso!");
+      setShowPublishModal(false);
+      router.push("/events");
+    },
+    onError: (error: Error) => {
+      const axiosError = error as { response?: { data?: { message?: string } } };
+      const message =
+        axiosError?.response?.data?.message ||
+        error.message ||
+        "Erro ao publicar evento";
+      toast("error", message);
+      setShowPublishModal(false);
+    },
+  });
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -140,23 +189,44 @@ export default function CreateEventPage() {
     setCategoryOpen(false);
   }, [step]);
 
-  function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const files = Array.from(e.target.files || []);
-    const remaining = 2 - images.length;
-    setImages((prev) => [...prev, ...files.slice(0, remaining)]);
+  function resizeDescription(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    const el = e.target;
+    el.style.height = "auto";
+    el.style.height = `${Math.min(el.scrollHeight, 200)}px`;
   }
 
-  function removeImage(index: number) {
-    setImages((prev) => prev.filter((_, i) => i !== index));
+  function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setValue("coverImage", file, { shouldValidate: true });
+    setPreviewUrl(URL.createObjectURL(file));
+  }
+
+  function removeImage() {
+    setValue("coverImage", null, { shouldValidate: true });
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    setPreviewUrl(null);
   }
 
   function handlePublish() {
     setShowPublishModal(false);
+    handleSubmit((data) => createMutation.mutate(data))();
   }
 
   function goToStep(next: number) {
     if (next < 0 || next > STEPS.length - 1) return;
     setStep([next, next > step ? 1 : -1]);
+  }
+
+  async function handleNext() {
+    let fields: (keyof CreateEventForm)[] = [];
+    if (step === 0) fields = ["title", "description"];
+    else if (step === 1) fields = ["link", "categoryId"];
+    else if (step === 2) fields = ["modality"];
+    else if (step === 3) fields = ["startDate", "type"];
+
+    const valid = await trigger(fields);
+    if (valid) goToStep(step + 1);
   }
 
   const slideVariants = {
@@ -168,19 +238,6 @@ export default function CreateEventPage() {
   return (
     <div className="overflow-x-hidden h-dvh bg-[#f5f5f5]">
       <main className="h-screen grid grid-cols-1">
-        {/* <header className="bg-design-2/10 h-full flex items-center justify-center">
-          <div>
-            <Link href={"/"} className="flex items-center gap-2">
-              <Image
-                src={"/img-logo/simple-logo.svg"}
-                alt={"Logo"}
-                width={100}
-                className="w-52 mt-1"
-                height={100}
-              />
-            </Link>
-          </div>
-        </header> */}
         <section className="h-full overflow-y-auto py-20 relative w-full">
           <button
             onClick={() => window.history.back()}
@@ -216,11 +273,7 @@ export default function CreateEventPage() {
               </p>
             </header>
 
-            {/* Progress bar */}
             <div className="flex items-center gap-3 mb-6">
-              {/* <span className="text-xs font-semibold text-design-2 bg-design-2/10 px-2.5 py-1 rounded-full tabular-nums">
-                {step + 1} / {STEPS.length}
-              </span> */}
               <div className="flex-1 h-1.5 bg-gray-200 rounded-full overflow-hidden">
                 <motion.div
                   className="h-full bg-linear-to-r from-design-1 to-design-2 rounded-full"
@@ -228,76 +281,8 @@ export default function CreateEventPage() {
                   transition={{ duration: 0.5, ease: "easeOut" }}
                 />
               </div>
-              {/* <span className="text-xs text-zinc-400 font-medium tabular-nums">
-                {Math.round(((step + 1) / STEPS.length) * 100)}%
-              </span> */}
             </div>
 
-            {/* Step circles */}
-            {/* <div className="flex items-center mb-7">
-              {STEPS.map((s, i) => (
-                <div key={s.num} className="flex items-center flex-1">
-                  <button
-                    type="button"
-                    onClick={() => goToStep(i)}
-                    className={`relative flex items-center justify-center size-9 rounded-full border-2 text-sm font-medium transition-all duration-300 bg-white z-10 ${
-                      step > i
-                        ? "bg-design-2 border-design-2 text-white shadow-sm shadow-design-2/30"
-                        : step === i
-                          ? "border-design-2 text-design-2 shadow-sm"
-                          : "border-gray-200 text-zinc-400 hover:border-gray-300"
-                    }`}
-                  >
-                    {step > i ? (
-                      <svg
-                        className="size-4"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth={3}
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
-                    ) : (
-                      s.num
-                    )}
-                  </button>
-                  {i < STEPS.length - 1 && (
-                    <div className="flex-1 h-0.5 bg-gray-200 rounded-full mx-1.5">
-                      <div
-                        className="h-full bg-design-2 rounded-full transition-all duration-500 ease-out"
-                        style={{ width: step > i ? "100%" : "0%" }}
-                      />
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div> */}
-
-            {/* Step labels */}
-            {/* <div className="flex items-center mb-8">
-              {STEPS.map((s, i) => (
-                <div key={s.num} className="flex-1">
-                  <span
-                    className={`text-xs font-medium block ${
-                      i === 0
-                        ? "text-left"
-                        : i === STEPS.length - 1
-                          ? "text-right"
-                          : "text-center"
-                    } ${
-                      step >= i ? "text-design-2" : "text-zinc-400"
-                    } transition-colors`}
-                  >
-                    {s.title}
-                  </span>
-                </div>
-              ))}
-            </div> */}
-
-            {/* Animated step content */}
             <AnimatePresence mode="wait" custom={direction}>
               <motion.div
                 key={step}
@@ -308,60 +293,72 @@ export default function CreateEventPage() {
                 exit="exit"
                 transition={{ duration: 0.28, ease: "easeInOut" }}
               >
-                {/* <div className="mb-5">
-                  <p className="text-sm font-medium text-zinc-900">
-                    {STEP_INFO[step].title}
-                  </p>
-                  <p className="text-xs text-zinc-400 mt-0.5">
-                    {STEP_INFO[step].desc}
-                  </p>
-                </div> */}
-
-                <form
-                  className="flex flex-col gap-5"
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    if (step < STEPS.length - 1) {
-                      goToStep(step + 1);
-                    } else {
-                      setShowPublishModal(true);
-                    }
-                  }}
-                >
+                <div className="flex flex-col gap-5">
                   {step === 0 && (
                     <>
                       <div>
                         <label className="text-sm font-medium text-zinc-700 mb-2 block">
                           Título do evento
                         </label>
-                        <div className="flex bg-white transition-all focus-within:ring-4 focus-within:ring-blue-100 focus-within:border-blue-400 items-center px-3 py-2.5 rounded-lg border border-gray-200">
+                        <div
+                          className={`flex bg-white transition-all focus-within:ring-4 items-center px-3 py-2.5 rounded-lg border ${
+                            errors.title
+                              ? "border-red-400 focus-within:ring-red-100 focus-within:border-red-400"
+                              : "focus-within:ring-blue-100 focus-within:border-blue-400 border-gray-200"
+                          }`}
+                        >
                           <input
                             className="w-full outline-none text-[15px]"
                             type="text"
                             placeholder="Ex.: Hackathon Angola 2026"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
+                            {...register("title", {
+                              required: "O título é obrigatório",
+                              minLength: {
+                                value: 3,
+                                message: "O título deve ter pelo menos 3 caracteres",
+                              },
+                            })}
                           />
                         </div>
+                        {errors.title && (
+                          <p className="text-red-500 text-sm mt-2">
+                            {errors.title.message}
+                          </p>
+                        )}
                       </div>
                       <div>
                         <label className="text-sm font-medium text-zinc-700 mb-2 block">
                           Descrição
                         </label>
-                        <div className="flex bg-white transition-all focus-within:ring-4 focus-within:ring-blue-100 focus-within:border-blue-400 items-start px-3 py-2.5 rounded-lg border border-gray-200">
+                        <div
+                          className={`flex bg-white transition-all focus-within:ring-4 items-start px-3 py-2.5 rounded-lg border ${
+                            errors.description
+                              ? "border-red-400 focus-within:ring-red-100 focus-within:border-red-400"
+                              : "focus-within:ring-blue-100 focus-within:border-blue-400 border-gray-200"
+                          }`}
+                        >
                           <textarea
-                            ref={descriptionRef}
                             className="w-full outline-none text-[15px] resize-none overflow-y-auto"
                             rows={3}
                             placeholder="Descreve o teu evento..."
-                            value={description}
-                            onChange={(e) => {
-                              setDescription(e.target.value);
-                              resizeDescription();
-                            }}
                             style={{ maxHeight: "200px" }}
+                            {...register("description", {
+                              required: "A descrição é obrigatória",
+                              minLength: {
+                                value: 10,
+                                message: "A descrição deve ter pelo menos 10 caracteres",
+                              },
+                              onChange: (e) => {
+                                resizeDescription(e);
+                              },
+                            })}
                           />
                         </div>
+                        {errors.description && (
+                          <p className="text-red-500 text-sm mt-2">
+                            {errors.description.message}
+                          </p>
+                        )}
                       </div>
                     </>
                   )}
@@ -372,16 +369,32 @@ export default function CreateEventPage() {
                         <label className="text-sm font-medium text-zinc-700 mb-2 block">
                           URL do evento
                         </label>
-                        <div className="flex transition-all bg-white focus-within:ring-4 focus-within:ring-blue-100 focus-within:border-blue-400 items-center px-3 py-2.5 rounded-lg border border-gray-200">
+                        <div
+                          className={`flex transition-all bg-white focus-within:ring-4 items-center px-3 py-2.5 rounded-lg border ${
+                            errors.link
+                              ? "border-red-400 focus-within:ring-red-100 focus-within:border-red-400"
+                              : "focus-within:ring-blue-100 focus-within:border-blue-400 border-gray-200"
+                          }`}
+                        >
                           <RiGlobalLine className="size-5 text-zinc-400 shrink-0" />
                           <input
                             className="w-full outline-none ps-2 text-[15px]"
                             type="url"
                             placeholder="https://"
-                            value={eventUrl}
-                            onChange={(e) => setEventUrl(e.target.value)}
+                            {...register("link", {
+                              required: "O URL é obrigatório",
+                              pattern: {
+                                value: /^https?:\/\/.+/,
+                                message: "Insere um URL válido (http:// ou https://)",
+                              },
+                            })}
                           />
                         </div>
+                        {errors.link && (
+                          <p className="text-red-500 text-sm mt-2">
+                            {errors.link.message}
+                          </p>
+                        )}
                       </div>
                       <div>
                         <label className="text-sm font-medium text-zinc-700 mb-2 block">
@@ -391,14 +404,21 @@ export default function CreateEventPage() {
                           <button
                             type="button"
                             onClick={() => setCategoryOpen(!categoryOpen)}
-                            className="flex bg-white w-full transition-all focus:ring-4 focus:ring-blue-100 focus:border-blue-400 items-center justify-between px-3 py-2.5 rounded-lg border border-gray-200 text-[15px] text-left"
+                            className={`flex bg-white w-full transition-all focus:ring-4 items-center justify-between px-3 py-2.5 rounded-lg border text-[15px] text-left ${
+                              errors.categoryId
+                                ? "border-red-400 focus:ring-red-100"
+                                : "focus:ring-blue-100 focus:border-blue-400 border-gray-200"
+                            }`}
                           >
                             <span
                               className={
-                                category ? "text-zinc-900" : "text-zinc-400"
+                                categoryId ? "text-zinc-900" : "text-zinc-400"
                               }
                             >
-                              {category || "Seleciona uma categoria"}
+                              {categoryId
+                                ? categories.find((c) => c.id === categoryId)?.name ||
+                                  "Seleciona uma categoria"
+                                : "Seleciona uma categoria"}
                             </span>
                             <motion.span
                               animate={{ rotate: categoryOpen ? 180 : 0 }}
@@ -417,34 +437,34 @@ export default function CreateEventPage() {
                                 style={{ transformOrigin: "top" }}
                                 className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg max-h-72 overflow-y-auto"
                               >
-                                {categoryGroups.map((group) => (
-                                  <div key={group.label}>
-                                    <p className="px-3 pt-3 pb-1.5 text-xs font-medium text-zinc-400 uppercase tracking-wider">
-                                      {group.label}
-                                    </p>
-                                    {group.items.map((item) => (
-                                      <button
-                                        key={item}
-                                        type="button"
-                                        onClick={() => {
-                                          setCategory(item);
-                                          setCategoryOpen(false);
-                                        }}
-                                        className={`w-full text-left px-3 py-2 text-[15px] transition-colors hover:bg-blue-50 ${
-                                          category === item
-                                            ? "text-design-2 font-medium"
-                                            : "text-zinc-700"
-                                        }`}
-                                      >
-                                        {item}
-                                      </button>
-                                    ))}
-                                  </div>
+                                {categories.map((cat) => (
+                                  <button
+                                    key={cat.id}
+                                    type="button"
+                                    onClick={() => {
+                                      setValue("categoryId", cat.id, {
+                                        shouldValidate: true,
+                                      });
+                                      setCategoryOpen(false);
+                                    }}
+                                    className={`w-full text-left px-3 py-2 text-[15px] transition-colors hover:bg-blue-50 ${
+                                      categoryId === cat.id
+                                        ? "text-design-2 font-medium"
+                                        : "text-zinc-700"
+                                    }`}
+                                  >
+                                    {cat.name}
+                                  </button>
                                 ))}
                               </motion.div>
                             )}
                           </AnimatePresence>
                         </div>
+                        {errors.categoryId && (
+                          <p className="text-red-500 text-sm mt-2">
+                            {errors.categoryId.message}
+                          </p>
+                        )}
                       </div>
                     </>
                   )}
@@ -453,50 +473,38 @@ export default function CreateEventPage() {
                     <>
                       <div>
                         <label className="text-sm font-medium text-zinc-700 mb-2 block">
-                          Imagens{" "}
+                          Imagem de capa{" "}
                           <span className="text-zinc-400 font-normal">
-                            (máx. 2, opcional)
+                            (opcional)
                           </span>
                         </label>
                         <div className="flex flex-col gap-3">
-                          <label className="flex bg-white cursor-pointer transition-all hover:border-design-2/40 items-center justify-center gap-2 px-3 py-6 rounded-lg border border-dashed border-gray-200 text-[15px] text-zinc-400 hover:text-design-2 hover:bg-design-2/5">
-                            <RiImageAddLine className="size-5" />
-                            <span>
-                              {images.length === 0
-                                ? "Clique para fazer upload"
-                                : "Adicionar mais"}
-                            </span>
-                            <input
-                              type="file"
-                              accept="image/*"
-                              multiple
-                              disabled={images.length >= 2}
-                              onChange={handleImageUpload}
-                              className="hidden"
-                            />
-                          </label>
-                          {images.length > 0 && (
-                            <div className="flex gap-2">
-                              {images.map((file, i) => (
-                                <div
-                                  key={i}
-                                  className="relative w-20 h-20 rounded-lg border border-gray-200 overflow-hidden group"
-                                >
-                                  <Image
-                                    src={URL.createObjectURL(file)}
-                                    alt={file.name}
-                                    fill
-                                    className="object-cover"
-                                  />
-                                  <button
-                                    type="button"
-                                    onClick={() => removeImage(i)}
-                                    className="absolute top-1 right-1 size-5 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                                  >
-                                    <RiCloseLine className="size-3 text-white" />
-                                  </button>
-                                </div>
-                              ))}
+                          {!coverImage ? (
+                            <label className="flex bg-white cursor-pointer transition-all hover:border-design-2/40 items-center justify-center gap-2 px-3 py-6 rounded-lg border border-dashed border-gray-200 text-[15px] text-zinc-400 hover:text-design-2 hover:bg-design-2/5">
+                              <RiImageAddLine className="size-5" />
+                              <span>Clique para fazer upload</span>
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageUpload}
+                                className="hidden"
+                              />
+                            </label>
+                          ) : (
+                            <div className="relative w-full h-48 rounded-lg border border-gray-200 overflow-hidden group">
+                              <Image
+                                src={previewUrl!}
+                                alt="Capa do evento"
+                                fill
+                                className="object-cover"
+                              />
+                              <button
+                                type="button"
+                                onClick={removeImage}
+                                className="absolute top-2 right-2 size-7 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                              >
+                                <RiCloseLine className="size-4 text-white" />
+                              </button>
                             </div>
                           )}
                         </div>
@@ -510,7 +518,11 @@ export default function CreateEventPage() {
                             <button
                               key={m.value}
                               type="button"
-                              onClick={() => setModality(m.value)}
+                              onClick={() =>
+                                setValue("modality", m.value, {
+                                  shouldValidate: true,
+                                })
+                              }
                               className={`flex items-center justify-center gap-2 px-3 py-1.5 rounded-lg border text-[15px] transition-all ${
                                 modality === m.value
                                   ? "border-design-2 text-white bg-design-2 font-medium"
@@ -522,6 +534,11 @@ export default function CreateEventPage() {
                             </button>
                           ))}
                         </div>
+                        {errors.modality && (
+                          <p className="text-red-500 text-sm mt-2">
+                            {errors.modality.message}
+                          </p>
+                        )}
                       </div>
                     </>
                   )}
@@ -532,16 +549,47 @@ export default function CreateEventPage() {
                         <label className="text-sm font-medium text-zinc-700 mb-2 block">
                           Data do evento
                         </label>
-                        <div className="flex bg-white transition-all focus-within:ring-4 focus-within:ring-blue-100 focus-within:border-blue-400 items-center px-3 py-2.5 rounded-lg border border-gray-200">
-                          <RiCalendarLine className="size-5 text-zinc-400 shrink-0" />
-                          <input
-                            className="w-full outline-none ps-2 text-[15px]"
-                            type="date"
-                            value={date}
-                            onChange={(e) => setDate(e.target.value)}
-                            style={{ colorScheme: "light" }}
-                          />
-                        </div>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              data-empty={!startDate}
+                              data-error={!!errors.startDate}
+                              className={`w-full justify-between text-left font-normal border rounded-lg px-3 py-2.5 h-auto text-[15px] hover:bg-white ${
+                                errors.startDate
+                                  ? "border-red-400 data-[empty=true]:text-red-400"
+                                  : "data-[empty=true]:text-zinc-400 border-gray-200"
+                              }`}
+                            >
+                              <span className="flex items-center gap-2">
+                                <RiCalendarLine className="size-5 shrink-0 text-zinc-400" />
+                                {startDate ? (
+                                  format(startDate, "PPP")
+                                ) : (
+                                  <span>Seleciona a data do evento</span>
+                                )}
+                              </span>
+                              <ChevronDownIcon className="size-4 text-zinc-400" />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={startDate ?? undefined}
+                              onSelect={(date) =>
+                                setValue("startDate", date ?? null, {
+                                  shouldValidate: true,
+                                })
+                              }
+                              defaultMonth={startDate ?? undefined}
+                            />
+                          </PopoverContent>
+                        </Popover>
+                        {errors.startDate && (
+                          <p className="text-red-500 text-sm mt-2">
+                            {errors.startDate.message}
+                          </p>
+                        )}
                       </div>
                       <div>
                         <label className="text-sm font-medium text-zinc-700 mb-2 block">
@@ -552,7 +600,11 @@ export default function CreateEventPage() {
                             <button
                               key={t.value}
                               type="button"
-                              onClick={() => setType(t.value)}
+                              onClick={() =>
+                                setValue("type", t.value, {
+                                  shouldValidate: true,
+                                })
+                              }
                               className={`flex items-center justify-center gap-2 px-3 py-1.5 rounded-lg border text-[15px] transition-all ${
                                 type === t.value
                                   ? "border-design-2 bg-design-2 text-white font-medium"
@@ -564,6 +616,11 @@ export default function CreateEventPage() {
                             </button>
                           ))}
                         </div>
+                        {errors.type && (
+                          <p className="text-red-500 text-sm mt-2">
+                            {errors.type.message}
+                          </p>
+                        )}
                       </div>
                     </>
                   )}
@@ -581,21 +638,23 @@ export default function CreateEventPage() {
 
                     {step < STEPS.length - 1 ? (
                       <button
-                        type="submit"
+                        type="button"
+                        onClick={handleNext}
                         className="text-base transition-all hover:opacity-75 text-white bg-design-2 rounded-lg px-6 py-2 font-normal"
                       >
                         Próximo →
                       </button>
                     ) : (
                       <button
-                        type="submit"
+                        type="button"
+                        onClick={() => setShowPublishModal(true)}
                         className="text-base transition-all hover:opacity-75 text-white bg-design-2 rounded-lg px-6 py-2 font-normal"
                       >
                         Publicar evento →
                       </button>
                     )}
                   </div>
-                </form>
+                </div>
               </motion.div>
             </AnimatePresence>
           </div>
@@ -610,3 +669,5 @@ export default function CreateEventPage() {
     </div>
   );
 }
+
+

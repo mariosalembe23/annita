@@ -136,6 +136,63 @@ annita/
 
 ---
 
+## Categorias de eventos (seed para a API)
+
+Para a API funcionar correctamente com o formulário de criação de eventos, precisas de registar as seguintes categorias no endpoint `POST /api/categories` (ou via seed no backend):
+
+### Formação
+| Nome | groupName |
+|---|---|
+| Palestra / Talk | Formação |
+| Workshop | Formação |
+| Webinar | Formação |
+| Bootcamp | Formação |
+| Curso intensivo | Formação |
+
+### Competição & Inovação
+| Nome | groupName |
+|---|---|
+| Hackathon | Competição & Inovação |
+| Maratona de dados (Datathon) | Competição & Inovação |
+| Competição de startups | Competição & Inovação |
+| Pitch de ideias | Competição & Inovação |
+
+### Networking & Comunidade
+| Nome | groupName |
+|---|---|
+| Meetup | Networking & Comunidade |
+| Conferência | Networking & Comunidade |
+| Summit | Networking & Comunidade |
+| Tech Fest | Networking & Comunidade |
+| Comunidade open source | Networking & Comunidade |
+
+### Negócios & Empreendedorismo
+| Nome | groupName |
+|---|---|
+| Demo Day | Negócios & Empreendedorismo |
+| Lançamento de produto | Negócios & Empreendedorismo |
+| Feira de tecnologia | Negócios & Empreendedorismo |
+| Expo tech | Negócios & Empreendedorismo |
+
+### Especializadas
+| Nome | groupName |
+|---|---|
+| CTF | Especializadas |
+| Game Jam | Especializadas |
+| AI & Machine Learning | Especializadas |
+| Blockchain & Web3 | Especializadas |
+| Robótica & Hardware | Especializadas |
+
+Exemplo de payload para `POST /api/categories`:
+```json
+{
+  "name": "Hackathon",
+  "groupName": "Competição & Inovação"
+}
+```
+
+---
+
 ## Estado
 
 🔄 **MVP em desenvolvimento.** A plataforma já conta com autenticação funcional com backend real e está a evoluir continuamente.
