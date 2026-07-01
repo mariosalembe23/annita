@@ -11,8 +11,6 @@ import {
   RiMore2Fill,
   RiMarkPenLine,
   RiDeleteBinLine,
-  RiCheckLine,
-  RiCloseLine,
 } from "@remixicon/react";
 import {
   DropdownMenu,
@@ -35,7 +33,9 @@ import { Input } from "@/components/ui/input";
 function CategoriaRow({ category }: { category: ApiEventCategory }) {
   return (
     <tr className="border-b border-zinc-200 last:border-b-0 hover:bg-zinc-50 transition-colors">
-      <td className="py-3 px-4 text-sm text-zinc-900">{category.id}</td>
+      <td className="py-3 px-4 text-sm text-zinc-900 uppercase font-mono font-medium">
+        {category.id.slice(0, 6)}
+      </td>
       <td className="py-3 px-4 text-sm text-zinc-900 font-medium">
         {category.name}
       </td>
@@ -73,28 +73,65 @@ export default function CategoriasContent() {
   const { token } = useUser();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
-  const [name, setName] = useState("");
-  const [groupName, setGroupName] = useState("");
+  const [useSameGroup, setUseSameGroup] = useState(false);
+  const [page, setPage] = useState(0);
+  const perPage = 10;
+  const [entries, setEntries] = useState([
+    { name: "", groupName: "" },
+    { name: "", groupName: "" },
+    { name: "", groupName: "" },
+  ]);
 
-  const { data: categories, isPending } = useQuery({
-    queryKey: ["categories"],
-    queryFn: () => getCategories(token!),
+  function updateEntry(
+    index: number,
+    field: "name" | "groupName",
+    value: string,
+  ) {
+    setEntries((prev) => {
+      const next = prev.map((e, i) =>
+        i === index ? { ...e, [field]: value } : e,
+      );
+      if (useSameGroup && field === "groupName") {
+        for (let i = 1; i < next.length; i++) {
+          next[i].groupName = value;
+        }
+      }
+      return next;
+    });
+  }
+
+  const { data: response, isPending } = useQuery({
+    queryKey: ["categories", page],
+    queryFn: () => getCategories(token!, page, perPage),
     enabled: !!token,
   });
 
+  const categories = response?.data ?? [];
+  const meta = response?.meta;
+
   const createMutation = useMutation({
-    mutationFn: () =>
-      createCategory(
-        { name: name.trim(), groupName: groupName.trim() },
-        token!,
-      ),
+    mutationFn: async () => {
+      const valid = entries.filter((e) => e.name.trim() && e.groupName.trim());
+      for (const entry of valid) {
+        await createCategory(
+          { name: entry.name.trim(), groupName: entry.groupName.trim() },
+          token!,
+        );
+      }
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["categories"] });
       setOpen(false);
-      setName("");
-      setGroupName("");
+      setUseSameGroup(false);
+      setEntries([
+        { name: "", groupName: "" },
+        { name: "", groupName: "" },
+        { name: "", groupName: "" },
+      ]);
     },
   });
+
+  const hasAnyFilled = entries.some((e) => e.name.trim() && e.groupName.trim());
 
   return (
     <div className="mt-10">
@@ -170,36 +207,104 @@ export default function CategoriasContent() {
         </table>
       </div>
 
+      {meta && (
+        <div className="mt-4 flex items-center justify-between text-sm text-zinc-600">
+          <p>
+            Página {meta.page + 1} de {meta.totalPages} ({meta.totalElements}{" "}
+            categorias)
+          </p>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setPage((p) => Math.max(0, p - 1))}
+              disabled={meta.page <= 0}
+              className="px-3 py-1.5 bg-white rounded-lg border border-zinc-300 hover:bg-zinc-100 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors"
+            >
+              Anterior
+            </button>
+            <button
+              onClick={() =>
+                setPage((p) => Math.min(meta.totalPages - 1, p + 1))
+              }
+              disabled={meta.page >= meta.totalPages - 1}
+              className="px-3 py-1.5 bg-white rounded-lg border border-zinc-300 hover:bg-zinc-100 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors"
+            >
+              Seguinte
+            </button>
+          </div>
+        </div>
+      )}
+
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Adicionar Categoria</DialogTitle>
+            <DialogTitle>Adicionar Categorias</DialogTitle>
             <DialogDescription>
-              Preencha os campos abaixo para criar uma nova categoria.
+              Preencha até 3 categorias para criar de uma vez.
             </DialogDescription>
           </DialogHeader>
 
+          <div className="space-y-1.5 flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="useSameGroup"
+              checked={useSameGroup}
+              onChange={(e) => {
+                setUseSameGroup(e.target.checked);
+                if (e.target.checked) {
+                  setEntries((prev) => {
+                    const next = [...prev];
+                    for (let i = 1; i < next.length; i++) {
+                      next[i].groupName = next[0].groupName;
+                    }
+                    return next;
+                  });
+                }
+              }}
+              className="size-4 rounded border-zinc-300 text-design-2 focus:ring-design-2"
+            />
+            <label
+              htmlFor="useSameGroup"
+              className="text-sm text-zinc-600 cursor-pointer select-none"
+            >
+              Usar mesmo grupo para todas
+            </label>
+          </div>
+
           <div className="space-y-4">
-            <div className="space-y-1.5 flex flex-col">
-              <label className="text-sm px-2 font-medium text-zinc-700">
-                Nome
-              </label>
-              <Input
-                placeholder="Ex: Tecnologia"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </div>
-            <div className="space-y-1.5 flex flex-col">
-              <label className="text-sm px-2 font-medium text-zinc-700">
-                Grupo
-              </label>
-              <Input
-                placeholder="Ex: Tech"
-                value={groupName}
-                onChange={(e) => setGroupName(e.target.value)}
-              />
-            </div>
+            {entries.map((entry, i) => (
+              <div
+                key={i}
+                className="space-y-2 p-3 rounded-lg border border-zinc-200"
+              >
+                <div className="mb-3">
+                  <span className="text-sm px-2 font-normal text-zinc-600">
+                    Categoria {i + 1}
+                  </span>
+                </div>
+                <div className="space-y-1.5 flex flex-col">
+                  <label className="text-sm px-2 font-medium text-zinc-700">
+                    Nome
+                  </label>
+                  <Input
+                    placeholder="Ex: Tecnologia"
+                    value={entry.name}
+                    onChange={(e) => updateEntry(i, "name", e.target.value)}
+                  />
+                </div>
+                <div className="space-y-1.5 flex flex-col">
+                  <label className="text-sm px-2 font-medium text-zinc-700">
+                    Grupo
+                  </label>
+                  <Input
+                    placeholder="Ex: Tech"
+                    value={entry.groupName}
+                    onChange={(e) =>
+                      updateEntry(i, "groupName", e.target.value)
+                    }
+                  />
+                </div>
+              </div>
+            ))}
           </div>
 
           <DialogFooter className="border-zinc-200">
@@ -211,12 +316,12 @@ export default function CategoriasContent() {
             <Button
               size="default"
               className="bg-design-2 hover:bg-design-2/90"
-              disabled={
-                !name.trim() || !groupName.trim() || createMutation.isPending
-              }
+              disabled={!hasAnyFilled || createMutation.isPending}
               onClick={() => createMutation.mutate()}
             >
-              {createMutation.isPending ? "A salvar..." : "Salvar"}
+              {createMutation.isPending
+                ? "A salvar..."
+                : `Salvar ${entries.filter((e) => e.name.trim() && e.groupName.trim()).length} categorias`}
             </Button>
           </DialogFooter>
         </DialogContent>

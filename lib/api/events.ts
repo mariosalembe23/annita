@@ -80,11 +80,17 @@ export async function createEvent(payload: CreateEventPayload, token: string) {
   return data;
 }
 
-export async function getCategories(token: string) {
-  const { data } = await api.get<{ data: ApiEventCategory[] }>("/categories", {
+export interface CategoriesResponse {
+  data: ApiEventCategory[];
+  meta: EventsMeta;
+}
+
+export async function getCategories(token: string, page = 1, perPage = 10) {
+  const { data } = await api.get<CategoriesResponse>("/categories", {
     headers: { Authorization: `Bearer ${token}` },
+    params: { page, perPage },
   });
-  return data.data;
+  return data;
 }
 
 export interface CreateCategoryPayload {

@@ -27,19 +27,19 @@
 
 ## Tech Stack
 
-| Camada | Tecnologia |
-|---|---|
-| **Framework** | Next.js 16 (App Router) |
-| **Linguagem** | TypeScript 5 (strict) |
-| **UI** | React 19 + shadcn/ui + Radix UI |
-| **Estilos** | Tailwind CSS v4 |
-| **Animação** | Framer Motion |
-| **Gráficos** | Three.js (shader art) |
-| **Ícones** | Remixicon + Lucide |
-| **HTTP** | Axios (com `withCredentials`) |
-| **Data Fetching** | TanStack Query (React Query) |
-| **Formulários** | react-hook-form |
-| **Package manager** | pnpm |
+| Camada              | Tecnologia                      |
+| ------------------- | ------------------------------- |
+| **Framework**       | Next.js 16 (App Router)         |
+| **Linguagem**       | TypeScript 5 (strict)           |
+| **UI**              | React 19 + shadcn/ui + Radix UI |
+| **Estilos**         | Tailwind CSS v4                 |
+| **Animação**        | Framer Motion                   |
+| **Gráficos**        | Three.js (shader art)           |
+| **Ícones**          | Remixicon + Lucide              |
+| **HTTP**            | Axios (com `withCredentials`)   |
+| **Data Fetching**   | TanStack Query (React Query)    |
+| **Formulários**     | react-hook-form                 |
+| **Package manager** | pnpm                            |
 
 ---
 
@@ -60,20 +60,20 @@ Copia `.env.example` para `.env.local` e preenche:
 cp .env.example .env.local
 ```
 
-| Variável | Descrição |
-|---|---|
+| Variável              | Descrição                                         |
+| --------------------- | ------------------------------------------------- |
 | `NEXT_PUBLIC_API_URL` | URL base da API (ex: `http://localhost:8080/api`) |
 
 ---
 
 ## Scripts
 
-| Comando | Descrição |
-|---|---|
-| `pnpm dev` | Inicia servidor de desenvolvimento (Turbopack) |
-| `pnpm build` | Faz build de produção |
-| `pnpm start` | Inicia servidor de produção |
-| `pnpm lint` | Correr ESLint |
+| Comando      | Descrição                                      |
+| ------------ | ---------------------------------------------- |
+| `pnpm dev`   | Inicia servidor de desenvolvimento (Turbopack) |
+| `pnpm build` | Faz build de produção                          |
+| `pnpm start` | Inicia servidor de produção                    |
+| `pnpm lint`  | Correr ESLint                                  |
 
 ---
 
@@ -140,50 +140,8 @@ annita/
 
 Para a API funcionar correctamente com o formulário de criação de eventos, precisas de registar as seguintes categorias no endpoint `POST /api/categories` (ou via seed no backend):
 
-### Formação
-| Nome | groupName |
-|---|---|
-| Palestra / Talk | Formação |
-| Workshop | Formação |
-| Webinar | Formação |
-| Bootcamp | Formação |
-| Curso intensivo | Formação |
-
-### Competição & Inovação
-| Nome | groupName |
-|---|---|
-| Hackathon | Competição & Inovação |
-| Maratona de dados (Datathon) | Competição & Inovação |
-| Competição de startups | Competição & Inovação |
-| Pitch de ideias | Competição & Inovação |
-
-### Networking & Comunidade
-| Nome | groupName |
-|---|---|
-| Meetup | Networking & Comunidade |
-| Conferência | Networking & Comunidade |
-| Summit | Networking & Comunidade |
-| Tech Fest | Networking & Comunidade |
-| Comunidade open source | Networking & Comunidade |
-
-### Negócios & Empreendedorismo
-| Nome | groupName |
-|---|---|
-| Demo Day | Negócios & Empreendedorismo |
-| Lançamento de produto | Negócios & Empreendedorismo |
-| Feira de tecnologia | Negócios & Empreendedorismo |
-| Expo tech | Negócios & Empreendedorismo |
-
-### Especializadas
-| Nome | groupName |
-|---|---|
-| CTF | Especializadas |
-| Game Jam | Especializadas |
-| AI & Machine Learning | Especializadas |
-| Blockchain & Web3 | Especializadas |
-| Robótica & Hardware | Especializadas |
-
 Exemplo de payload para `POST /api/categories`:
+
 ```json
 {
   "name": "Hackathon",
