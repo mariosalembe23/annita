@@ -19,7 +19,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { useState } from "react";
-import { mockEvents, MockEvent } from "./mock-data";
+import { useQuery } from "@tanstack/react-query";
+import { useUser } from "@/hooks/use-user";
+import { getEventsAdmin } from "@/lib/api/events";
+import type { ApiEvent } from "@/lib/api/events";
 import MetricsGrid from "./metrics-grid";
 import EventCard from "./event-card";
 import EventDetailsDialog from "./event-details-dialog";
@@ -31,9 +34,18 @@ interface DashboardContentProps {
 export default function DashboardContent({
   onNavigate,
 }: DashboardContentProps) {
+  const { token } = useUser();
   const [startDate, setStartDate] = useState<Date | undefined>();
   const [endDate, setEndDate] = useState<Date | undefined>();
-  const [selectedEvent, setSelectedEvent] = useState<MockEvent | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<ApiEvent | null>(null);
+
+  const { data, isPending } = useQuery({
+    queryKey: ["events-admin"],
+    queryFn: () => getEventsAdmin({}, token ?? undefined),
+    enabled: !!token,
+  });
+
+  const events = data?.data ?? [];
 
   return (
     <>
@@ -139,13 +151,34 @@ export default function DashboardContent({
         </div>
 
         <div className="mt-6 grid grid-cols-4 gap-4">
-          {mockEvents.map((event) => (
-            <EventCard
-              key={event.id}
-              event={event}
-              onSelect={setSelectedEvent}
-            />
-          ))}
+          {isPending ? (
+            Array.from({ length: 4 }).map((_, i) => (
+              <div
+                key={i}
+                className="bg-white border border-zinc-200 rounded-2xl p-5 animate-pulse space-y-3"
+              >
+                <div className="h-5 bg-zinc-200 rounded w-3/4" />
+                <div className="h-4 bg-zinc-200 rounded w-full" />
+                <div className="h-4 bg-zinc-200 rounded w-5/6" />
+                <div className="flex gap-2">
+                  <div className="h-5 bg-zinc-200 rounded w-14" />
+                  <div className="h-5 bg-zinc-200 rounded w-16" />
+                </div>
+                <div className="flex items-center justify-between pt-4 border-t border-zinc-200">
+                  <div className="h-4 bg-zinc-200 rounded w-24" />
+                  <div className="size-8 bg-zinc-200 rounded" />
+                </div>
+              </div>
+            ))
+          ) : (
+            events.map((event) => (
+              <EventCard
+                key={event.id}
+                event={event}
+                onSelect={setSelectedEvent}
+              />
+            ))
+          )}
         </div>
       </section>
 

@@ -18,8 +18,8 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { ApiEvent } from "@/lib/api/events";
 import {
-  MockEvent,
   statusColors,
   statusLabels,
   typeLabels,
@@ -27,7 +27,7 @@ import {
 } from "./mock-data";
 
 interface EventDetailsDialogProps {
-  event: MockEvent | null;
+  event: ApiEvent | null;
   onClose: () => void;
 }
 
@@ -83,21 +83,23 @@ export default function EventDetailsDialog({
                 <div className="py-2 border-b border-zinc-200">
                   <span className="text-zinc-600 text-sm">Status</span>
                   <p
-                    className={`text-xs font-medium mt-0.5 ${statusColors[event.status]}`}
+                    className={`text-xs font-medium mt-0.5 ${statusColors[event.status] || "text-zinc-800"}`}
                   >
-                    {statusLabels[event.status]}
+                    {statusLabels[event.status] || event.status}
                   </p>
                 </div>
                 <div className="py-2 border-b border-zinc-200">
                   <span className="text-zinc-600 text-sm">Tipo</span>
                   <p className="text-zinc-800 text-sm mt-0.5">
-                    {typeLabels[event.type]}
+                    {typeLabels[event.type] || event.type}
                   </p>
                 </div>
                 <div className="py-2 border-b border-zinc-200">
                   <span className="text-zinc-600 text-sm">Modalidade</span>
                   <p className="text-zinc-800 text-sm mt-0.5">
-                    {modalityLabels[event.modality]}
+                    {Array.isArray(event.modality)
+                      ? event.modality.map((m) => modalityLabels[m] || m).join(", ")
+                      : (modalityLabels[event.modality as any] || event.modality)}
                   </p>
                 </div>
                 <div className="py-2 border-b border-zinc-200">

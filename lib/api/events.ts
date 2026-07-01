@@ -85,3 +85,29 @@ export async function getCategories(token: string) {
   });
   return data;
 }
+
+export interface EventsAdminFilters extends EventsFilters {
+  status?: EventStatus;
+}
+
+export async function getEventsAdmin(
+  filters: EventsAdminFilters = {},
+  token?: string,
+) {
+  const params = new URLSearchParams();
+  if (filters.search) params.set("search", filters.search);
+  if (filters.categoryId) params.set("categoryId", filters.categoryId);
+  if (filters.modality) params.set("modality", filters.modality);
+  if (filters.type) params.set("type", filters.type);
+  if (filters.status) params.set("status", filters.status);
+  if (filters.page) params.set("page", String(filters.page));
+  if (filters.per_page) params.set("per_page", String(filters.per_page));
+
+  const headers = token ? { Authorization: `Bearer ${token}` } : {};
+
+  const { data } = await api.get<EventsResponse>("/events/admin", {
+    params,
+    headers,
+  });
+  return data;
+}

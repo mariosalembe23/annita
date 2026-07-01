@@ -12,8 +12,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { ApiEvent } from "@/lib/api/events";
 import {
-  MockEvent,
   statusColors,
   statusLabels,
   typeLabels,
@@ -21,8 +21,8 @@ import {
 } from "./mock-data";
 
 interface EventCardProps {
-  event: MockEvent;
-  onSelect: (event: MockEvent) => void;
+  event: ApiEvent;
+  onSelect: (event: ApiEvent) => void;
 }
 
 export default function EventCard({ event, onSelect }: EventCardProps) {
@@ -36,10 +36,10 @@ export default function EventCard({ event, onSelect }: EventCardProps) {
         </div>
         <span
           className={`shrink-0 ps-3 py-0.5 rounded-full text-xs font-medium ${
-            statusColors[event.status]
+            statusColors[event.status] || "text-zinc-800"
           }`}
         >
-          {statusLabels[event.status]}
+          {statusLabels[event.status] || event.status}
         </span>
       </div>
       <p className="mt-1 text-sm text-zinc-500 line-clamp-2">
@@ -47,11 +47,19 @@ export default function EventCard({ event, onSelect }: EventCardProps) {
       </p>
       <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-white">
         <span className="px-2 py-0.5 rounded-md bg-design-3">
-          {typeLabels[event.type]}
+          {typeLabels[event.type] || event.type}
         </span>
-        <span className="px-2 py-0.5 rounded-md bg-design-3">
-          {modalityLabels[event.modality]}
-        </span>
+        {Array.isArray(event.modality) ? (
+          event.modality.map((mod) => (
+            <span key={mod} className="px-2 py-0.5 rounded-md bg-design-3">
+              {modalityLabels[mod] || mod}
+            </span>
+          ))
+        ) : (
+          <span className="px-2 py-0.5 rounded-md bg-design-3">
+            {modalityLabels[event.modality as any] || event.modality}
+          </span>
+        )}
         <span className="px-2.5 py-0.5 rounded-md bg-design-3">
           {event.category.name}
         </span>
