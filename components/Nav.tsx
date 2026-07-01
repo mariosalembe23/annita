@@ -7,6 +7,7 @@ import {
   RiUserLine,
   RiLogoutCircleRLine,
   RiUser6Line,
+  RiGovernmentLine,
 } from "@remixicon/react";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
@@ -124,6 +125,17 @@ export function Nav({ links = defaultLinks }: NavProps) {
                           <RiUser6Line className="size-4" />
                           Perfil
                         </Link>
+                        {(user.role === "ADMIN" ||
+                          user.role === "MODERATOR") && (
+                          <Link
+                            href={"/dashboard"}
+                            onClick={() => setDropdownOpen(false)}
+                            className="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-700 hover:bg-gray-50 transition-colors"
+                          >
+                            <RiGovernmentLine className="size-4" />
+                            Gestão Geral
+                          </Link>
+                        )}
                         <Link
                           href={"/settings"}
                           onClick={() => setDropdownOpen(false)}
