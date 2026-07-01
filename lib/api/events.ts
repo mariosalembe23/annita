@@ -87,6 +87,19 @@ export async function createEvent(payload: CreateEventPayload, token: string) {
   return data;
 }
 
+export type UpdateEventPayload = CreateEventPayload;
+
+export async function updateEvent(
+  id: string,
+  payload: UpdateEventPayload,
+  token: string,
+) {
+  const { data } = await api.put<ApiEvent>(`/events/${id}`, payload, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return data;
+}
+
 export interface CategoriesResponse {
   data: ApiEventCategory[];
   meta: EventsMeta;
@@ -106,10 +119,13 @@ export interface CategoryGroup {
 }
 
 export async function getCategoriesByGroup(token: string) {
-  const { data } = await api.get<CategoryGroup[]>("/categories/by-group", {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return data;
+  const { data } = await api.get<CategoryGroup[] | { data: CategoryGroup[] }>(
+    "/categories/by-group",
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    },
+  );
+  return Array.isArray(data) ? data : (data as { data: CategoryGroup[] }).data ?? [];
 }
 
 export interface CreateCategoryPayload {

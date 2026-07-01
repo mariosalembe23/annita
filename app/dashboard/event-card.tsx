@@ -23,9 +23,10 @@ import {
 interface EventCardProps {
   event: ApiEvent;
   onSelect: (event: ApiEvent) => void;
+  onEdit?: (event: ApiEvent) => void;
 }
 
-export default function EventCard({ event, onSelect }: EventCardProps) {
+export default function EventCard({ event, onSelect, onEdit }: EventCardProps) {
   return (
     <div className="bg-white border border-zinc-200 rounded-2xl p-5">
       <div className="flex items-start justify-between gap-4">
@@ -65,7 +66,7 @@ export default function EventCard({ event, onSelect }: EventCardProps) {
         </span>
       </div>
       <div className="pt-4 border-zinc-200 flex items-center justify-between border-t mt-4 text-sm text-zinc-800">
-        <p>por {event.createdByUsername}</p>
+        <p>por @{event.createdByUsername}</p>
         <div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -81,7 +82,10 @@ export default function EventCard({ event, onSelect }: EventCardProps) {
                 <RiTimelineView className="size-4" />
                 Detalhes
               </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer py-1 px-3 gap-2">
+              <DropdownMenuItem
+                className="cursor-pointer py-1 px-3 gap-2"
+                onClick={() => onEdit?.(event)}
+              >
                 <RiMarkPenLine className="size-4" />
                 Editar Evento
               </DropdownMenuItem>

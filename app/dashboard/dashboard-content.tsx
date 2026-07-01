@@ -26,6 +26,7 @@ import type { ApiEvent } from "@/lib/api/events";
 import MetricsGrid from "./metrics-grid";
 import EventCard from "./event-card";
 import EventDetailsDialog from "./event-details-dialog";
+import EditEventSheet from "./edit-event-sheet";
 
 interface DashboardContentProps {
   onNavigate: (tab: string) => void;
@@ -38,6 +39,7 @@ export default function DashboardContent({
   const [startDate, setStartDate] = useState<Date | undefined>();
   const [endDate, setEndDate] = useState<Date | undefined>();
   const [selectedEvent, setSelectedEvent] = useState<ApiEvent | null>(null);
+  const [editingEvent, setEditingEvent] = useState<ApiEvent | null>(null);
 
   const { data, isPending } = useQuery({
     queryKey: ["events-admin"],
@@ -172,11 +174,12 @@ export default function DashboardContent({
             ))
           ) : (
             events.map((event) => (
-              <EventCard
-                key={event.id}
-                event={event}
-                onSelect={setSelectedEvent}
-              />
+                <EventCard
+                  key={event.id}
+                  event={event}
+                  onSelect={setSelectedEvent}
+                  onEdit={setEditingEvent}
+                />
             ))
           )}
         </div>
@@ -185,6 +188,11 @@ export default function DashboardContent({
       <EventDetailsDialog
         event={selectedEvent}
         onClose={() => setSelectedEvent(null)}
+      />
+
+      <EditEventSheet
+        event={editingEvent}
+        onClose={() => setEditingEvent(null)}
       />
     </>
   );
