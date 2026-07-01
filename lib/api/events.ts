@@ -85,10 +85,10 @@ export interface CategoriesResponse {
   meta: EventsMeta;
 }
 
-export async function getCategories(token: string, page = 1, perPage = 10) {
+export async function getCategories(token: string, page = 1, perPage = 10, search?: string) {
   const { data } = await api.get<CategoriesResponse>("/categories", {
     headers: { Authorization: `Bearer ${token}` },
-    params: { page, perPage },
+    params: { page, perPage, ...(search ? { search } : {}) },
   });
   return data;
 }

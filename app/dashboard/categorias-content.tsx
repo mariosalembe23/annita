@@ -74,6 +74,7 @@ export default function CategoriasContent() {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [useSameGroup, setUseSameGroup] = useState(false);
+  const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
   const perPage = 10;
   const [entries, setEntries] = useState([
@@ -101,8 +102,8 @@ export default function CategoriasContent() {
   }
 
   const { data: response, isPending } = useQuery({
-    queryKey: ["categories", page],
-    queryFn: () => getCategories(token!, page, perPage),
+    queryKey: ["categories", search, page],
+    queryFn: () => getCategories(token!, page, perPage, search || undefined),
     enabled: !!token,
   });
 
@@ -146,7 +147,19 @@ export default function CategoriasContent() {
         </button>
       </header>
 
-      <div className="mt-6 bg-white border border-zinc-200 rounded-2xl overflow-hidden">
+      <div className="mt-6">
+        <Input
+          placeholder="Pesquisar"
+          className="max-w-lg bg-white mb-4"
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            setPage(0);
+          }}
+        />
+      </div>
+
+      <div className="bg-white border border-zinc-200 rounded-2xl overflow-hidden">
         <table className="w-full">
           <thead>
             <tr className="border-b border-zinc-200 bg-zinc-50">
