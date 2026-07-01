@@ -94,7 +94,7 @@ export default function Home() {
                 Explorar eventos
               </button>
               <Link href={"/events/create"}>
-                <button className="text-base transition-all hover:opacity-75 bg-white text-design-3 border-gray-200 border rounded-lg px-3 py-1.5 font-normal  flex items-center gap-2 ">
+                <button className="text-base transition-all hover:opacity-75 bg-white text-black border-gray-200 border rounded-lg px-3 py-1.5 font-normal  flex items-center gap-2 ">
                   <RiStickyNoteAddFill className="size-4" />
                   Publicar evento
                 </button>

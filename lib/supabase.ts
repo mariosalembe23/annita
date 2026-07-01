@@ -10,7 +10,7 @@ export async function uploadEventCover(
   userId: string,
 ): Promise<string> {
   const ext = file.name.split(".").pop() || "jpg";
-  const filePath = `events/${userId}/${crypto.randomUUID()}.${ext}`;
+  const filePath = `annita/${userId}/${crypto.randomUUID()}.${ext}`;
 
   const { error } = await supabase.storage
     .from("event-covers")
@@ -22,7 +22,7 @@ export async function uploadEventCover(
   if (error) throw new Error(`Falha ao fazer upload da imagem: ${error.message}`);
 
   const { data: publicUrl } = supabase.storage
-    .from("event-covers")
+    .from("annita-events")
     .getPublicUrl(filePath);
 
   return publicUrl.publicUrl;

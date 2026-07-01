@@ -6,12 +6,14 @@ import Image from "next/image";
 
 interface PublishConfirmationModalProps {
   open: boolean;
+  loading?: boolean;
   onClose: () => void;
   onConfirm: () => void;
 }
 
 export function PublishConfirmationModal({
   open,
+  loading,
   onClose,
   onConfirm,
 }: PublishConfirmationModalProps) {
@@ -25,7 +27,7 @@ export function PublishConfirmationModal({
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm p-4"
-          onClick={onClose}
+          onClick={loading ? undefined : onClose}
         >
           <motion.div
             key="modal"
@@ -37,13 +39,15 @@ export function PublishConfirmationModal({
             className="flex w-full max-w-xl bg-white rounded-3xl shadow-2xl overflow-hidden"
           >
             <div className="flex-1 relative p-10">
-              <button
-                type="button"
-                className="absolute top-4 right-4 text-zinc-400 hover:text-zinc-700 transition-opacity"
-                onClick={onClose}
-              >
-                <RiCloseLine />
-              </button>
+              {!loading && (
+                <button
+                  type="button"
+                  className="absolute top-4 right-4 text-zinc-400 hover:text-zinc-700 transition-opacity"
+                  onClick={onClose}
+                >
+                  <RiCloseLine />
+                </button>
+              )}
 
               <div className="pot:mt-3 mt-7">
                 <Image
@@ -74,16 +78,21 @@ export function PublishConfirmationModal({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="text-base transition-all hover:bg-gray-50 text-zinc-700 border border-gray-200 rounded-lg px-3 py-1.5 font-normal"
+                  disabled={loading}
+                  className="text-base transition-all hover:bg-gray-50 text-zinc-700 border border-gray-200 rounded-lg px-3 py-1.5 font-normal disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Cancelar
                 </button>
                 <button
                   type="button"
                   onClick={onConfirm}
-                  className=" text-base transition-all hover:opacity-75 text-white bg-design-2 border-design-2 border rounded-lg px-3 py-1.5 font-normal"
+                  disabled={loading}
+                  className="text-base transition-all hover:opacity-75 text-white bg-design-2 border-design-2 border rounded-lg px-3 py-1.5 font-normal inline-flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
                 >
-                  Confirmar e publicar
+                  {loading && (
+                    <span className="size-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  )}
+                  {loading ? "A publicar..." : "Confirmar e publicar"}
                 </button>
               </div>
             </div>

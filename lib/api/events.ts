@@ -73,6 +73,13 @@ export interface CreateEventPayload {
   coverImage: string;
 }
 
+export async function getMyEvents(token: string) {
+  const { data } = await api.get<EventsResponse>("/events/my", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return data;
+}
+
 export async function createEvent(payload: CreateEventPayload, token: string) {
   const { data } = await api.post<ApiEvent>("/events", payload, {
     headers: { Authorization: `Bearer ${token}` },
@@ -88,7 +95,19 @@ export interface CategoriesResponse {
 export async function getCategories(token: string, page = 1, perPage = 10, search?: string) {
   const { data } = await api.get<CategoriesResponse>("/categories", {
     headers: { Authorization: `Bearer ${token}` },
-    params: { page, perPage, ...(search ? { search } : {}) },
+    params: { page, per_page: perPage, ...(search ? { search } : {}) },
+  });
+  return data;
+}
+
+export interface CategoryGroup {
+  groupName: string;
+  categories: { id: string; name: string }[];
+}
+
+export async function getCategoriesByGroup(token: string) {
+  const { data } = await api.get<CategoryGroup[]>("/categories/by-group", {
+    headers: { Authorization: `Bearer ${token}` },
   });
   return data;
 }

@@ -29,7 +29,8 @@ import {
 } from "@/components/ui/popover";
 import { PublishConfirmationModal } from "@/components/PublishConfirmationModal";
 import { createEvent, getCategories } from "@/lib/api/events";
-import { uploadEventCover } from "@/lib/supabase";
+import type { ApiEventCategory } from "@/lib/api/events";
+import { uploadImage } from "@/lib/upload-image";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/hooks/use-user";
 
@@ -86,11 +87,14 @@ export default function CreateEventPage() {
     if (!isLoading && !isLoggedIn) router.push("/signin");
   }, [isLoading, isLoggedIn, router]);
 
+  const STORAGE_KEY = "create-event-form";
+
   const [[step, direction], setStep] = useState([0, 0]);
   const [categoryOpen, setCategoryOpen] = useState(false);
   const [showPublishModal, setShowPublishModal] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const categoryRef = useRef<HTMLDivElement>(null);
+  const restored = useRef(false);
 
   const {
     register,
@@ -113,6 +117,49 @@ export default function CreateEventPage() {
     },
   });
 
+  useEffect(() => {
+    if (restored.current) return;
+    try {
+      const saved = sessionStorage.getItem(STORAGE_KEY);
+      if (!saved) return;
+      const parsed = JSON.parse(saved);
+      if (parsed.step != null) setStep([parsed.step, 0]);
+      if (parsed.form) {
+        const f = parsed.form;
+        if (f.title) setValue("title", f.title);
+        if (f.description) setValue("description", f.description);
+        if (f.link) setValue("link", f.link);
+        if (f.categoryId) setValue("categoryId", f.categoryId);
+        if (f.modality) setValue("modality", f.modality);
+        if (f.type) setValue("type", f.type);
+        if (f.startDate) setValue("startDate", new Date(f.startDate));
+      }
+    } catch {}
+    restored.current = true;
+  }, []);
+
+  useEffect(() => {
+    const sub = watch((values) => {
+      try {
+        const { coverImage, ...rest } = values;
+        sessionStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify({
+            step,
+            form: {
+              ...rest,
+              startDate:
+                rest.startDate instanceof Date
+                  ? rest.startDate.toISOString()
+                  : rest.startDate,
+            },
+          }),
+        );
+      } catch {}
+    });
+    return sub.unsubscribe;
+  }, [watch, step]);
+
   const categoryId = watch("categoryId");
   const modality = watch("modality");
   const type = watch("type");
@@ -126,13 +173,13 @@ export default function CreateEventPage() {
     register("categoryId", { required: "A categoria é obrigatória" });
   }, [register]);
 
-  const { data } = useQuery({
+  const { data: categoriesResponse } = useQuery({
     queryKey: ["categories"],
-    queryFn: () => getCategories(token!),
+    queryFn: () => getCategories(token!, 1, 1000),
     enabled: !!token,
   });
 
-  const categories = Array.isArray(data) ? data : [];
+  const categories = categoriesResponse?.data ?? [];
 
   const createMutation = useMutation({
     mutationFn: async (formData: CreateEventForm) => {
@@ -140,7 +187,7 @@ export default function CreateEventPage() {
 
       let coverImageUrl = "";
       if (formData.coverImage) {
-        coverImageUrl = await uploadEventCover(formData.coverImage, user.id);
+        coverImageUrl = await uploadImage(formData.coverImage);
       }
 
       const payload = {
@@ -148,7 +195,10 @@ export default function CreateEventPage() {
         description: formData.description.trim(),
         link: formData.link.trim(),
         categoryId: formData.categoryId,
-        modality: MODALITY_MAP[formData.modality] as "PRESENTIAL" | "REMOTE" | "HYBRID",
+        modality: MODALITY_MAP[formData.modality] as
+          | "PRESENTIAL"
+          | "REMOTE"
+          | "HYBRID",
         startDate: (formData.startDate as Date).toISOString(),
         type: TYPE_MAP[formData.type] as "PAID" | "FREE",
         coverImage: coverImageUrl,
@@ -157,12 +207,15 @@ export default function CreateEventPage() {
       return createEvent(payload, token);
     },
     onSuccess: () => {
+      sessionStorage.removeItem(STORAGE_KEY);
       toast("success", "Evento publicado com sucesso!");
       setShowPublishModal(false);
-      router.push("/events");
+      router.push("/event-created");
     },
     onError: (error: Error) => {
-      const axiosError = error as { response?: { data?: { message?: string } } };
+      const axiosError = error as {
+        response?: { data?: { message?: string } };
+      };
       const message =
         axiosError?.response?.data?.message ||
         error.message ||
@@ -209,7 +262,6 @@ export default function CreateEventPage() {
   }
 
   function handlePublish() {
-    setShowPublishModal(false);
     handleSubmit((data) => createMutation.mutate(data))();
   }
 
@@ -315,7 +367,8 @@ export default function CreateEventPage() {
                               required: "O título é obrigatório",
                               minLength: {
                                 value: 3,
-                                message: "O título deve ter pelo menos 3 caracteres",
+                                message:
+                                  "O título deve ter pelo menos 3 caracteres",
                               },
                             })}
                           />
@@ -346,7 +399,8 @@ export default function CreateEventPage() {
                               required: "A descrição é obrigatória",
                               minLength: {
                                 value: 10,
-                                message: "A descrição deve ter pelo menos 10 caracteres",
+                                message:
+                                  "A descrição deve ter pelo menos 10 caracteres",
                               },
                               onChange: (e) => {
                                 resizeDescription(e);
@@ -385,7 +439,8 @@ export default function CreateEventPage() {
                               required: "O URL é obrigatório",
                               pattern: {
                                 value: /^https?:\/\/.+/,
-                                message: "Insere um URL válido (http:// ou https://)",
+                                message:
+                                  "Insere um URL válido (http:// ou https://)",
                               },
                             })}
                           />
@@ -416,8 +471,8 @@ export default function CreateEventPage() {
                               }
                             >
                               {categoryId
-                                ? categories.find((c) => c.id === categoryId)?.name ||
-                                  "Seleciona uma categoria"
+                                ? categories.find((c) => c.id === categoryId)
+                                    ?.name || "Seleciona uma categoria"
                                 : "Seleciona uma categoria"}
                             </span>
                             <motion.span
@@ -663,11 +718,10 @@ export default function CreateEventPage() {
 
       <PublishConfirmationModal
         open={showPublishModal}
-        onClose={() => setShowPublishModal(false)}
+        loading={createMutation.isPending}
+        onClose={() => !createMutation.isPending && setShowPublishModal(false)}
         onConfirm={handlePublish}
       />
     </div>
   );
 }
-
-
