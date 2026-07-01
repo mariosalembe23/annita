@@ -10,16 +10,18 @@ import {
   RiArchiveStackLine,
   RiArrowDownSFill,
   RiArrowUpSFill,
+  RiCheckLine,
+  RiCloseCircleLine,
+  RiDeleteBinLine,
   RiEqualizerLine,
+  RiEyeLine,
   RiGroup3Line,
   RiHome6Line,
-  RiMailSendFill,
   RiMailSendLine,
   RiMore2Fill,
   RiNotificationLine,
+  RiPencilLine,
   RiSettings6Line,
-  RiStackFill,
-  RiStickyNoteAddFill,
 } from "@remixicon/react";
 import { Search, CalendarIcon } from "lucide-react";
 import Image from "next/image";
@@ -38,6 +40,12 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { format } from "date-fns";
 import { useState } from "react";
 
@@ -589,9 +597,33 @@ export default function Dashboard() {
                   <div className="pt-4 border-zinc-200 flex items-center justify-between border-t mt-4 text-xs text-zinc-800">
                     <p>por {event.createdByUsername}</p>
                     <div>
-                      <button className="size-8 rounded border border-zinc-300 flex items-center justify-center">
-                        <RiMore2Fill className="size-5" />
-                      </button>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <button className="size-8 rounded border border-zinc-300 flex items-center justify-center cursor-pointer">
+                            <RiMore2Fill className="size-5" />
+                          </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-44 py-3">
+                          <DropdownMenuItem className="cursor-pointer py-1 px-3 gap-2">
+                            Detalhes
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className="cursor-pointer py-1 px-3 gap-2">
+                            Editar Evento
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className="cursor-pointer py-1 px-3 gap-2">
+                            Rejeitar
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className="cursor-pointer py-1 px-3 gap-2">
+                            Aprovar
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            className="cursor-pointer py-1 px-3 gap-2"
+                            variant="destructive"
+                          >
+                            Remover
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
                   </div>
                 </div>
