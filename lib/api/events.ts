@@ -4,6 +4,7 @@ export interface ApiEventCategory {
   id: string;
   name: string;
   groupName: string;
+  createdAt: string;
 }
 
 export type EventModality = "PRESENTIAL" | "REMOTE" | "HYBRID";
@@ -80,7 +81,19 @@ export async function createEvent(payload: CreateEventPayload, token: string) {
 }
 
 export async function getCategories(token: string) {
-  const { data } = await api.get<ApiEventCategory[]>("/categories", {
+  const { data } = await api.get<{ data: ApiEventCategory[] }>("/categories", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return data.data;
+}
+
+export interface CreateCategoryPayload {
+  name: string;
+  groupName: string;
+}
+
+export async function createCategory(payload: CreateCategoryPayload, token: string) {
+  const { data } = await api.post<ApiEventCategory>("/categories", payload, {
     headers: { Authorization: `Bearer ${token}` },
   });
   return data;
