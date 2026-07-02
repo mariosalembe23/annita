@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { RiCursorHand, RiMore2Fill, RiMouseFill } from "@remixicon/react";
+import { RiMore2Fill, RiMouseFill } from "@remixicon/react";
 import { cn } from "@/lib/utils";
 import type { EventCardData } from "@/data/events";
 import { EventDetailModal } from "./EventDetailModal";
