@@ -1,12 +1,34 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { RiMore2Fill, RiMouseFill } from "@remixicon/react";
+import { RiMore2Fill, RiMouseFill, RiAlertLine } from "@remixicon/react";
 import { cn } from "@/lib/utils";
 import type { EventCardData } from "@/data/events";
 import { EventDetailModal } from "./EventDetailModal";
 import { EventActionsDropdown } from "./EventActionsDropdown";
 import Link from "next/link";
+import { useMutation } from "@tanstack/react-query";
+import { useUser } from "@/hooks/use-user";
+import { useToast } from "@/hooks/use-toast";
+import { reportEvent } from "@/lib/api/events";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import Image from "next/image";
 
 const badgeStyles: Record<string, string> = {
   status: "bg-indigo-400/30 text-indigo-800",
@@ -30,6 +52,48 @@ export function EventCard({
   const [detailOpen, setDetailOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dotsRef = useRef<HTMLButtonElement | null>(null);
+
+  const { token } = useUser();
+  const { toast } = useToast();
+
+  const [reportDialogOpen, setReportDialogOpen] = useState(false);
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [reportReason, setReportReason] =
+    useState<string>("FAKE_OR_MISLEADING");
+  const [reportDescription, setReportDescription] = useState<string>("");
+
+  const reportMutation = useMutation({
+    mutationFn: () =>
+      reportEvent(
+        event.realId || String(event.id),
+        {
+          reason: reportReason,
+          description: reportDescription,
+        },
+        token || undefined,
+      ),
+    onSuccess: () => {
+      toast("success", "Denúncia enviada com sucesso!");
+      setConfirmDialogOpen(false);
+      setReportReason("FAKE_OR_MISLEADING");
+      setReportDescription("");
+    },
+    onError: (error: any) => {
+      const message =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Erro ao enviar denúncia";
+      toast("error", message);
+      setConfirmDialogOpen(false);
+      setReportDialogOpen(true);
+    },
+  });
+
+  const handleOpenConfirm = (e: React.FormEvent) => {
+    e.preventDefault();
+    setReportDialogOpen(false);
+    setConfirmDialogOpen(true);
+  };
 
   return (
     <>
@@ -158,7 +222,7 @@ export function EventCard({
         open={dropdownOpen}
         onClose={() => setDropdownOpen(false)}
         onViewDetails={() => setDetailOpen(true)}
-        onReport={() => {}}
+        onReport={() => setReportDialogOpen(true)}
         triggerRef={dotsRef}
       />
 
@@ -167,6 +231,130 @@ export function EventCard({
         onClose={() => setDetailOpen(false)}
         event={event}
       />
+
+      {/* Report Event Dialog */}
+      <Dialog open={reportDialogOpen} onOpenChange={setReportDialogOpen}>
+        <DialogContent className="sm:max-w-md p-6">
+          <DialogHeader>
+            <div className="pot:mt-3 mt-7">
+              <Image
+                src={"/img/feedback.png"}
+                alt="icon"
+                width={100}
+                height={100}
+                className="w-20 mb-4"
+              />
+            </div>
+            <DialogTitle className="text-2xl">Denunciar Evento</DialogTitle>
+            <DialogDescription>
+              Ajude-nos a manter a comunidade segura. Por que razão deseja
+              denunciar "{event.title}"?
+            </DialogDescription>
+          </DialogHeader>
+
+          <form onSubmit={handleOpenConfirm} className="space-y-4 py-2">
+            <div className="space-y-1.5 flex flex-col">
+              <label className="text-sm font-medium text-zinc-700">
+                Razão da Denúncia
+              </label>
+              <Select
+                value={reportReason}
+                onValueChange={(val) => setReportReason(val)}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Selecione uma razão" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="FAKE_OR_MISLEADING">
+                    Informação Falsa ou Enganosa
+                  </SelectItem>
+                  <SelectItem value="FRAUDULENT">
+                    Evento Fraudulento (Burla / Golpe)
+                  </SelectItem>
+                  <SelectItem value="HARASSMENT">
+                    Assédio, Abuso ou Bullying
+                  </SelectItem>
+                  <SelectItem value="SPAM">Spam / Conteúdo Repetido</SelectItem>
+                  <SelectItem value="INCORRECT_CATEGORY">
+                    Categoria Incorreta
+                  </SelectItem>
+                  <SelectItem value="INTELLECTUAL_PROPERTY">
+                    Violação de Direitos de Autor
+                  </SelectItem>
+                  <SelectItem value="INAPPROPRIATE_CONTENT">
+                    Conteúdo Inapropriado ou Ilegal
+                  </SelectItem>
+                  <SelectItem value="OTHER">
+                    Outra Razão (especificar abaixo)
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-1.5 flex flex-col">
+              <label className="text-sm font-medium text-zinc-700">
+                Descrição / Detalhes
+              </label>
+              <textarea
+                className="w-full min-h-24 p-3 border border-gray-200 rounded-lg text-sm outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-400"
+                placeholder="Por favor, forneça mais informações sobre a sua denúncia..."
+                value={reportDescription}
+                onChange={(e) => setReportDescription(e.target.value)}
+                required
+              />
+            </div>
+
+            <DialogFooter className="mt-6 border-zinc-200">
+              <DialogClose asChild>
+                <Button type="button" variant="outline">
+                  Cancelar
+                </Button>
+              </DialogClose>
+              <Button
+                type="submit"
+                className="bg-red-600 hover:bg-red-700 text-white"
+              >
+                Enviar denúncia
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Confirm Report Dialog */}
+      <Dialog open={confirmDialogOpen} onOpenChange={setConfirmDialogOpen}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader className="flex p-2  flex-col items-start ">
+            <DialogTitle>Confirmar Denúncia</DialogTitle>
+            <DialogDescription>
+              Tem a certeza de que deseja denunciar este evento? Esta ação não
+              pode ser desfeita.
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter className="bg-white justify-between! border-zinc-200 flex sm:justify-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                setConfirmDialogOpen(false);
+                setReportDialogOpen(true);
+              }}
+              disabled={reportMutation.isPending}
+            >
+              Cancelar
+            </Button>
+            <Button
+              type="button"
+              className="bg-red-600 hover:bg-red-700 text-white"
+              onClick={() => reportMutation.mutate()}
+              disabled={reportMutation.isPending}
+            >
+              {reportMutation.isPending ? "A enviar..." : "Sim, denunciar"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

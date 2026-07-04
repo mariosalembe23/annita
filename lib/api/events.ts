@@ -87,6 +87,19 @@ export async function createEvent(payload: CreateEventPayload, token: string) {
   return data;
 }
 
+export interface ReportEventPayload {
+  reason: string;
+  description: string;
+}
+
+export async function reportEvent(id: string, payload: ReportEventPayload, token?: string) {
+  const headers = token ? { Authorization: `Bearer ${token}` } : {};
+  const { data } = await api.post(`/events/${id}/report`, payload, {
+    headers,
+  });
+  return data;
+}
+
 export type UpdateEventPayload = CreateEventPayload;
 
 export async function approveEvent(id: string, token: string) {

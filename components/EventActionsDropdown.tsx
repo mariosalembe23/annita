@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { RiFlagLine, RiFunctionAddFill } from "@remixicon/react";
+import Image from "next/image";
 
 interface ActionOption {
   key: string;

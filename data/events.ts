@@ -23,6 +23,7 @@ export interface EventCardData {
   location: string;
   images: EventImage[];
   link?: string;
+  realId?: string;
 }
 
 export const events: EventCardData[] = [
@@ -212,6 +213,7 @@ export function adaptApiEvent(apiEvent: ApiEvent): EventCardData {
       ? [{ src: apiEvent.coverImage, alt: apiEvent.title }]
       : [],
     link: apiEvent.link,
+    realId: apiEvent.id,
   };
 }
 
