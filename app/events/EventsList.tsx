@@ -15,7 +15,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { EventCard } from "@/components/EventCard";
-import { adaptApiEvent } from "@/data/events";
 import { getEvents } from "@/lib/api/events";
 import Link from "next/link";
 import { useState } from "react";
@@ -55,7 +54,7 @@ export function EventsList() {
       }),
   });
 
-  const apiEvents = data?.data.map(adaptApiEvent) ?? [];
+  const apiEvents = data?.data ?? [];
   const meta = data?.meta;
 
   return (

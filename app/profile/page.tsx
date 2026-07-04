@@ -14,7 +14,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { adaptApiEvent, formatDate } from "@/data/events";
 import { getMyEvents } from "@/lib/api/events";
 import { removeCookie } from "@/lib/utils";
 import { useUser } from "@/hooks/use-user";
@@ -22,6 +21,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ProfileEvents } from "./ProfileEvents";
 import { ProfileReports } from "./ProfileReports";
 import { ProfileSettings } from "./ProfileSettings";
+import { formatDate } from "@/data/events";
 
 export default function ProfilePage() {
   const { user, token, isLoggedIn, isLoading } = useUser();
@@ -45,7 +45,7 @@ export default function ProfilePage() {
     enabled: !!token,
   });
 
-  const adaptedEvents = myEventsData?.data.map(adaptApiEvent) ?? [];
+  const myEvents = myEventsData?.data ?? [];
 
   const handleSignout = () => {
     removeCookie("token");
@@ -55,6 +55,12 @@ export default function ProfilePage() {
 
   const handleSaveSettings = () => {
     toast("success", "Definições guardadas com sucesso!");
+  };
+
+  const handleDeleteAccount = () => {
+    removeCookie("token");
+    toast("success", "A sua conta foi eliminada com sucesso.");
+    router.push("/");
   };
 
   if (isLoading || !user) {
@@ -67,7 +73,7 @@ export default function ProfilePage() {
 
   return (
     <div className="w-full min-h-screen bg-white pb-16">
-      <header className="max-w-7xl mx-auto px-4">
+      <header className="max-w-[90%] mx-auto px-4">
         <div className="flex py-4 items-center justify-between">
           <div>
             <Link href={"/"} className="flex items-center gap-2 mb-1">
@@ -99,12 +105,6 @@ export default function ProfilePage() {
         <section className="mt-5 w-full">
           <div className="w-full h-38 flex flex-col justify-end rounded-2xl bg-linear-to-br from-design-1 to-design-3">
             <div className="flex gap-2 p-5 items-center w-full justify-end">
-              <button
-                onClick={() => setActiveTab("settings")}
-                className="text-sm transition-all hover:opacity-75 bg-white text-black rounded-lg px-4 py-1.5 font-normal flex items-center gap-2 cursor-pointer shadow-sm"
-              >
-                Editar Perfil
-              </button>
               {(user.role === "ADMIN" || user.role === "MODERATOR") && (
                 <button
                   onClick={() => router.push("/dashboard")}
@@ -145,7 +145,11 @@ export default function ProfilePage() {
         <div className="mt-10 border-b border-zinc-200">
           <div className="flex gap-12 mx-7">
             {[
-              { id: "events", label: "Meus Eventos", icon: RiCalendarEventLine },
+              {
+                id: "events",
+                label: "Meus Eventos",
+                icon: RiCalendarEventLine,
+              },
               { id: "reports", label: "Denúncias", icon: RiFlagLine },
               { id: "settings", label: "Configurações", icon: RiSettings4Line },
             ].map((tab) => {
@@ -181,16 +185,17 @@ export default function ProfilePage() {
         {/* Tab Contents */}
         <div className="py-8 mx-7">
           {activeTab === "events" && (
-            <ProfileEvents isLoading={myEventsPending} events={adaptedEvents} />
+            <ProfileEvents isLoading={myEventsPending} events={myEvents} />
           )}
 
-          {activeTab === "reports" && <ProfileReports />}
+          {activeTab === "reports" && <ProfileReports token={token ?? ""} />}
 
           {activeTab === "settings" && (
             <ProfileSettings
               user={user}
               onSignout={handleSignout}
               onSave={handleSaveSettings}
+              onDeleteAccount={handleDeleteAccount}
             />
           )}
         </div>

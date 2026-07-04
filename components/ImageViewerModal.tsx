@@ -7,7 +7,10 @@ import {
   RiArrowRightSLine,
 } from "@remixicon/react";
 import { AnimatePresence, motion } from "framer-motion";
-import type { EventImage } from "@/data/events";
+export interface EventImage {
+  src: string;
+  alt?: string;
+}
 
 interface ImageViewerModalProps {
   open: boolean;

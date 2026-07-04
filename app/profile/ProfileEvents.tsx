@@ -2,11 +2,11 @@ import { RiCalendarEventLine } from "@remixicon/react";
 import Link from "next/link";
 import { EventCard } from "@/components/EventCard";
 import { Button } from "@/components/ui/button";
-import type { EventCardData } from "@/data/events";
+import type { ApiEvent } from "@/lib/api/events";
 
 interface ProfileEventsProps {
   isLoading: boolean;
-  events: EventCardData[];
+  events: ApiEvent[];
 }
 
 export function ProfileEvents({ isLoading, events }: ProfileEventsProps) {

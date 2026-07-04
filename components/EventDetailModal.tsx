@@ -3,7 +3,14 @@
 import { useState } from "react";
 import { RiCloseLine, RiMouseFill } from "@remixicon/react";
 import { AnimatePresence, motion } from "framer-motion";
-import type { EventCardData } from "@/data/events";
+import type { ApiEvent } from "@/lib/api/events";
+import {
+  badgeVariantFromStatus,
+  badgeVariantFromType,
+  badgeLabelFromStatus,
+  timeAgoFromDate,
+  formatDate,
+} from "@/data/events";
 import { cn } from "@/lib/utils";
 import { ImageViewerModal } from "./ImageViewerModal";
 import Link from "next/link";
@@ -19,7 +26,7 @@ const pastBadgeStyle = "bg-red-500/10 text-red-700";
 interface EventDetailModalProps {
   open: boolean;
   onClose: () => void;
-  event: EventCardData;
+  event: ApiEvent;
 }
 
 export function EventDetailModal({
@@ -30,6 +37,27 @@ export function EventDetailModal({
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(
     null,
   );
+
+  // Computed properties:
+  const categoryName = event.category.name;
+  const timeAgo = timeAgoFromDate(event.createdAt);
+  const dateFormatted = formatDate(event.startDate);
+  const badges = [
+    {
+      label: badgeLabelFromStatus(event.status),
+      variant: badgeVariantFromStatus(event.status),
+    },
+    {
+      label: event.type === "FREE" ? "Gratuito" : "Pago",
+      variant: badgeVariantFromType(event.type),
+    },
+  ];
+
+  const images = event.coverImage
+    ? [{ src: event.coverImage, alt: event.title }]
+    : [];
+
+  const headerBg = event.status === "REJECTED" ? "bg-red-600" : "bg-design-2";
 
   return (
     <>
@@ -59,15 +87,13 @@ export function EventDetailModal({
                     <span
                       className={cn(
                         "text-xs font-medium px-3 py-1 rounded-full",
-                        event.headerBg ?? "bg-design-2",
+                        headerBg,
                         "text-white",
                       )}
                     >
-                      {event.category}
+                      {categoryName}
                     </span>
-                    <span className="text-sm text-zinc-600">
-                      {event.timeAgo}
-                    </span>
+                    <span className="text-sm text-zinc-600">{timeAgo}</span>
                   </div>
                   <button
                     type="button"
@@ -82,9 +108,9 @@ export function EventDetailModal({
                   {event.title}
                 </h2>
 
-                {event.badges.length > 0 && (
+                {badges.length > 0 && (
                   <div className="flex items-center gap-1 mt-4">
-                    {event.badges.map((badge, i) => (
+                    {badges.map((badge, i) => (
                       <span
                         key={i}
                         className={cn(
@@ -110,10 +136,10 @@ export function EventDetailModal({
                 <div className="mt-6 flex items-center justify-between">
                   <div className="">
                     <p className="text-sm text-zinc-500 mb-1">Data do Evento</p>
-                    <p className="text-base text-zinc-800">{event.date}</p>
+                    <p className="text-base text-zinc-800">{dateFormatted}</p>
                   </div>
                   <div className="flex items-center">
-                    {event.images.map((img, i) => (
+                    {images.map((img, i) => (
                       <button
                         key={i}
                         type="button"
@@ -135,14 +161,14 @@ export function EventDetailModal({
                 <div className="flex items-center justify-between mt-8 pt-6 border-t border-gray-100">
                   <p className="flex items-center text-blue-600 gap-1 text-sm">
                     <RiMouseFill className="size-5" />
-                    {event.interest} interessados
+                    {event.upvoteCount ?? 0} interessados
                   </p>
                   <Link href={event.link || "#"} target="_blank">
                     <button
                       className="text-base transition-all hover:opacity-75 text-white bg-design-2 border-design-2 border rounded-lg px-3 py-1.5 font-normal flex items-center gap-2"
                       onClick={(e) => e.stopPropagation()}
                     >
-                      {event.buttonLabel}
+                      Participar
                     </button>
                   </Link>
                 </div>
@@ -155,7 +181,7 @@ export function EventDetailModal({
       <ImageViewerModal
         open={selectedImageIndex !== null}
         onClose={() => setSelectedImageIndex(null)}
-        images={event.images}
+        images={images}
         currentIndex={selectedImageIndex ?? 0}
         onIndexChange={setSelectedImageIndex}
       />

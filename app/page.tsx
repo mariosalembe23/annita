@@ -18,12 +18,11 @@ import {
 import { EventCard } from "@/components/EventCard";
 import { Footer } from "@/components/Footer";
 import { Nav } from "@/components/Nav";
-import { events } from "@/data/events";
-import { adaptApiEvent } from "@/data/events";
 import { getEvents } from "@/lib/api/events";
 import { useUser } from "@/hooks/use-user";
 import Link from "next/link";
 import { useState } from "react";
+import { events } from "@/data/events";
 
 const container = {
   hidden: { opacity: 0 },
@@ -61,7 +60,7 @@ export default function Home() {
       }),
   });
 
-  const apiEvents = data?.data.map(adaptApiEvent) ?? [];
+  const apiEvents = data?.data ?? [];
   const meta = data?.meta;
 
   return (

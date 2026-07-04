@@ -20,6 +20,8 @@ export interface ApiEvent {
   modality: EventModality[];
   startDate: string;
   type: EventType;
+  upvoteCount: number;
+  downvoteCount: number;
   coverImage: string;
   status: EventStatus;
   createdById: string;
@@ -92,10 +94,40 @@ export interface ReportEventPayload {
   description: string;
 }
 
-export async function reportEvent(id: string, payload: ReportEventPayload, token?: string) {
+export async function reportEvent(
+  id: string,
+  payload: ReportEventPayload,
+  token?: string,
+) {
   const headers = token ? { Authorization: `Bearer ${token}` } : {};
   const { data } = await api.post(`/events/${id}/report`, payload, {
     headers,
+  });
+  return data;
+}
+
+export interface ReportItem {
+  id: string;
+  eventId: string;
+  eventTitle: string;
+  reason: string;
+  createdAt: string;
+}
+
+export interface ReportsResponse {
+  data: ReportItem[];
+  meta: {
+    page: number;
+    perPage: number;
+    totalElements: number;
+    totalPages: number;
+  };
+}
+
+export async function getMyReports(token: string, page = 1, perPage = 10) {
+  const { data } = await api.get<ReportsResponse>("/reports/my", {
+    params: { page, perPage },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return data;
 }
@@ -136,7 +168,12 @@ export interface CategoriesResponse {
   meta: EventsMeta;
 }
 
-export async function getCategories(token: string, page = 1, perPage = 10, search?: string) {
+export async function getCategories(
+  token: string,
+  page = 1,
+  perPage = 10,
+  search?: string,
+) {
   const { data } = await api.get<CategoriesResponse>("/categories", {
     headers: { Authorization: `Bearer ${token}` },
     params: { page, per_page: perPage, ...(search ? { search } : {}) },
@@ -156,7 +193,9 @@ export async function getCategoriesByGroup(token: string) {
       headers: { Authorization: `Bearer ${token}` },
     },
   );
-  return Array.isArray(data) ? data : (data as { data: CategoryGroup[] }).data ?? [];
+  return Array.isArray(data)
+    ? data
+    : ((data as { data: CategoryGroup[] }).data ?? []);
 }
 
 export interface CreateCategoryPayload {
@@ -164,7 +203,10 @@ export interface CreateCategoryPayload {
   groupName: string;
 }
 
-export async function createCategory(payload: CreateCategoryPayload, token: string) {
+export async function createCategory(
+  payload: CreateCategoryPayload,
+  token: string,
+) {
   const { data } = await api.post<ApiEventCategory>("/categories", payload, {
     headers: { Authorization: `Bearer ${token}` },
   });
@@ -194,5 +236,10 @@ export async function getEventsAdmin(
     params,
     headers,
   });
+  return data;
+}
+
+export async function getEventDetails(id: string) {
+  const { data } = await api.get<ApiEvent>(`/events/${id}/details`);
   return data;
 }

@@ -3,6 +3,15 @@
 import { useState } from "react";
 import { RiLogoutCircleRLine } from "@remixicon/react";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog";
 
 interface UserProfileData {
   username: string;
@@ -17,13 +26,16 @@ interface ProfileSettingsProps {
     receiveNotifications: boolean;
     subscribeNewsletter: boolean;
   }) => void;
+  onDeleteAccount: () => void;
 }
 
 export function ProfileSettings({
   user,
   onSignout,
   onSave,
+  onDeleteAccount,
 }: ProfileSettingsProps) {
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [receiveNotifications, setReceiveNotifications] = useState(
     user.receiveNotifications,
   );
@@ -107,6 +119,33 @@ export function ProfileSettings({
         </div>
       </div>
 
+      <div className="mt-10">
+        <h3 className="text-xl font-semibold text-zinc-900 border-zinc-200 mb-2 pb-2">
+          Eliminar Conta
+        </h3>
+        <div className="space-y-4 max-w-xl">
+          <div className="flex items-center justify-between p-4 rounded-xl border border-red-200 bg-red-50/30">
+            <div className="space-y-0.5">
+              <p className="text-base font-medium text-red-800">
+                Eliminar a minha conta
+              </p>
+              <p className="text-sm max-w-[85%] text-red-600/80">
+                Ao eliminar a sua conta, todos os seus dados e eventos
+                publicados serão permanentemente apagados. Esta ação é
+                irreversível.
+              </p>
+            </div>
+            <Button
+              type="button"
+              className="bg-red-600 hover:bg-red-700 text-white font-normal px-4 py-2 shrink-0"
+              onClick={() => setDeleteConfirmOpen(true)}
+            >
+              Eliminar
+            </Button>
+          </div>
+        </div>
+      </div>
+
       <div className="pt-4 border-t border-zinc-200 flex items-center justify-between gap-4">
         <Button
           variant="outline"
@@ -116,13 +155,38 @@ export function ProfileSettings({
           <RiLogoutCircleRLine className="size-4" />
           Terminar Sessão
         </Button>
-        <Button
-          onClick={handleSave}
-          className="bg-design-2 hover:bg-design-2/90 text-white font-normal px-6"
-        >
-          Salvar Definições
-        </Button>
       </div>
+
+      {/* Delete Account Confirmation Dialog */}
+      <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader className="flex p-2 flex-col items-start">
+            <DialogTitle>Confirmar Eliminação</DialogTitle>
+            <DialogDescription>
+              Tem a certeza de que deseja eliminar a sua conta? Esta ação não
+              pode ser desfeita e todos os seus eventos serão perdidos.
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter className="bg-white justify-between border-zinc-200 flex sm:justify-center gap-2">
+            <DialogClose asChild>
+              <Button type="button" variant="outline">
+                Cancelar
+              </Button>
+            </DialogClose>
+            <Button
+              type="button"
+              className="bg-red-600 hover:bg-red-700 text-white"
+              onClick={() => {
+                setDeleteConfirmOpen(false);
+                onDeleteAccount();
+              }}
+            >
+              Sim, eliminar conta
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
