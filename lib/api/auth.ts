@@ -18,6 +18,18 @@ export async function register(payload: RegisterPayload) {
   return data;
 }
 
+export interface CheckUsernameResponse {
+  available: boolean;
+}
+
+export async function checkUsername(username: string) {
+  const { data } = await api.get<CheckUsernameResponse>("/auth/check-username", {
+    params: { username },
+  });
+  return data;
+}
+
+
 export interface LoginPayload {
   username: string;
   password: string;

@@ -6,6 +6,9 @@ import {
   RiLockLine,
   RiMailLine,
   RiUser6Line,
+  RiLoader2Line,
+  RiCheckLine,
+  RiErrorWarningLine,
 } from "@remixicon/react";
 import { useMutation } from "@tanstack/react-query";
 import { motion } from "framer-motion";
@@ -14,7 +17,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { NotificationPreferenceModal } from "@/components/NotificationPreferenceModal";
-import { register as registerUser } from "@/lib/api/auth";
+import { register as registerUser, checkUsername } from "@/lib/api/auth";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/hooks/use-user";
 import { useRouter } from "next/navigation";
@@ -48,10 +51,70 @@ export default function SignUpPage() {
     handleSubmit,
     getValues,
     watch,
-    formState: { errors },
+    setError,
+    clearErrors,
+    formState: { errors, isValid },
   } = useForm<SignUpForm>({
     mode: "onChange",
   });
+
+  const username = watch("username") || "";
+  const [isCheckingUsername, setIsCheckingUsername] = useState(false);
+  const [isUsernameAvailable, setIsUsernameAvailable] = useState<
+    boolean | null
+  >(null);
+
+  useEffect(() => {
+    if (!username) {
+      setIsUsernameAvailable(null);
+      setIsCheckingUsername(false);
+      return;
+    }
+
+    setIsUsernameAvailable(null);
+
+    // Basic client-side checks to avoid calling API with invalid usernames
+    if (
+      username.length < 3 ||
+      username.length > 15 ||
+      !/^[a-z0-9_]+$/.test(username)
+    ) {
+      setIsCheckingUsername(false);
+      return;
+    }
+
+    let active = true;
+
+    const delayDebounceFn = setTimeout(async () => {
+      setIsCheckingUsername(true);
+      try {
+        const res = await checkUsername(username);
+        if (!active) return;
+
+        if (!res.available) {
+          setError("username", {
+            type: "manual",
+            message: "Este nome de utilizador já existe",
+          });
+          setIsUsernameAvailable(false);
+        } else {
+          clearErrors("username");
+          setIsUsernameAvailable(true);
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        if (active) {
+          setIsCheckingUsername(false);
+        }
+      }
+    }, 500);
+
+    return () => {
+      active = false;
+      clearTimeout(delayDebounceFn);
+    };
+  }, [username, setError, clearErrors]);
 
   const password = watch("password") || "";
 
@@ -148,7 +211,7 @@ export default function SignUpPage() {
   return (
     <div className="overflow-x-hidden">
       <main className="pt-32 min-h-[calc(100vh-200px)] flex items-center justify-center">
-        <div className="w-full max-w-sm mx-auto">
+        <div className="w-full max-w-xs mx-auto">
           <div className="flex flex-col items-center mb-10">
             <Link href={"/"} className="flex items-center gap-2 mb-1">
               <Image
@@ -219,6 +282,15 @@ export default function SignUpPage() {
                     },
                   })}
                 />
+                {isCheckingUsername && (
+                  <RiLoader2Line className="size-5 text-zinc-400 animate-spin shrink-0 ms-2" />
+                )}
+                {!isCheckingUsername && isUsernameAvailable === true && (
+                  <RiCheckLine className="size-5 text-green-500 shrink-0 ms-2" />
+                )}
+                {!isCheckingUsername && isUsernameAvailable === false && (
+                  <RiErrorWarningLine className="size-5 text-red-500 shrink-0 ms-2" />
+                )}
               </div>
               {errors.username && (
                 <p className="text-red-500 text-sm mt-3">
@@ -356,7 +428,12 @@ export default function SignUpPage() {
 
             <button
               type="submit"
-              disabled={mutation.isPending}
+              disabled={
+                !isValid ||
+                isCheckingUsername ||
+                isUsernameAvailable !== true ||
+                mutation.isPending
+              }
               className="w-full text-base transition-all hover:opacity-75 disabled:opacity-50 text-white bg-design-2 border-design-2 border rounded-lg px-3 py-2.5 font-normal flex items-center justify-center gap-2"
             >
               {mutation.isPending ? "A criar conta..." : "Criar conta"}
