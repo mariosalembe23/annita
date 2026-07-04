@@ -25,9 +25,11 @@ export interface ApiEvent {
   coverImage: string;
   status: EventStatus;
   createdById: string;
+  location: string;
   createdByUsername: string;
   createdAt: string;
   updatedAt: string;
+  userVote?: "UPVOTE" | "DOWNVOTE" | null;
 }
 
 export interface EventsMeta {
@@ -241,5 +243,16 @@ export async function getEventsAdmin(
 
 export async function getEventDetails(id: string) {
   const { data } = await api.get<ApiEvent>(`/events/${id}/details`);
+  return data;
+}
+
+export interface VoteEventPayload {
+  type: "UPVOTE" | "DOWNVOTE";
+}
+
+export async function voteEvent(id: string, payload: VoteEventPayload, token: string) {
+  const { data } = await api.post(`/events/${id}/vote`, payload, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
   return data;
 }

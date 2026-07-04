@@ -23,7 +23,9 @@ export const events: ApiEvent[] = [
     createdById: "user-1",
     createdByUsername: "admin",
     createdAt: "2026-07-01T20:14:22Z",
-    updatedAt: "2026-07-01T20:14:22Z"
+    updatedAt: "2026-07-01T20:14:22Z",
+    location: "Centro de Conferências de Luanda, Talatona",
+    userVote: null
   },
   {
     id: "2",
@@ -47,7 +49,9 @@ export const events: ApiEvent[] = [
     createdById: "user-1",
     createdByUsername: "admin",
     createdAt: "2026-07-01T20:14:22Z",
-    updatedAt: "2026-07-01T20:14:22Z"
+    updatedAt: "2026-07-01T20:14:22Z",
+    location: "Auditório do ISPTEC, Luanda",
+    userVote: null
   },
   {
     id: "3",
@@ -71,7 +75,9 @@ export const events: ApiEvent[] = [
     createdById: "user-1",
     createdByUsername: "admin",
     createdAt: "2026-07-01T20:14:22Z",
-    updatedAt: "2026-07-01T20:14:22Z"
+    updatedAt: "2026-07-01T20:14:22Z",
+    location: "Coworking AngoInov, Luanda",
+    userVote: null
   },
   {
     id: "4",
@@ -95,7 +101,9 @@ export const events: ApiEvent[] = [
     createdById: "user-1",
     createdByUsername: "admin",
     createdAt: "2026-07-01T20:14:22Z",
-    updatedAt: "2026-07-01T20:14:22Z"
+    updatedAt: "2026-07-01T20:14:22Z",
+    location: "Espaço Kilamba, Luanda",
+    userVote: null
   },
   {
     id: "5",
@@ -119,7 +127,9 @@ export const events: ApiEvent[] = [
     createdById: "user-1",
     createdByUsername: "admin",
     createdAt: "2026-07-01T20:14:22Z",
-    updatedAt: "2026-07-01T20:14:22Z"
+    updatedAt: "2026-07-01T20:14:22Z",
+    location: "Centro de Convenções de Luanda",
+    userVote: null
   },
   {
     id: "6",
@@ -143,7 +153,9 @@ export const events: ApiEvent[] = [
     createdById: "user-1",
     createdByUsername: "admin",
     createdAt: "2026-07-01T20:14:22Z",
-    updatedAt: "2026-07-01T20:14:22Z"
+    updatedAt: "2026-07-01T20:14:22Z",
+    location: "Hub de Inovação do Banco Nacional de Angola",
+    userVote: null
   }
 ];
 

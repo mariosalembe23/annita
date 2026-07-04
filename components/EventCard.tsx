@@ -1,7 +1,15 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { RiMore2Fill, RiMouseFill, RiAlertLine } from "@remixicon/react";
+import {
+  RiMore2Fill,
+  RiMouseFill,
+  RiAlertLine,
+  RiThumbUpLine,
+  RiThumbUpFill,
+  RiThumbDownLine,
+  RiThumbDownFill,
+} from "@remixicon/react";
 import { cn } from "@/lib/utils";
 import type { ApiEvent } from "@/lib/api/events";
 import {
@@ -15,10 +23,10 @@ import {
 import { EventDetailModal } from "./EventDetailModal";
 import { EventActionsDropdown } from "./EventActionsDropdown";
 import Link from "next/link";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useUser } from "@/hooks/use-user";
 import { useToast } from "@/hooks/use-toast";
-import { reportEvent } from "@/lib/api/events";
+import { reportEvent, voteEvent } from "@/lib/api/events";
 import {
   Dialog,
   DialogContent,
@@ -63,6 +71,34 @@ export function EventCard({
 
   const { token } = useUser();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const voteMutation = useMutation({
+    mutationFn: (voteType: "UPVOTE" | "DOWNVOTE") =>
+      voteEvent(event.id, { type: voteType }, token ?? ""),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["events"] });
+      queryClient.invalidateQueries({ queryKey: ["my-events"] });
+      queryClient.invalidateQueries({ queryKey: ["event-details", event.id] });
+    },
+    onError: (error: any) => {
+      toast(
+        "error",
+        error?.response?.data?.message ||
+          error?.message ||
+          "Erro ao registar voto",
+      );
+    },
+  });
+
+  const handleVote = (e: React.MouseEvent, voteType: "UPVOTE" | "DOWNVOTE") => {
+    e.stopPropagation();
+    if (!token) {
+      toast("error", "Deve iniciar sessão para votar num evento.");
+      return;
+    }
+    voteMutation.mutate(voteType);
+  };
 
   const [reportDialogOpen, setReportDialogOpen] = useState(false);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
@@ -195,33 +231,45 @@ export function EventCard({
           <footer className="flex items-center justify-between w-full">
             {type === "usual" && (
               <div className="flex items-center gap-3">
-                <button className="flex transition-all text-black hover:text-green-600 items-center gap-1">
-                  <svg
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="size-5.5 pointer-events-none btn-icon"
-                    strokeWidth={2}
-                  >
-                    <path
-                      d="M9.456 4.216l-5.985 7.851c-.456.637-.583 1.402-.371 2.108l.052.155a2.384 2.384 0 002.916 1.443l2.876-.864.578 4.042a2.384 2.384 0 002.36 2.047h.234l.161-.006a2.384 2.384 0 002.2-2.041l.576-4.042 2.877.864a2.384 2.384 0 002.625-3.668L14.63 4.33a3.268 3.268 0 00-5.174-.115zm3.57.613c.16.114.298.253.411.411l5.897 7.736a.884.884 0 01-.973 1.36l-3.563-1.069a.884.884 0 00-1.129.722l-.678 4.75a.884.884 0 01-.875.759h-.234a.884.884 0 01-.875-.76l-.679-4.75a.884.884 0 00-1.128-.72l-3.563 1.068a.884.884 0 01-.973-1.36L10.56 5.24a1.767 1.767 0 012.465-.41z"
-                      fill="currentcolor"
-                    ></path>
-                  </svg>
-                  <p>{event.upvoteCount ?? 0}</p>
+                <button
+                  type="button"
+                  className={cn(
+                    "flex transition-all items-center gap-1.5 cursor-pointer",
+                    event.userVote === "UPVOTE"
+                      ? "text-green-600"
+                      : "text-zinc-500 hover:text-green-600",
+                  )}
+                  onClick={(e) => handleVote(e, "UPVOTE")}
+                  disabled={voteMutation.isPending}
+                >
+                  {event.userVote === "UPVOTE" ? (
+                    <RiThumbUpFill className="size-5 text-green-600 shrink-0" />
+                  ) : (
+                    <RiThumbUpLine className="size-5 shrink-0" />
+                  )}
+                  <span className="text-sm font-medium">
+                    {event.upvoteCount ?? 0}
+                  </span>
                 </button>
-                <button className="flex transition-all text-black hover:text-red-600 items-center gap-1">
-                  <svg
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="size-5.5 rotate-180 pointer-events-none btn-icon"
-                    strokeWidth={2}
-                  >
-                    <path
-                      d="M9.456 4.216l-5.985 7.851c-.456.637-.583 1.402-.371 2.108l.052.155a2.384 2.384 0 002.916 1.443l2.876-.864.578 4.042a2.384 2.384 0 002.36 2.047h.234l.161-.006a2.384 2.384 0 002.2-2.041l.576-4.042 2.877.864a2.384 2.384 0 002.625-3.668L14.63 4.33a3.268 3.268 0 00-5.174-.115zm3.57.613c.16.114.298.253.411.411l5.897 7.736a.884.884 0 01-.973 1.36l-3.563-1.069a.884.884 0 00-1.129.722l-.678 4.75a.884.884 0 01-.875.759h-.234a.884.884 0 01-.875-.76l-.679-4.75a.884.884 0 00-1.128-.72l-3.563 1.068a.884.884 0 01-.973-1.36L10.56 5.24a1.767 1.767 0 012.465-.41z"
-                      fill="currentcolor"
-                    ></path>
-                  </svg>
-                  <p>{event.downvoteCount ?? 0}</p>
+                <button
+                  type="button"
+                  className={cn(
+                    "flex transition-all items-center gap-1.5 cursor-pointer",
+                    event.userVote === "DOWNVOTE"
+                      ? "text-red-600"
+                      : "text-zinc-500 hover:text-red-600",
+                  )}
+                  onClick={(e) => handleVote(e, "DOWNVOTE")}
+                  disabled={voteMutation.isPending}
+                >
+                  {event.userVote === "DOWNVOTE" ? (
+                    <RiThumbDownFill className="size-5 text-red-600 shrink-0" />
+                  ) : (
+                    <RiThumbDownLine className="size-5 shrink-0" />
+                  )}
+                  <span className="text-sm font-medium">
+                    {event.downvoteCount ?? 0}
+                  </span>
                 </button>
               </div>
             )}

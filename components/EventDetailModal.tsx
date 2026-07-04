@@ -1,7 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { RiCloseLine, RiMouseFill } from "@remixicon/react";
+import {
+  RiCloseLine,
+  RiMouseFill,
+  RiThumbUpLine,
+  RiThumbUpFill,
+  RiThumbDownLine,
+  RiThumbDownFill,
+} from "@remixicon/react";
 import { AnimatePresence, motion } from "framer-motion";
 import type { ApiEvent } from "@/lib/api/events";
 import {
@@ -14,6 +21,10 @@ import {
 import { cn } from "@/lib/utils";
 import { ImageViewerModal } from "./ImageViewerModal";
 import Link from "next/link";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useUser } from "@/hooks/use-user";
+import { useToast } from "@/hooks/use-toast";
+import { voteEvent } from "@/lib/api/events";
 
 const badgeStyles: Record<string, string> = {
   status: "bg-indigo-400/30 text-indigo-800",
@@ -37,6 +48,37 @@ export function EventDetailModal({
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(
     null,
   );
+
+  const { token } = useUser();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const voteMutation = useMutation({
+    mutationFn: (voteType: "UPVOTE" | "DOWNVOTE") =>
+      voteEvent(event.id, { type: voteType }, token ?? ""),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["events"] });
+      queryClient.invalidateQueries({ queryKey: ["my-events"] });
+      queryClient.invalidateQueries({ queryKey: ["event-details", event.id] });
+    },
+    onError: (error: any) => {
+      toast(
+        "error",
+        error?.response?.data?.message ||
+          error?.message ||
+          "Erro ao registar voto",
+      );
+    },
+  });
+
+  const handleVote = (e: React.MouseEvent, voteType: "UPVOTE" | "DOWNVOTE") => {
+    e.stopPropagation();
+    if (!token) {
+      toast("error", "Deve iniciar sessão para votar num evento.");
+      return;
+    }
+    voteMutation.mutate(voteType);
+  };
 
   // Computed properties:
   const categoryName = event.category.name;
@@ -159,10 +201,48 @@ export function EventDetailModal({
                 </div>
 
                 <div className="flex items-center justify-between mt-8 pt-6 border-t border-gray-100">
-                  <p className="flex items-center text-blue-600 gap-1 text-sm">
-                    <RiMouseFill className="size-5" />
-                    {event.upvoteCount ?? 0} interessados
-                  </p>
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      className={cn(
+                        "flex transition-all items-center gap-1.5 cursor-pointer",
+                        event.userVote === "UPVOTE"
+                          ? "text-green-600"
+                          : "text-zinc-500 hover:text-green-600",
+                      )}
+                      onClick={(e) => handleVote(e, "UPVOTE")}
+                      disabled={voteMutation.isPending}
+                    >
+                      {event.userVote === "UPVOTE" ? (
+                        <RiThumbUpFill className="size-5 text-green-600 shrink-0" />
+                      ) : (
+                        <RiThumbUpLine className="size-5 shrink-0" />
+                      )}
+                      <span className="text-sm font-medium">
+                        {event.upvoteCount ?? 0}
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      className={cn(
+                        "flex transition-all items-center gap-1.5 cursor-pointer",
+                        event.userVote === "DOWNVOTE"
+                          ? "text-red-600"
+                          : "text-zinc-500 hover:text-red-600",
+                      )}
+                      onClick={(e) => handleVote(e, "DOWNVOTE")}
+                      disabled={voteMutation.isPending}
+                    >
+                      {event.userVote === "DOWNVOTE" ? (
+                        <RiThumbDownFill className="size-5 text-red-600 shrink-0" />
+                      ) : (
+                        <RiThumbDownLine className="size-5 shrink-0" />
+                      )}
+                      <span className="text-sm font-medium">
+                        {event.downvoteCount ?? 0}
+                      </span>
+                    </button>
+                  </div>
                   <Link href={event.link || "#"} target="_blank">
                     <button
                       className="text-base transition-all hover:opacity-75 text-white bg-design-2 border-design-2 border rounded-lg px-3 py-1.5 font-normal flex items-center gap-2"
