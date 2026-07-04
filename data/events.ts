@@ -22,6 +22,7 @@ export interface EventCardData {
   description: string;
   location: string;
   images: EventImage[];
+  link?: string;
 }
 
 export const events: EventCardData[] = [
@@ -210,6 +211,7 @@ export function adaptApiEvent(apiEvent: ApiEvent): EventCardData {
     images: apiEvent.coverImage
       ? [{ src: apiEvent.coverImage, alt: apiEvent.title }]
       : [],
+    link: apiEvent.link,
   };
 }
 
@@ -227,9 +229,13 @@ function timeAgoFromDate(dateStr: string): string {
 
 function formatDate(dateStr: string): string {
   const date = new Date(dateStr);
-  return date.toLocaleDateString("pt-PT", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
+  if (isNaN(date.getTime())) return dateStr;
+  const day = date.getDate();
+  const months = [
+    "Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
+    "Jul", "Ago", "Set", "Out", "Nov", "Dez"
+  ];
+  const month = months[date.getMonth()];
+  const year = date.getFullYear();
+  return `${day} de ${month}. ${year}`;
 }

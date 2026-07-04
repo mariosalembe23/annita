@@ -1,16 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import {
-  RiCloseLine,
-  RiCursorHand,
-  RiMapPinLine,
-  RiMouseFill,
-} from "@remixicon/react";
+import { RiCloseLine, RiMouseFill } from "@remixicon/react";
 import { AnimatePresence, motion } from "framer-motion";
 import type { EventCardData } from "@/data/events";
 import { cn } from "@/lib/utils";
 import { ImageViewerModal } from "./ImageViewerModal";
+import Link from "next/link";
 
 const badgeStyles: Record<string, string> = {
   status: "bg-indigo-400/30 text-indigo-800",
@@ -69,7 +65,7 @@ export function EventDetailModal({
                     >
                       {event.category}
                     </span>
-                    <span className="text-xs text-zinc-400">
+                    <span className="text-sm text-zinc-600">
                       {event.timeAgo}
                     </span>
                   </div>
@@ -85,11 +81,6 @@ export function EventDetailModal({
                 <h2 className="text-2xl font-semibold text-zinc-900 leading-tight">
                   {event.title}
                 </h2>
-
-                <div className="flex items-center gap-1 mt-2 text-zinc-500 text-sm">
-                  <RiMapPinLine className="size-4 shrink-0" />
-                  <span>{event.location}</span>
-                </div>
 
                 {event.badges.length > 0 && (
                   <div className="flex items-center gap-1 mt-4">
@@ -146,10 +137,14 @@ export function EventDetailModal({
                     <RiMouseFill className="size-5" />
                     {event.interest} interessados
                   </p>
-                  <button className="text-base transition-all hover:opacity-75 text-white bg-design-2 border-design-2 border rounded-lg px-4 py-2 font-normal flex items-center gap-2">
-                    <RiCursorHand className="size-4" />
-                    {event.buttonLabel}
-                  </button>
+                  <Link href={event.link || "#"} target="_blank">
+                    <button
+                      className="text-base transition-all hover:opacity-75 text-white bg-design-2 border-design-2 border rounded-lg px-3 py-1.5 font-normal flex items-center gap-2"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {event.buttonLabel}
+                    </button>
+                  </Link>
                 </div>
               </div>
             </motion.div>
