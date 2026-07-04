@@ -25,8 +25,8 @@ export function ProfileReports({ token }: ProfileReportsProps) {
 
   // Query event details when a card "Ver Detalhes" button is clicked
   const { data: eventDetails, isFetching: loadingDetails } = useQuery({
-    queryKey: ["event-details", selectedEventId],
-    queryFn: () => getEventDetails(selectedEventId ?? ""),
+    queryKey: ["event-details", selectedEventId, token],
+    queryFn: () => getEventDetails(selectedEventId ?? "", token),
     enabled: !!selectedEventId,
   });
 

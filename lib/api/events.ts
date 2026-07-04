@@ -241,8 +241,11 @@ export async function getEventsAdmin(
   return data;
 }
 
-export async function getEventDetails(id: string) {
-  const { data } = await api.get<ApiEvent>(`/events/${id}/details`);
+export async function getEventDetails(id: string, token?: string) {
+  const headers = token ? { Authorization: `Bearer ${token}` } : {};
+  const { data } = await api.get<ApiEvent>(`/events/${id}/details`, {
+    headers,
+  });
   return data;
 }
 
@@ -250,8 +253,19 @@ export interface VoteEventPayload {
   type: "UPVOTE" | "DOWNVOTE";
 }
 
-export async function voteEvent(id: string, payload: VoteEventPayload, token: string) {
+export async function voteEvent(
+  id: string,
+  payload: VoteEventPayload,
+  token: string,
+) {
   const { data } = await api.post(`/events/${id}/vote`, payload, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return data;
+}
+
+export async function deleteEvent(id: string, token: string) {
+  const { data } = await api.delete(`/events/${id}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   return data;

@@ -220,3 +220,40 @@ export function formatDate(dateStr: string): string {
   const year = date.getFullYear();
   return `${day} de ${month}. ${year}`;
 }
+
+export function getOptimisticVoteState(
+  event: { userVote?: "UPVOTE" | "DOWNVOTE" | null; upvoteCount: number; downvoteCount: number },
+  voteType: "UPVOTE" | "DOWNVOTE"
+) {
+  const currentVote = event.userVote;
+  let nextVote: "UPVOTE" | "DOWNVOTE" | null = voteType;
+  let upvoteDiff = 0;
+  let downvoteDiff = 0;
+
+  if (currentVote === voteType) {
+    nextVote = null;
+    if (voteType === "UPVOTE") {
+      upvoteDiff = -1;
+    } else {
+      downvoteDiff = -1;
+    }
+  } else {
+    if (voteType === "UPVOTE") {
+      upvoteDiff = 1;
+      if (currentVote === "DOWNVOTE") {
+        downvoteDiff = -1;
+      }
+    } else {
+      downvoteDiff = 1;
+      if (currentVote === "UPVOTE") {
+        upvoteDiff = -1;
+      }
+    }
+  }
+
+  return {
+    userVote: nextVote,
+    upvoteCount: Math.max(0, (event.upvoteCount ?? 0) + upvoteDiff),
+    downvoteCount: Math.max(0, (event.downvoteCount ?? 0) + downvoteDiff),
+  };
+}

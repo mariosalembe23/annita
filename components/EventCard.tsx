@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import {
   RiMore2Fill,
   RiMouseFill,
@@ -19,6 +19,7 @@ import {
   modalityLabel,
   timeAgoFromDate,
   formatDate,
+  getOptimisticVoteState,
 } from "@/data/events";
 import { EventDetailModal } from "./EventDetailModal";
 import { EventActionsDropdown } from "./EventActionsDropdown";
@@ -26,7 +27,7 @@ import Link from "next/link";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useUser } from "@/hooks/use-user";
 import { useToast } from "@/hooks/use-toast";
-import { reportEvent, voteEvent } from "@/lib/api/events";
+import { reportEvent, voteEvent, deleteEvent } from "@/lib/api/events";
 import {
   Dialog,
   DialogContent,
@@ -69,25 +70,104 @@ export function EventCard({
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dotsRef = useRef<HTMLButtonElement | null>(null);
 
-  const { token } = useUser();
+  const { token, payload } = useUser();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  const isOwner = payload?.userId === event.createdById;
+
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+  const [localVote, setLocalVote] = useState(event.userVote);
+  const [localUpvotes, setLocalUpvotes] = useState(event.upvoteCount ?? 0);
+  const [localDownvotes, setLocalDownvotes] = useState(event.downvoteCount ?? 0);
+
+  useEffect(() => {
+    setLocalVote(event.userVote);
+    setLocalUpvotes(event.upvoteCount ?? 0);
+    setLocalDownvotes(event.downvoteCount ?? 0);
+  }, [event.userVote, event.upvoteCount, event.downvoteCount]);
+
+  const deleteMutation = useMutation({
+    mutationFn: () => deleteEvent(event.id, token ?? ""),
+    onSuccess: () => {
+      toast("success", "Evento eliminado com sucesso!");
+      setDeleteDialogOpen(false);
+      queryClient.invalidateQueries({ queryKey: ["events"] });
+      queryClient.invalidateQueries({ queryKey: ["my-events"] });
+    },
+    onError: (error: any) => {
+      const message =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Erro ao eliminar o evento";
+      toast("error", message);
+    },
+  });
+
+  const handleCopyLink = () => {
+    const linkToCopy = `${window.location.origin}/event/${event.id}`;
+    navigator.clipboard.writeText(linkToCopy);
+    toast("success", "Link copiado com sucesso!");
+  };
 
   const voteMutation = useMutation({
     mutationFn: (voteType: "UPVOTE" | "DOWNVOTE") =>
       voteEvent(event.id, { type: voteType }, token ?? ""),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["events"] });
-      queryClient.invalidateQueries({ queryKey: ["my-events"] });
-      queryClient.invalidateQueries({ queryKey: ["event-details", event.id] });
+    onMutate: async (voteType) => {
+      await queryClient.cancelQueries({ queryKey: ["events"] });
+      await queryClient.cancelQueries({ queryKey: ["my-events"] });
+      await queryClient.cancelQueries({ queryKey: ["event-details", event.id] });
+
+      const previousEventsData = queryClient.getQueriesData({ queryKey: ["events"] });
+      const previousMyEventsData = queryClient.getQueriesData({ queryKey: ["my-events"] });
+      const previousEventDetails = queryClient.getQueryData(["event-details", event.id]);
+
+      const nextState = getOptimisticVoteState(event, voteType);
+
+      const updateEventsList = (oldData: any) => {
+        if (!oldData || !oldData.data) return oldData;
+        return {
+          ...oldData,
+          data: oldData.data.map((e: ApiEvent) =>
+            e.id === event.id ? { ...e, ...nextState } : e
+          ),
+        };
+      };
+
+      queryClient.setQueriesData({ queryKey: ["events"] }, updateEventsList);
+      queryClient.setQueriesData({ queryKey: ["my-events"] }, updateEventsList);
+      queryClient.setQueryData(["event-details", event.id], (oldData: any) => {
+        if (!oldData) return oldData;
+        return { ...oldData, ...nextState };
+      });
+
+      return { previousEventsData, previousMyEventsData, previousEventDetails };
     },
-    onError: (error: any) => {
+    onError: (error: any, voteType, context: any) => {
+      if (context) {
+        context.previousEventsData?.forEach(([queryKey, queryData]: any) => {
+          queryClient.setQueryData(queryKey, queryData);
+        });
+        context.previousMyEventsData?.forEach(([queryKey, queryData]: any) => {
+          queryClient.setQueryData(queryKey, queryData);
+        });
+        if (context.previousEventDetails) {
+          queryClient.setQueryData(["event-details", event.id], context.previousEventDetails);
+        }
+      }
+
       toast(
         "error",
         error?.response?.data?.message ||
           error?.message ||
           "Erro ao registar voto",
       );
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["events"] });
+      queryClient.invalidateQueries({ queryKey: ["my-events"] });
+      queryClient.invalidateQueries({ queryKey: ["event-details", event.id] });
     },
   });
 
@@ -97,7 +177,27 @@ export function EventCard({
       toast("error", "Deve iniciar sessão para votar num evento.");
       return;
     }
-    voteMutation.mutate(voteType);
+
+    const previousVote = localVote;
+    const previousUpvotes = localUpvotes;
+    const previousDownvotes = localDownvotes;
+
+    const nextState = getOptimisticVoteState(
+      { userVote: localVote, upvoteCount: localUpvotes, downvoteCount: localDownvotes },
+      voteType
+    );
+
+    setLocalVote(nextState.userVote);
+    setLocalUpvotes(nextState.upvoteCount);
+    setLocalDownvotes(nextState.downvoteCount);
+
+    voteMutation.mutate(voteType, {
+      onError: () => {
+        setLocalVote(previousVote);
+        setLocalUpvotes(previousUpvotes);
+        setLocalDownvotes(previousDownvotes);
+      },
+    });
   };
 
   const [reportDialogOpen, setReportDialogOpen] = useState(false);
@@ -235,40 +335,38 @@ export function EventCard({
                   type="button"
                   className={cn(
                     "flex transition-all items-center gap-1.5 cursor-pointer",
-                    event.userVote === "UPVOTE"
+                    localVote === "UPVOTE"
                       ? "text-green-600"
                       : "text-zinc-500 hover:text-green-600",
                   )}
                   onClick={(e) => handleVote(e, "UPVOTE")}
-                  disabled={voteMutation.isPending}
                 >
-                  {event.userVote === "UPVOTE" ? (
+                  {localVote === "UPVOTE" ? (
                     <RiThumbUpFill className="size-5 text-green-600 shrink-0" />
                   ) : (
                     <RiThumbUpLine className="size-5 shrink-0" />
                   )}
                   <span className="text-sm font-medium">
-                    {event.upvoteCount ?? 0}
+                    {localUpvotes}
                   </span>
                 </button>
                 <button
                   type="button"
                   className={cn(
                     "flex transition-all items-center gap-1.5 cursor-pointer",
-                    event.userVote === "DOWNVOTE"
+                    localVote === "DOWNVOTE"
                       ? "text-red-600"
                       : "text-zinc-500 hover:text-red-600",
                   )}
                   onClick={(e) => handleVote(e, "DOWNVOTE")}
-                  disabled={voteMutation.isPending}
                 >
-                  {event.userVote === "DOWNVOTE" ? (
+                  {localVote === "DOWNVOTE" ? (
                     <RiThumbDownFill className="size-5 text-red-600 shrink-0" />
                   ) : (
                     <RiThumbDownLine className="size-5 shrink-0" />
                   )}
                   <span className="text-sm font-medium">
-                    {event.downvoteCount ?? 0}
+                    {localDownvotes}
                   </span>
                 </button>
               </div>
@@ -294,6 +392,9 @@ export function EventCard({
         onClose={() => setDropdownOpen(false)}
         onViewDetails={() => setDetailOpen(true)}
         onReport={() => setReportDialogOpen(true)}
+        onCopyLink={handleCopyLink}
+        onDelete={() => setDeleteDialogOpen(true)}
+        isOwner={isOwner}
         triggerRef={dotsRef}
       />
 
@@ -422,6 +523,37 @@ export function EventCard({
               disabled={reportMutation.isPending}
             >
               {reportMutation.isPending ? "A enviar..." : "Sim, denunciar"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Event Dialog */}
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader className="flex p-2 flex-col items-start">
+            <DialogTitle>Eliminar Evento</DialogTitle>
+            <DialogDescription>
+              Tem a certeza de que deseja eliminar o evento "{event.title}"? Esta ação não pode ser desfeita.
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter className="bg-white justify-between! border-zinc-200 flex sm:justify-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setDeleteDialogOpen(false)}
+              disabled={deleteMutation.isPending}
+            >
+              Cancelar
+            </Button>
+            <Button
+              type="button"
+              className="bg-red-600 hover:bg-red-700 text-white"
+              onClick={() => deleteMutation.mutate()}
+              disabled={deleteMutation.isPending}
+            >
+              {deleteMutation.isPending ? "A eliminar..." : "Sim, eliminar"}
             </Button>
           </DialogFooter>
         </DialogContent>

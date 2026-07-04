@@ -1,6 +1,10 @@
 "use client";
 
-import { RiGithubFill, RiInstagramLine, RiLinkedinFill } from "@remixicon/react";
+import {
+  RiGithubFill,
+  RiInstagramLine,
+  RiLinkedinFill,
+} from "@remixicon/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -37,15 +41,14 @@ export function Footer() {
         <div className="lg:col-span-4">
           <Link href={"/"} className="flex items-center gap-2 mb-4">
             <Image
-              src={"img-logo/simple-logo.svg"}
+              src={"/img-logo/simple-logo.svg"}
               alt={"Logo"}
               width={100}
-              className="w-5 mt-1"
+              className="w-12 mt-1"
               height={100}
             />
-            <p className="text-3xl text-design-3">annita</p>
           </Link>
-          <p className="text-zinc-500 max-w-sm text-[15px] leading-relaxed">
+          <p className="text-zinc-600 max-w-sm text-[15px] leading-relaxed">
             A plataforma de eventos de tecnologia em Angola. Publica, descobre e
             participa nos melhores eventos tech do país.
           </p>
@@ -54,7 +57,7 @@ export function Footer() {
               href="https://linkedin.com/company/annita"
               target="_blank"
               rel="noopener noreferrer"
-              className="size-9 rounded-lg border border-zinc-200 flex items-center justify-center text-zinc-500 hover:text-design-2 hover:border-design-2/40 transition-colors"
+              className="size-9 rounded-lg border border-zinc-200 flex items-center justify-center text-zinc-600 hover:text-design-2 hover:border-design-2/40 transition-colors"
             >
               <RiLinkedinFill className="size-4" />
             </a>
@@ -62,7 +65,7 @@ export function Footer() {
               href="https://instagram.com/annita"
               target="_blank"
               rel="noopener noreferrer"
-              className="size-9 rounded-lg border border-zinc-200 flex items-center justify-center text-zinc-500 hover:text-design-2 hover:border-design-2/40 transition-colors"
+              className="size-9 rounded-lg border border-zinc-200 flex items-center justify-center text-zinc-600 hover:text-design-2 hover:border-design-2/40 transition-colors"
             >
               <RiInstagramLine className="size-4" />
             </a>
@@ -70,7 +73,7 @@ export function Footer() {
               href="https://github.com/annita"
               target="_blank"
               rel="noopener noreferrer"
-              className="size-9 rounded-lg border border-zinc-200 flex items-center justify-center text-zinc-500 hover:text-design-2 hover:border-design-2/40 transition-colors"
+              className="size-9 rounded-lg border border-zinc-200 flex items-center justify-center text-zinc-600 hover:text-design-2 hover:border-design-2/40 transition-colors"
             >
               <RiGithubFill className="size-4" />
             </a>
@@ -84,7 +87,7 @@ export function Footer() {
               <li key={item.name}>
                 <Link
                   href={item.href}
-                  className="text-[15px] text-zinc-500 hover:text-design-2 transition-colors"
+                  className="text-[15px] text-zinc-600 hover:text-design-2 transition-colors"
                 >
                   {item.name}
                 </Link>
@@ -99,7 +102,7 @@ export function Footer() {
             <li>
               <a
                 href="mailto:ola@annita.co"
-                className="text-[15px] text-zinc-500 hover:text-design-2 transition-colors"
+                className="text-[15px] text-zinc-600 hover:text-design-2 transition-colors"
               >
                 ola@annita.co
               </a>
@@ -107,7 +110,7 @@ export function Footer() {
             <li>
               <a
                 href="tel:+244900000000"
-                className="text-[15px] text-zinc-500 hover:text-design-2 transition-colors"
+                className="text-[15px] text-zinc-600 hover:text-design-2 transition-colors"
               >
                 +244 900 000 000
               </a>
@@ -119,7 +122,7 @@ export function Footer() {
               <li key={item.name}>
                 <Link
                   href={item.href}
-                  className="text-[15px] text-zinc-500 hover:text-design-2 transition-colors"
+                  className="text-[15px] text-zinc-600 hover:text-design-2 transition-colors"
                 >
                   {item.name}
                 </Link>
@@ -130,7 +133,7 @@ export function Footer() {
 
         <div className="lg:col-span-3">
           <h4 className="font-medium text-sm mb-4">Newsletter</h4>
-          <p className="text-[15px] text-zinc-500 mb-4 leading-relaxed">
+          <p className="text-[15px] text-zinc-600 mb-4 leading-relaxed">
             Recebe as novidades e eventos directamente no teu email.
           </p>
           <form onSubmit={handleNewsletterSubmit} className="flex gap-2">

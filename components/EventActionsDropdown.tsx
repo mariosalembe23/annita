@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { RiFlagLine, RiFunctionAddFill } from "@remixicon/react";
+import { RiFlagLine, RiFunctionAddFill, RiLink, RiDeleteBinLine } from "@remixicon/react";
 import Image from "next/image";
 
 interface ActionOption {
@@ -18,6 +18,9 @@ interface EventActionsDropdownProps {
   onClose: () => void;
   onViewDetails: () => void;
   onReport: () => void;
+  onCopyLink: () => void;
+  onDelete: () => void;
+  isOwner: boolean;
   triggerRef: React.RefObject<HTMLButtonElement | null>;
 }
 
@@ -26,6 +29,9 @@ export function EventActionsDropdown({
   onClose,
   onViewDetails,
   onReport,
+  onCopyLink,
+  onDelete,
+  isOwner,
   triggerRef,
 }: EventActionsDropdownProps) {
   const [position, setPosition] = useState({ top: 0, right: 0 });
@@ -57,13 +63,30 @@ export function EventActionsDropdown({
       onClick: onViewDetails,
     },
     {
+      key: "copy",
+      label: "Copiar link",
+      icon: <RiLink className="size-4" />,
+      onClick: onCopyLink,
+    },
+  ];
+
+  if (isOwner) {
+    actions.push({
+      key: "delete",
+      label: "Eliminar",
+      icon: <RiDeleteBinLine className="size-4" />,
+      onClick: onDelete,
+      danger: true,
+    });
+  } else {
+    actions.push({
       key: "report",
       label: "Denunciar",
       icon: <RiFlagLine className="size-4" />,
       onClick: onReport,
       danger: true,
-    },
-  ];
+    });
+  }
 
   return (
     <AnimatePresence>
