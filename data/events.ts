@@ -229,7 +229,7 @@ function timeAgoFromDate(dateStr: string): string {
   return `Há ${Math.floor(days / 30)}m`;
 }
 
-function formatDate(dateStr: string): string {
+export function formatDate(dateStr: string): string {
   const date = new Date(dateStr);
   if (isNaN(date.getTime())) return dateStr;
   const day = date.getDate();
