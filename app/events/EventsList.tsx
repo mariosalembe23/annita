@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { EventCard } from "@/components/EventCard";
-import { getEvents } from "@/lib/api/events";
+import { getCategories, getEvents } from "@/lib/api/events";
 import { useUser } from "@/hooks/use-user";
 import Link from "next/link";
 import { useState } from "react";
@@ -42,22 +42,32 @@ export function EventsList() {
   const [search, setSearch] = useState("");
   const [modality, setModality] = useState("");
   const [type, setType] = useState("");
+  const [categoryId, setCategoryId] = useState("");
   const [page, setPage] = useState(1);
 
   const { data, isPending } = useQuery({
-    queryKey: ["events", search, modality, type, page, token],
+    queryKey: ["events", search, modality, type, categoryId, page, token],
     queryFn: () =>
       getEvents(
         {
           search: search || undefined,
           modality: (modality || undefined) as any,
           type: (type || undefined) as any,
+          categoryId: categoryId || undefined,
           page,
           per_page: 12,
         },
         token ?? undefined,
       ),
   });
+
+  const { data: categoriesResponse } = useQuery({
+    queryKey: ["categories"],
+    queryFn: () => getCategories(token!, 1, 1000),
+    enabled: !!token,
+  });
+
+  const categories = categoriesResponse?.data ?? [];
 
   const apiEvents = data?.data ?? [];
   const meta = data?.meta;
@@ -82,6 +92,27 @@ export function EventsList() {
           )}
         </motion.div>
         <motion.div variants={item} className="flex items-center gap-3">
+          {categories.length > 0 && (
+            <Select
+              value={categoryId || "all"}
+              onValueChange={(v) => {
+                setCategoryId(v === "all" ? "" : v);
+                setPage(1);
+              }}
+            >
+              <SelectTrigger className="w-40 py-4.5">
+                <SelectValue placeholder="Categoria" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todas as categorias</SelectItem>
+                {categories.map((cat) => (
+                  <SelectItem key={cat.id} value={cat.id}>
+                    {cat.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
           <Select
             value={modality || "all"}
             onValueChange={(v) => {
@@ -127,12 +158,13 @@ export function EventsList() {
                 setPage(1);
               }}
             />
-            {(search || modality || type) && (
+            {(search || modality || type || categoryId) && (
               <button
                 onClick={() => {
                   setSearch("");
                   setModality("");
                   setType("");
+                  setCategoryId("");
                   setPage(1);
                 }}
                 className="text-xs text-zinc-400 hover:text-zinc-700 transition-colors shrink-0"
@@ -145,7 +177,7 @@ export function EventsList() {
       </motion.header>
 
       {isPending ? (
-        <div className="mt-10 grid grid-cols-4 gap-x-6 gap-y-6">
+        <div className="mt-10 grid grid-cols-4 gap-x-4 gap-y-6">
           {Array.from({ length: 8 }).map((_, i) => (
             <div
               key={i}
@@ -171,7 +203,7 @@ export function EventsList() {
           variants={container}
           initial="hidden"
           animate="show"
-          className="mt-10 grid grid-cols-4 gap-x-6 gap-y-6"
+          className="mt-10 grid grid-cols-4 gap-x-4 gap-y-4"
         >
           {apiEvents.map((event) => (
             <motion.div key={event.id} variants={item}>

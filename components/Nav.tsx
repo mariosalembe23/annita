@@ -10,6 +10,7 @@ import {
   RiGovernmentLine,
 } from "@remixicon/react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -24,6 +25,13 @@ const defaultLinks = [
   { name: "Newsletter", href: "/newsletter" },
 ];
 
+const GITHUB_REPO_URL = "https://github.com/mariosalembe23/annita";
+
+function formatStars(count: number) {
+  if (count >= 1000) return `${(count / 1000).toFixed(1).replace(/\.0$/, "")}K`;
+  return String(count);
+}
+
 interface NavProps {
   links?: { name: string; href: string }[];
 }
@@ -34,6 +42,20 @@ export function Nav({ links = defaultLinks }: NavProps) {
   const { isLoggedIn, user, isLoading } = useUser();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const { data: githubStars, isPending: starsLoading } = useQuery({
+    queryKey: ["github-stars"],
+    queryFn: async () => {
+      const res = await fetch(
+        "https://api.github.com/repos/mariosalembe23/annita",
+      );
+      if (!res.ok) throw new Error("Erro ao obter as estrelas do GitHub");
+      const repo = await res.json();
+      return repo.stargazers_count as number;
+    },
+    staleTime: 60 * 60 * 1000,
+    retry: false,
+  });
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -87,10 +109,19 @@ export function Nav({ links = defaultLinks }: NavProps) {
             ))}
           </div>
           <div className="flex items-center gap-2">
-            <button className="text-base border-gray-200 border rounded-lg px-3 py-1.5 font-normal text-zinc-900 hover:text-gray-900 flex items-center gap-2 ">
-              1.2K
-              <RiGithubFill className="size-5 text-gray-800" />
-            </button>
+            {starsLoading ? (
+              <div className="w-16 py-4.5 rounded-lg bg-gray-200 animate-pulse" />
+            ) : (
+              <a
+                href={GITHUB_REPO_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-base border-gray-200 border rounded-lg px-3 py-1.5 font-normal text-zinc-900 hover:bg-gray-50 transition-all flex items-center gap-2"
+              >
+                {githubStars != null && formatStars(githubStars)}
+                <RiGithubFill className="size-5 text-gray-800" />
+              </a>
+            )}
             {isLoggedIn && user ? (
               <div className="relative" ref={dropdownRef}>
                 <button

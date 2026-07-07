@@ -18,7 +18,7 @@ import {
 import { EventCard } from "@/components/EventCard";
 import { Footer } from "@/components/Footer";
 import { Nav } from "@/components/Nav";
-import { getEvents } from "@/lib/api/events";
+import { getCategories, getEvents } from "@/lib/api/events";
 import { useUser } from "@/hooks/use-user";
 import Link from "next/link";
 import { useState } from "react";
@@ -46,22 +46,32 @@ export default function Home() {
   const [search, setSearch] = useState("");
   const [modality, setModality] = useState("");
   const [type, setType] = useState("");
+  const [categoryId, setCategoryId] = useState("");
   const [page, setPage] = useState(1);
 
   const { data, isPending } = useQuery({
-    queryKey: ["events", search, modality, type, page, token],
+    queryKey: ["events", search, modality, type, categoryId, page, token],
     queryFn: () =>
       getEvents(
         {
           search: search || undefined,
           modality: (modality || undefined) as any,
           type: (type || undefined) as any,
+          categoryId: categoryId || undefined,
           page,
           per_page: 12,
         },
         token ?? undefined,
       ),
   });
+
+  const { data: categoriesResponse } = useQuery({
+    queryKey: ["categories"],
+    queryFn: () => getCategories(token!, 1, 1000),
+    enabled: !!token,
+  });
+
+  const categories = categoriesResponse?.data ?? [];
 
   const apiEvents = data?.data ?? [];
   const meta = data?.meta;
@@ -91,10 +101,12 @@ export default function Home() {
               variants={item}
               className="flex items-center gap-2 mt-6"
             >
-              <button className="text-base transition-all hover:opacity-75 text-white bg-design-2 border-design-2 border rounded-lg px-3 py-1.5 font-normal  flex items-center gap-2 ">
-                <RiStackFill className="size-4" />
-                Explorar eventos
-              </button>
+              <Link href={"/events"}>
+                <button className="text-base transition-all hover:opacity-75 text-white bg-design-2 border-design-2 border rounded-lg px-3 py-1.5 font-normal  flex items-center gap-2 ">
+                  <RiStackFill className="size-4" />
+                  Explorar eventos
+                </button>
+              </Link>
               <Link href={"/events/create"}>
                 <button className="text-base transition-all hover:opacity-75 bg-white text-black border-gray-200 border rounded-lg px-3 py-1.5 font-normal  flex items-center gap-2 ">
                   <RiStickyNoteAddFill className="size-4" />
@@ -147,6 +159,27 @@ export default function Home() {
           >
             <h2 className="text-5xl font-medium">Eventos</h2>
             <div className="flex items-center gap-3">
+              {categories.length > 0 && (
+                <Select
+                  value={categoryId || "all"}
+                  onValueChange={(v) => {
+                    setCategoryId(v === "all" ? "" : v);
+                    setPage(1);
+                  }}
+                >
+                  <SelectTrigger className="w-40 py-4.5">
+                    <SelectValue placeholder="Categoria" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todas as categorias</SelectItem>
+                    {categories.map((cat) => (
+                      <SelectItem key={cat.id} value={cat.id}>
+                        {cat.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
               <Select
                 value={modality || "all"}
                 onValueChange={(v) => {
@@ -192,12 +225,13 @@ export default function Home() {
                     setPage(1);
                   }}
                 />
-                {(search || modality || type) && (
+                {(search || modality || type || categoryId) && (
                   <button
                     onClick={() => {
                       setSearch("");
                       setModality("");
                       setType("");
+                      setCategoryId("");
                       setPage(1);
                     }}
                     className="text-xs text-zinc-400 hover:text-zinc-700 transition-colors shrink-0"
