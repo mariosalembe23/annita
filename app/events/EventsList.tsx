@@ -146,10 +146,10 @@ export function EventsList() {
               <SelectItem value="PAID">Pago</SelectItem>
             </SelectContent>
           </Select>
-          <div className="flex w-72 transition-all focus-within:ring-4 focus-within:ring-blue-100 focus-within:border-blue-400 items-center justify-between px-3 py-2 rounded-lg border border-gray-200">
+          <div className="flex w-72 bg-white dark:bg-white/5 transition-all focus-within:ring-4 focus-within:ring-blue-100 dark:focus-within:ring-blue-500/20 focus-within:border-blue-400 items-center justify-between px-3 py-2 rounded-lg border border-gray-200 dark:border-zinc-600">
             <RiSearchLine className="size-5 text-zinc-400 shrink-0" />
             <input
-              className="w-full outline-none ps-2 text-sm"
+              className="w-full outline-none ps-2 text-sm bg-transparent"
               type="text"
               placeholder="Pesquisar"
               value={search}
@@ -167,7 +167,7 @@ export function EventsList() {
                   setCategoryId("");
                   setPage(1);
                 }}
-                className="text-xs text-zinc-400 hover:text-zinc-700 transition-colors shrink-0"
+                className="text-xs text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 transition-colors shrink-0"
               >
                 Limpar
               </button>
@@ -181,14 +181,14 @@ export function EventsList() {
           {Array.from({ length: 8 }).map((_, i) => (
             <div
               key={i}
-              className="h-96 rounded-3xl bg-gray-100 animate-pulse"
+              className="h-96 rounded-3xl bg-gray-100 dark:bg-zinc-700 animate-pulse"
             />
           ))}
         </div>
       ) : apiEvents.length === 0 ? (
-        <div className="mt-20 text-center flex flex-col items-center justify-center gap-4 text-zinc-300">
+        <div className="mt-20 text-center flex flex-col items-center justify-center gap-4 text-zinc-300 dark:text-zinc-700">
           <RiStackFill className="size-24" />
-          <p className="text-base text-zinc-500">
+          <p className="text-base text-zinc-500 dark:text-zinc-400">
             Seja o primeiro a publicar um evento.
           </p>
           <Link href={"/events/create"}>
@@ -218,7 +218,7 @@ export function EventsList() {
           <button
             disabled={page <= 1}
             onClick={() => setPage((p) => Math.max(1, p - 1))}
-            className="px-4 py-2 rounded-lg border border-gray-200 text-sm hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+            className="px-4 py-2 rounded-lg border border-gray-200 dark:border-zinc-700 text-sm hover:bg-gray-50 dark:hover:bg-zinc-900 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
           >
             Anterior
           </button>
@@ -229,7 +229,7 @@ export function EventsList() {
               className={`size-10 rounded-lg text-sm font-medium transition-all ${
                 p === page
                   ? "bg-design-2 text-white"
-                  : "border border-gray-200 hover:bg-gray-50"
+                  : "border border-gray-200 dark:border-zinc-700 hover:bg-gray-50 dark:hover:bg-zinc-900"
               }`}
             >
               {p}
@@ -238,7 +238,7 @@ export function EventsList() {
           <button
             disabled={page >= meta.totalPages}
             onClick={() => setPage((p) => Math.min(meta.totalPages, p + 1))}
-            className="px-4 py-2 rounded-lg border border-gray-200 text-sm hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+            className="px-4 py-2 rounded-lg border border-gray-200 dark:border-zinc-700 text-sm hover:bg-gray-50 dark:hover:bg-zinc-900 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
           >
             Seguinte
           </button>

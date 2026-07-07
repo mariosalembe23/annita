@@ -292,12 +292,12 @@ export default function CreateEventPage() {
   };
 
   return (
-    <div className="overflow-x-hidden h-dvh bg-[#f5f5f5]">
+    <div className="overflow-x-hidden h-dvh bg-[#f5f5f5] dark:bg-[#18181b]">
       <main className="h-screen grid grid-cols-1">
         <section className="h-full overflow-y-auto py-20 relative w-full">
           <button
             onClick={() => window.history.back()}
-            className="absolute size-9 rounded-full bg-gray-100 flex items-center justify-center top-6 right-6 text-zinc-600 hover:text-zinc-700 transition-opacity"
+            className="absolute size-9 rounded-full bg-gray-100 dark:bg-zinc-800 flex items-center justify-center top-6 right-6 text-zinc-600 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300 transition-all"
           >
             <X className="size-5" />
           </button>
@@ -323,14 +323,14 @@ export default function CreateEventPage() {
                   height={100}
                 />
               </Link>
-              <h1 className="text-3xl mt-4 font-medium">Criar evento</h1>
-              <p className="text-zinc-500 text-[15px] mt-1">
+              <h1 className="text-3xl mt-4 font-medium text-zinc-900 dark:text-zinc-100">Criar evento</h1>
+              <p className="text-zinc-500 dark:text-zinc-400 text-[15px] mt-1">
                 Publica o teu evento e reacha a comunidade tech em Angola.
               </p>
             </header>
 
             <div className="flex items-center gap-3 mb-6">
-              <div className="flex-1 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+              <div className="flex-1 h-1.5 bg-gray-200 dark:bg-zinc-700 rounded-full overflow-hidden">
                 <motion.div
                   className="h-full bg-linear-to-r from-design-1 to-design-2 rounded-full"
                   animate={{ width: `${((step + 1) / STEPS.length) * 100}%` }}
@@ -353,18 +353,18 @@ export default function CreateEventPage() {
                   {step === 0 && (
                     <>
                       <div>
-                        <label className="text-sm font-medium text-zinc-700 mb-2 block">
+                        <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2 block">
                           Título do evento
                         </label>
                         <div
-                          className={`flex bg-white transition-all focus-within:ring-4 items-center px-3 py-2.5 rounded-lg border ${
+                          className={`flex bg-white dark:bg-white/5 transition-all focus-within:ring-4 items-center px-3 py-2.5 rounded-lg border ${
                             errors.title
-                              ? "border-red-400 focus-within:ring-red-100 focus-within:border-red-400"
-                              : "focus-within:ring-blue-100 focus-within:border-blue-400 border-gray-200"
+                              ? "border-red-400 focus-within:ring-red-100 dark:focus-within:ring-red-500/20 focus-within:border-red-400 dark:focus-within:border-red-500"
+                              : "focus-within:ring-blue-100 dark:focus-within:ring-blue-500/20 focus-within:border-blue-400 dark:focus-within:border-blue-500 border-gray-200 dark:border-zinc-700"
                           }`}
                         >
                           <input
-                            className="w-full outline-none text-[15px]"
+                            className="w-full outline-none text-[15px] bg-transparent text-zinc-900 dark:text-zinc-100"
                             type="text"
                             placeholder="Ex.: Hackathon Angola 2026"
                             {...register("title", {
@@ -378,24 +378,24 @@ export default function CreateEventPage() {
                           />
                         </div>
                         {errors.title && (
-                          <p className="text-red-500 text-sm mt-2">
+                          <p className="text-red-500 dark:text-red-400 text-sm mt-2">
                             {errors.title.message}
                           </p>
                         )}
                       </div>
                       <div>
-                        <label className="text-sm font-medium text-zinc-700 mb-2 block">
+                        <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2 block">
                           Descrição
                         </label>
                         <div
-                          className={`flex bg-white transition-all focus-within:ring-4 items-start px-3 py-2.5 rounded-lg border ${
+                          className={`flex bg-white dark:bg-white/5 transition-all focus-within:ring-4 items-start px-3 py-2.5 rounded-lg border ${
                             errors.description
-                              ? "border-red-400 focus-within:ring-red-100 focus-within:border-red-400"
-                              : "focus-within:ring-blue-100 focus-within:border-blue-400 border-gray-200"
+                              ? "border-red-400 focus-within:ring-red-100 dark:focus-within:ring-red-500/20 focus-within:border-red-400 dark:focus-within:border-red-500"
+                              : "focus-within:ring-blue-100 dark:focus-within:ring-blue-500/20 focus-within:border-blue-400 dark:focus-within:border-blue-500 border-gray-200 dark:border-zinc-700"
                           }`}
                         >
                           <textarea
-                            className="w-full outline-none text-[15px] resize-none overflow-y-auto"
+                            className="w-full outline-none text-[15px] resize-none overflow-y-auto bg-transparent text-zinc-900 dark:text-zinc-100"
                             rows={3}
                             placeholder="Descreve o teu evento..."
                             style={{ maxHeight: "200px" }}
@@ -413,28 +413,28 @@ export default function CreateEventPage() {
                           />
                         </div>
                         {errors.description && (
-                          <p className="text-red-500 text-sm mt-2">
+                          <p className="text-red-500 dark:text-red-400 text-sm mt-2">
                             {errors.description.message}
                           </p>
                         )}
                       </div>
                       <div>
-                        <label className="text-sm font-medium text-zinc-700 mb-2 block">
+                        <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2 block">
                           Localização{" "}
-                          <span className="text-zinc-400 font-normal">
+                          <span className="text-zinc-400 dark:text-zinc-500 font-normal">
                             (opcional)
                           </span>
                         </label>
                         <div
-                          className={`flex bg-white transition-all focus-within:ring-4 items-start px-3 py-2.5 rounded-lg border ${
+                          className={`flex bg-white dark:bg-white/5 transition-all focus-within:ring-4 items-start px-3 py-2.5 rounded-lg border ${
                             errors.location
-                              ? "border-red-400 focus-within:ring-red-100 focus-within:border-red-400"
-                              : "focus-within:ring-blue-100 focus-within:border-blue-400 border-gray-200"
+                              ? "border-red-400 focus-within:ring-red-100 dark:focus-within:ring-red-500/20 focus-within:border-red-400 dark:focus-within:border-red-500"
+                              : "focus-within:ring-blue-100 dark:focus-within:ring-blue-500/20 focus-within:border-blue-400 dark:focus-within:border-blue-500 border-gray-200 dark:border-zinc-700"
                           }`}
                         >
                           <RiMapPinLine className="size-5 text-zinc-400 shrink-0" />
                           <textarea
-                            className="w-full outline-none ps-2 text-[15px] resize-none overflow-y-auto"
+                            className="w-full outline-none ps-2 text-[15px] resize-none overflow-y-auto bg-transparent text-zinc-900 dark:text-zinc-100"
                             rows={1}
                             placeholder="Ex.: Centro de Convenções de Talatona, Luanda"
                             style={{ maxHeight: "120px" }}
@@ -455,7 +455,7 @@ export default function CreateEventPage() {
                           />
                         </div>
                         {errors.location && (
-                          <p className="text-red-500 text-sm mt-2">
+                          <p className="text-red-500 dark:text-red-400 text-sm mt-2">
                             {errors.location.message}
                           </p>
                         )}
@@ -466,19 +466,19 @@ export default function CreateEventPage() {
                   {step === 1 && (
                     <>
                       <div>
-                        <label className="text-sm font-medium text-zinc-700 mb-2 block">
+                        <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2 block">
                           URL do evento
                         </label>
                         <div
-                          className={`flex transition-all bg-white focus-within:ring-4 items-center px-3 py-2.5 rounded-lg border ${
+                          className={`flex transition-all bg-white dark:bg-white/5 focus-within:ring-4 items-center px-3 py-2.5 rounded-lg border ${
                             errors.link
-                              ? "border-red-400 focus-within:ring-red-100 focus-within:border-red-400"
-                              : "focus-within:ring-blue-100 focus-within:border-blue-400 border-gray-200"
+                              ? "border-red-400 focus-within:ring-red-100 dark:focus-within:ring-red-500/20 focus-within:border-red-400 dark:focus-within:border-red-500"
+                              : "focus-within:ring-blue-100 dark:focus-within:ring-blue-500/20 focus-within:border-blue-400 dark:focus-within:border-blue-500 border-gray-200 dark:border-zinc-700"
                           }`}
                         >
                           <RiGlobalLine className="size-5 text-zinc-400 shrink-0" />
                           <input
-                            className="w-full outline-none ps-2 text-[15px]"
+                            className="w-full outline-none ps-2 text-[15px] bg-transparent text-zinc-900 dark:text-zinc-100"
                             type="url"
                             placeholder="https://"
                             {...register("link", {
@@ -492,28 +492,28 @@ export default function CreateEventPage() {
                           />
                         </div>
                         {errors.link && (
-                          <p className="text-red-500 text-sm mt-2">
+                          <p className="text-red-500 dark:text-red-400 text-sm mt-2">
                             {errors.link.message}
                           </p>
                         )}
                       </div>
                       <div>
-                        <label className="text-sm font-medium text-zinc-700 mb-2 block">
+                        <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2 block">
                           Categoria
                         </label>
                         <div className="relative" ref={categoryRef}>
                           <button
                             type="button"
                             onClick={() => setCategoryOpen(!categoryOpen)}
-                            className={`flex bg-white w-full transition-all focus:ring-4 items-center justify-between px-3 py-2.5 rounded-lg border text-[15px] text-left ${
+                            className={`flex bg-white dark:bg-white/5 w-full transition-all focus:ring-4 items-center justify-between px-3 py-2.5 rounded-lg border text-[15px] text-left ${
                               errors.categoryId
-                                ? "border-red-400 focus:ring-red-100"
-                                : "focus:ring-blue-100 focus:border-blue-400 border-gray-200"
+                                ? "border-red-400 focus:ring-red-100 dark:focus:ring-red-500/20"
+                                : "focus:ring-blue-100 dark:focus:ring-blue-500/20 focus:border-blue-400 dark:focus:border-blue-500 border-gray-200 dark:border-zinc-700"
                             }`}
                           >
                             <span
                               className={
-                                categoryId ? "text-zinc-900" : "text-zinc-400"
+                                categoryId ? "text-zinc-900 dark:text-zinc-100" : "text-zinc-400"
                               }
                             >
                               {categoryId
@@ -536,7 +536,7 @@ export default function CreateEventPage() {
                                 exit={{ opacity: 0, y: -4, scaleY: 0.97 }}
                                 transition={{ duration: 0.15, ease: "easeOut" }}
                                 style={{ transformOrigin: "top" }}
-                                className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg max-h-72 overflow-y-auto"
+                                className="absolute z-10 mt-1 w-full bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-xl shadow-lg dark:shadow-black/40 max-h-72 overflow-y-auto"
                               >
                                 {categories.map((cat) => (
                                   <button
@@ -548,10 +548,10 @@ export default function CreateEventPage() {
                                       });
                                       setCategoryOpen(false);
                                     }}
-                                    className={`w-full text-left px-3 py-2 text-[15px] transition-colors hover:bg-blue-50 ${
+                                    className={`w-full text-left px-3 py-2 text-[15px] transition-colors hover:bg-blue-50 dark:hover:bg-zinc-700 ${
                                       categoryId === cat.id
-                                        ? "text-design-2 font-medium"
-                                        : "text-zinc-700"
+                                        ? "text-design-2 dark:text-design-1 font-medium"
+                                        : "text-zinc-700 dark:text-zinc-300"
                                     }`}
                                   >
                                     {cat.name}
@@ -562,7 +562,7 @@ export default function CreateEventPage() {
                           </AnimatePresence>
                         </div>
                         {errors.categoryId && (
-                          <p className="text-red-500 text-sm mt-2">
+                          <p className="text-red-500 dark:text-red-400 text-sm mt-2">
                             {errors.categoryId.message}
                           </p>
                         )}
@@ -573,15 +573,15 @@ export default function CreateEventPage() {
                   {step === 2 && (
                     <>
                       <div>
-                        <label className="text-sm font-medium text-zinc-700 mb-2 block">
+                        <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2 block">
                           Imagem de capa{" "}
-                          <span className="text-zinc-400 font-normal">
+                          <span className="text-zinc-400 dark:text-zinc-500 font-normal">
                             (opcional)
                           </span>
                         </label>
                         <div className="flex flex-col gap-3">
                           {!coverImage ? (
-                            <label className="flex bg-white cursor-pointer transition-all hover:border-design-2/40 items-center justify-center gap-2 px-3 py-6 rounded-lg border border-dashed border-gray-200 text-[15px] text-zinc-400 hover:text-design-2 hover:bg-design-2/5">
+                            <label className="flex bg-white dark:bg-white/5 cursor-pointer transition-all hover:border-design-2/40 items-center justify-center gap-2 px-3 py-6 rounded-lg border border-dashed border-gray-200 dark:border-zinc-700 text-[15px] text-zinc-400 dark:text-zinc-500 hover:text-design-2 dark:hover:text-design-1 hover:bg-design-2/5 dark:hover:bg-design-2/10">
                               <RiImageAddLine className="size-5" />
                               <span>Clique para fazer upload</span>
                               <input
@@ -592,7 +592,7 @@ export default function CreateEventPage() {
                               />
                             </label>
                           ) : (
-                            <div className="relative w-full h-48 rounded-lg border border-gray-200 overflow-hidden group">
+                            <div className="relative w-full h-48 rounded-lg border border-gray-200 dark:border-zinc-700 overflow-hidden group">
                               <Image
                                 src={previewUrl!}
                                 alt="Capa do evento"
@@ -611,7 +611,7 @@ export default function CreateEventPage() {
                         </div>
                       </div>
                       <div>
-                        <label className="text-sm font-medium text-zinc-700 mb-2 block">
+                        <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2 block">
                           Modalidade
                         </label>
                         <div className="flex items-center gap-3">
@@ -627,7 +627,7 @@ export default function CreateEventPage() {
                               className={`flex items-center justify-center gap-2 px-3 py-1.5 rounded-lg border text-[15px] transition-all ${
                                 modality === m.value
                                   ? "border-design-2 text-white bg-design-2 font-medium"
-                                  : "border-gray-200 bg-white text-zinc-600 hover:border-gray-300"
+                                  : "border-gray-200 dark:border-zinc-700 bg-white dark:bg-white/5 text-zinc-600 dark:text-zinc-300 hover:border-gray-300 dark:hover:border-zinc-600"
                               }`}
                             >
                               <m.icon className="size-4" />
@@ -636,7 +636,7 @@ export default function CreateEventPage() {
                           ))}
                         </div>
                         {errors.modality && (
-                          <p className="text-red-500 text-sm mt-2">
+                          <p className="text-red-500 dark:text-red-400 text-sm mt-2">
                             {errors.modality.message}
                           </p>
                         )}
@@ -647,7 +647,7 @@ export default function CreateEventPage() {
                   {step === 3 && (
                     <>
                       <div>
-                        <label className="text-sm font-medium text-zinc-700 mb-2 block">
+                        <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2 block">
                           Data do evento
                         </label>
                         <Popover>
@@ -656,10 +656,10 @@ export default function CreateEventPage() {
                               variant="outline"
                               data-empty={!startDate}
                               data-error={!!errors.startDate}
-                              className={`w-full justify-between text-left font-normal border rounded-lg px-3 py-2.5 h-auto text-[15px] hover:bg-white ${
+                              className={`w-full justify-between text-left font-normal border rounded-lg px-3 py-2.5 h-auto text-[15px] hover:bg-white dark:hover:bg-zinc-800 bg-white dark:bg-white/5 ${
                                 errors.startDate
                                   ? "border-red-400 data-[empty=true]:text-red-400"
-                                  : "data-[empty=true]:text-zinc-400 border-gray-200"
+                                  : "data-[empty=true]:text-zinc-400 dark:data-[empty=true]:text-zinc-500 border-gray-200 dark:border-zinc-700"
                               }`}
                             >
                               <span className="flex items-center gap-2">
@@ -687,13 +687,13 @@ export default function CreateEventPage() {
                           </PopoverContent>
                         </Popover>
                         {errors.startDate && (
-                          <p className="text-red-500 text-sm mt-2">
+                          <p className="text-red-500 dark:text-red-400 text-sm mt-2">
                             {errors.startDate.message}
                           </p>
                         )}
                       </div>
                       <div>
-                        <label className="text-sm font-medium text-zinc-700 mb-2 block">
+                        <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2 block">
                           Tipo
                         </label>
                         <div className="flex items-center gap-3">
@@ -709,7 +709,7 @@ export default function CreateEventPage() {
                               className={`flex items-center justify-center gap-2 px-3 py-1.5 rounded-lg border text-[15px] transition-all ${
                                 type === t.value
                                   ? "border-design-2 bg-design-2 text-white font-medium"
-                                  : "border-gray-200 bg-white text-zinc-600 hover:border-gray-300"
+                                  : "border-gray-200 dark:border-zinc-700 bg-white dark:bg-white/5 text-zinc-600 dark:text-zinc-300 hover:border-gray-300 dark:hover:border-zinc-600"
                               }`}
                             >
                               <t.icon className="size-4" />
@@ -718,7 +718,7 @@ export default function CreateEventPage() {
                           ))}
                         </div>
                         {errors.type && (
-                          <p className="text-red-500 text-sm mt-2">
+                          <p className="text-red-500 dark:text-red-400 text-sm mt-2">
                             {errors.type.message}
                           </p>
                         )}
@@ -726,11 +726,11 @@ export default function CreateEventPage() {
                     </>
                   )}
 
-                  <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                  <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-zinc-700/50">
                     <button
                       type="button"
                       onClick={() => goToStep(step - 1)}
-                      className={`text-base transition-all bg-white hover:bg-gray-50 text-zinc-700 border border-gray-200 rounded-lg px-4 py-2 font-normal ${
+                      className={`text-base transition-all bg-white dark:bg-white/5 hover:bg-gray-50 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-gray-200 dark:border-zinc-700 rounded-lg px-4 py-2 font-normal ${
                         step === 0 ? "invisible" : ""
                       }`}
                     >

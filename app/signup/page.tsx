@@ -143,7 +143,11 @@ export default function SignUpPage() {
     password.length === 0
       ? []
       : passwordStrength <= 2
-        ? ["bg-red-500", "bg-gray-200 dark:bg-zinc-700", "bg-gray-200 dark:bg-zinc-700"]
+        ? [
+            "bg-red-500",
+            "bg-gray-200 dark:bg-zinc-700",
+            "bg-gray-200 dark:bg-zinc-700",
+          ]
         : passwordStrength <= 3
           ? ["bg-amber-500", "bg-amber-500", "bg-gray-200 dark:bg-zinc-700"]
           : ["bg-green-500", "bg-green-500", "bg-green-500"];
@@ -195,6 +199,7 @@ export default function SignUpPage() {
         onSuccess: () => {
           handingRef.current = false;
           toast("success", "Conta criada com sucesso!");
+          router.push("/signin");
         },
         onError: (error) => {
           handingRef.current = false;
@@ -223,7 +228,9 @@ export default function SignUpPage() {
               />
               <p className="text-3xl text-design-3 dark:text-white">annita</p>
             </Link>
-            <p className="text-zinc-800 dark:text-zinc-400 text-[15px]">Crie a sua conta</p>
+            <p className="text-zinc-800 dark:text-zinc-400 text-[15px]">
+              Crie a sua conta
+            </p>
           </div>
 
           <form
@@ -245,7 +252,9 @@ export default function SignUpPage() {
 
             <div className="flex items-center gap-3 my-2">
               <div className="h-px flex-1 bg-gray-200 dark:bg-zinc-700" />
-              <span className="text-sm text-zinc-400 dark:text-zinc-500">ou</span>
+              <span className="text-sm text-zinc-400 dark:text-zinc-500">
+                ou
+              </span>
               <div className="h-px flex-1 bg-gray-200 dark:bg-zinc-700" />
             </div>
 
@@ -371,13 +380,13 @@ export default function SignUpPage() {
                 <div className="mt-3 space-y-1.5">
                   <div className="flex gap-1.5">
                     {[0, 1, 2].map((i) => (
-                       <motion.div
-                         key={i}
-                         initial={{ width: 0, opacity: 0 }}
-                         animate={{ width: "100%", opacity: 1 }}
-                         transition={{ duration: 0.3, delay: i * 0.08 }}
-                         className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${strengthColors[i]}`}
-                       />
+                      <motion.div
+                        key={i}
+                        initial={{ width: 0, opacity: 0 }}
+                        animate={{ width: "100%", opacity: 1 }}
+                        transition={{ duration: 0.3, delay: i * 0.08 }}
+                        className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${strengthColors[i]}`}
+                      />
                     ))}
                   </div>
                   <p className={`text-xs font-medium ${strengthTextColor}`}>
@@ -442,7 +451,10 @@ export default function SignUpPage() {
 
           <p className="text-center text-[15px] text-zinc-500 dark:text-zinc-400 mt-8">
             Já tens conta?{" "}
-            <Link href="/signin" className="text-design-2 dark:text-design-1 hover:underline">
+            <Link
+              href="/signin"
+              className="text-design-2 dark:text-design-1 hover:underline"
+            >
               Iniciar sessão
             </Link>
           </p>

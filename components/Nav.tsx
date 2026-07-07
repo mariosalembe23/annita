@@ -287,7 +287,7 @@ export function Nav({ links = defaultLinks }: NavProps) {
                     src={"/img/avatar.png"}
                     alt={"Avatar"}
                     width={100}
-                    className="w-6 h-6"
+                    className="w-6 h-6 dark:invert"
                     height={100}
                   />
                   <span className="text-zinc-900 dark:text-zinc-100 text-sm">

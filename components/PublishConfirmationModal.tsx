@@ -36,13 +36,13 @@ export function PublishConfirmationModal({
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
             onClick={(e) => e.stopPropagation()}
-            className="flex w-full max-w-xl bg-white rounded-3xl shadow-2xl overflow-hidden"
+            className="flex w-full dark:border border-zinc-800 max-w-xl bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl overflow-hidden"
           >
             <div className="flex-1 relative p-10">
               {!loading && (
                 <button
                   type="button"
-                  className="absolute top-4 right-4 text-zinc-400 hover:text-zinc-700 transition-opacity"
+                  className="absolute top-4 right-4 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 transition-opacity"
                   onClick={onClose}
                 >
                   <RiCloseLine />
@@ -55,19 +55,19 @@ export function PublishConfirmationModal({
                   alt="icon"
                   width={100}
                   height={100}
-                  className="w-20 mb-4"
+                  className="w-20 mb-4 dark:invert"
                 />
               </div>
 
-              <h2 className="text-2xl font-medium text-zinc-900">
+              <h2 className="text-2xl font-medium text-zinc-900 dark:text-zinc-100">
                 Compromisso de veracidade
               </h2>
-              <p className="text-[15px] text-zinc-500 mt-3 leading-relaxed">
+              <p className="text-[15px] text-zinc-500 dark:text-zinc-400 mt-3 leading-relaxed">
                 Ao publicar este evento, assumes o compromisso de que todas as
                 informações fornecidas são verdadeiras, precisas e não induzem
                 os participantes em erro.
               </p>
-              <p className="text-[15px] text-zinc-500 mt-3 leading-relaxed">
+              <p className="text-[15px] text-zinc-500 dark:text-zinc-400 mt-3 leading-relaxed">
                 A annita reserva-se ao direito de remover qualquer evento que
                 contenha informações fraudulentas, enganosas, ou que viole os
                 termos de uso da plataforma. Práticas de burla, falsas promessas
@@ -79,7 +79,7 @@ export function PublishConfirmationModal({
                   type="button"
                   onClick={onClose}
                   disabled={loading}
-                  className="text-base transition-all hover:bg-gray-50 text-zinc-700 border border-gray-200 rounded-lg px-3 py-1.5 font-normal disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="text-base transition-all hover:bg-gray-50 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-1.5 font-normal disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Cancelar
                 </button>

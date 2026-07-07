@@ -21,20 +21,20 @@ export default function EventCreated() {
 
   if (isPending || !loaded) {
     return (
-      <div className="w-full bg-[#f5f5f5] h-dvh flex items-center justify-center">
-        <div className="max-w-md bg-white w-full p-7 border rounded-2xl border-zinc-200 space-y-4">
+      <div className="w-full bg-[#f5f5f5] dark:bg-[#18181b] h-dvh flex items-center justify-center">
+        <div className="max-w-md bg-white dark:bg-zinc-900 w-full p-7 border rounded-2xl border-zinc-200 dark:border-zinc-800 space-y-4">
           <div className="flex justify-end">
-            <div className="size-5 bg-zinc-200 rounded animate-pulse" />
+            <div className="size-5 bg-zinc-200 dark:bg-zinc-800 rounded animate-pulse" />
           </div>
-          <div className="size-24 bg-zinc-200 rounded-full animate-pulse" />
-          <div className="h-7 bg-zinc-200 rounded w-1/2 animate-pulse" />
+          <div className="size-24 bg-zinc-200 dark:bg-zinc-800 rounded-full animate-pulse" />
+          <div className="h-7 bg-zinc-200 dark:bg-zinc-800 rounded w-1/2 animate-pulse" />
           <div className="space-y-2">
-            <div className="h-4 bg-zinc-200 rounded w-full animate-pulse" />
-            <div className="h-4 bg-zinc-200 rounded w-5/6 animate-pulse" />
-            <div className="h-4 bg-zinc-200 rounded w-4/6 animate-pulse" />
+            <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-full animate-pulse" />
+            <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-5/6 animate-pulse" />
+            <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-4/6 animate-pulse" />
           </div>
           <div className="flex justify-end">
-            <div className="h-9 bg-zinc-200 rounded w-24 animate-pulse" />
+            <div className="h-9 bg-zinc-200 dark:bg-zinc-800 rounded w-24 animate-pulse" />
           </div>
         </div>
       </div>
@@ -42,7 +42,7 @@ export default function EventCreated() {
   }
 
   return (
-    <div className="w-full bg-[#f5f5f5] h-dvh flex items-center justify-center">
+    <div className="w-full bg-[#f5f5f5] dark:bg-[#18181b] h-dvh flex items-center justify-center">
       <Confetti
         className="fixed w-full inset-0 pointer-events-none z-50"
         options={{
@@ -78,11 +78,11 @@ export default function EventCreated() {
           ],
         }}
       />
-      <div className="max-w-md bg-white w-full p-7 border rounded-2xl border-zinc-200">
+      <div className="max-w-md bg-white dark:bg-zinc-900 w-full p-7 border rounded-2xl border-zinc-200 dark:border-zinc-800">
         <header>
           <div className="flex items-center justify-end">
             <Link href="/">
-              <button className="size-5 text-zinc-600 hover:text-black transition-all cursor-pointer">
+              <button className="size-5 text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-all cursor-pointer">
                 <X className="size-5" />
               </button>
             </Link>
@@ -93,22 +93,22 @@ export default function EventCreated() {
               alt="icon"
               width={100}
               height={100}
-              className="w-24 mb-4"
+              className="w-24 mb-4 dark:invert"
             />
           </div>
-          <h2 className="text-2xl mt-8 font-medium text-zinc-900">
+          <h2 className="text-2xl mt-8 font-medium text-zinc-900 dark:text-zinc-100">
             Evento criado
           </h2>
           {hasApproved ? (
-            <p className="text-zinc-700 text-[15px] mt-2">
+            <p className="text-zinc-700 dark:text-zinc-300 text-[15px] mt-2">
               Parabéns! O teu evento já está publicado e disponível para
               exploração na plataforma. Caso necessário, podes realizar
               alterações nas configurações do evento sempre que desejares.
             </p>
           ) : (
-            <p className="text-zinc-700 text-[15px] mt-2">
+            <p className="text-zinc-700 dark:text-zinc-300 text-[15px] mt-2">
               O teu evento foi recebido com sucesso!{" "}
-              <span className="font-semibold text-black">
+              <span className="font-semibold text-black dark:text-white">
                 Como é o teu primeiro post, ele precisa ser revisado pela nossa
                 equipa antes de ser publicado.
               </span>{" "}
