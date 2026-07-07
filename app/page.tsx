@@ -121,7 +121,7 @@ export default function Home() {
                 <p className="flex items-center text-gray-500 dark:text-zinc-500 gap-0.5 mt-10">
                   Inscritos
                 </p>
-                <p className="text-xl text-black dark:text-zinc-100 gap-0.5">
+                <p className="text-2xl text-black dark:text-zinc-100 gap-0.5">
                   2K
                 </p>
               </div>
@@ -129,7 +129,7 @@ export default function Home() {
                 <p className="flex items-center text-gray-500 dark:text-zinc-500 gap-0.5 mt-10">
                   Eventos
                 </p>
-                <p className="text-xl text-black dark:text-zinc-100 gap-0.5">
+                <p className="text-2xl text-black dark:text-zinc-100 gap-0.5">
                   50
                 </p>
               </div>
@@ -137,7 +137,7 @@ export default function Home() {
                 <p className="flex items-center text-gray-500 dark:text-zinc-500 gap-0.5 mt-10">
                   Contribuidores
                 </p>
-                <p className="text-xl text-black dark:text-zinc-100 gap-0.5">
+                <p className="text-2xl text-black dark:text-zinc-100 gap-0.5">
                   12
                 </p>
               </div>
