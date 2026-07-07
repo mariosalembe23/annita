@@ -2,21 +2,34 @@
 
 import {
   RiGithubFill,
+  RiMoonLine,
   RiSettings3Line,
+  RiSunLine,
   RiUser6Fill,
-  RiUserLine,
   RiLogoutCircleRLine,
   RiUser6Line,
   RiGovernmentLine,
+  RiMegaphoneLine,
 } from "@remixicon/react";
 import { AnimatePresence, motion } from "framer-motion";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { cn, removeCookie } from "@/lib/utils";
 import { useUser } from "@/hooks/use-user";
+import {
+  getNotifications,
+  markNotificationRead,
+} from "@/lib/api/notifications";
+import { timeAgoFromDate } from "@/data/events";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const defaultLinks = [
   { name: "Eventos", href: "/events" },
@@ -36,12 +49,48 @@ interface NavProps {
   links?: { name: string; href: string }[];
 }
 
+type NotificationsTab = "all" | "unread" | "read";
+
+const NOTIFICATION_TABS: { value: NotificationsTab; label: string }[] = [
+  { value: "all", label: "Todas" },
+  { value: "unread", label: "Não lidas" },
+  { value: "read", label: "Lidas" },
+];
+
 export function Nav({ links = defaultLinks }: NavProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const { isLoggedIn, user, isLoading } = useUser();
+  const { isLoggedIn, user, isLoading, token } = useUser();
+  const queryClient = useQueryClient();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [notificationsTab, setNotificationsTab] =
+    useState<NotificationsTab>("all");
+
+  const { data: notificationsResponse } = useQuery({
+    queryKey: ["notifications"],
+    queryFn: () => getNotifications(token!, 1, 50),
+    enabled: !!token,
+  });
+
+  const notifications = notificationsResponse?.data ?? [];
+  const unreadCount = notifications.filter((n) => !n.read).length;
+  const visibleNotifications = notifications.filter((n) =>
+    notificationsTab === "all"
+      ? true
+      : notificationsTab === "unread"
+        ? !n.read
+        : n.read,
+  );
+
+  const markReadMutation = useMutation({
+    mutationFn: (id: string) => markNotificationRead(id, token!),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
+    },
+  });
 
   const { data: githubStars, isPending: starsLoading } = useQuery({
     queryKey: ["github-stars"],
@@ -121,6 +170,113 @@ export function Nav({ links = defaultLinks }: NavProps) {
                 {githubStars != null && formatStars(githubStars)}
                 <RiGithubFill className="size-5 text-gray-800" />
               </a>
+            )}
+            <button
+              type="button"
+              title={
+                theme === "light"
+                  ? "Mudar para tema escuro"
+                  : "Mudar para tema claro"
+              }
+              onClick={() =>
+                setTheme((t) => (t === "light" ? "dark" : "light"))
+              }
+              className="p-2 border-gray-200 border rounded-lg text-zinc-700 hover:bg-gray-50 transition-all flex items-center justify-center"
+            >
+              {theme === "light" ? (
+                <RiMoonLine className="size-5" />
+              ) : (
+                <RiSunLine className="size-5" />
+              )}
+            </button>
+            {isLoggedIn && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    type="button"
+                    title="Notificações"
+                    className="relative p-2 border-gray-200 border rounded-lg text-zinc-700 hover:bg-gray-50 transition-all flex items-center justify-center"
+                  >
+                    <RiMegaphoneLine className="size-5" />
+                    {unreadCount > 0 && (
+                      <span className="absolute -top-1.5 -right-1.5 min-w-4.5 h-4.5 px-1 rounded-full bg-red-600 text-white text-[11px] font-medium flex items-center justify-center">
+                        {unreadCount > 9 ? "9+" : unreadCount}
+                      </span>
+                    )}
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-80 p-0">
+                  <div className="px-3 pt-2.5 pb-2 border-b border-gray-100">
+                    <p className="text-sm font-medium text-zinc-900">
+                      Notificações
+                    </p>
+                    <div className="flex items-center gap-1 mt-2">
+                      {NOTIFICATION_TABS.map((tab) => (
+                        <button
+                          key={tab.value}
+                          type="button"
+                          onClick={() => setNotificationsTab(tab.value)}
+                          className={`px-2.5 py-1 rounded-md text-xs transition-all ${
+                            notificationsTab === tab.value
+                              ? "bg-design-2 text-white font-medium"
+                              : "text-zinc-600 hover:bg-gray-100"
+                          }`}
+                        >
+                          {tab.label}
+                          {tab.value === "unread" && unreadCount > 0 && (
+                            <span className="ms-1">({unreadCount})</span>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="max-h-80 overflow-y-auto p-1">
+                    {visibleNotifications.length === 0 ? (
+                      <p className="text-sm text-zinc-500 text-center py-8">
+                        {notificationsTab === "unread"
+                          ? "Sem notificações por ler."
+                          : notificationsTab === "read"
+                            ? "Sem notificações lidas."
+                            : "Sem notificações."}
+                      </p>
+                    ) : (
+                      visibleNotifications.map((notification) => (
+                        <DropdownMenuItem
+                          key={notification.id}
+                          onSelect={(e) => {
+                            e.preventDefault();
+                            if (!notification.read) {
+                              markReadMutation.mutate(notification.id);
+                            }
+                          }}
+                          className="flex flex-col items-start gap-0.5 px-2.5 py-2 cursor-pointer"
+                        >
+                          <div className="flex w-full items-center justify-between gap-2">
+                            <p
+                              className={`text-sm truncate ${
+                                notification.read
+                                  ? "text-zinc-600"
+                                  : "text-zinc-900 font-medium"
+                              }`}
+                            >
+                              {notification.eventTitle}
+                            </p>
+                            {!notification.read && (
+                              <span className="size-2 rounded-full bg-design-2 shrink-0" />
+                            )}
+                          </div>
+                          <p className="text-xs text-zinc-500 line-clamp-2">
+                            {notification.message}
+                          </p>
+                          <p className="text-[11px] text-zinc-400">
+                            {timeAgoFromDate(notification.createdAt)}
+                          </p>
+                        </DropdownMenuItem>
+                      ))
+                    )}
+                  </div>
+                </DropdownMenuContent>
+              </DropdownMenu>
             )}
             {isLoggedIn && user ? (
               <div className="relative" ref={dropdownRef}>
