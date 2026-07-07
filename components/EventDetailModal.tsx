@@ -290,7 +290,6 @@ export function EventDetailModal({
                       Localização
                     </p>
                     <p className="text-zinc-700 dark:text-zinc-300 text-[15px] flex items-center gap-1.5">
-                      <RiMapPinLine className="size-4 text-zinc-400 shrink-0" />
                       {event.location}
                     </p>
                   </div>
