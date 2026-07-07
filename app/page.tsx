@@ -42,22 +42,25 @@ const item = {
 };
 
 export default function Home() {
-  const { isLoggedIn, user, isLoading } = useUser();
+  const { isLoggedIn, user, isLoading, token } = useUser();
   const [search, setSearch] = useState("");
   const [modality, setModality] = useState("");
   const [type, setType] = useState("");
   const [page, setPage] = useState(1);
 
   const { data, isPending } = useQuery({
-    queryKey: ["events", search, modality, type, page],
+    queryKey: ["events", search, modality, type, page, token],
     queryFn: () =>
-      getEvents({
-        search: search || undefined,
-        modality: (modality || undefined) as any,
-        type: (type || undefined) as any,
-        page,
-        per_page: 12,
-      }),
+      getEvents(
+        {
+          search: search || undefined,
+          modality: (modality || undefined) as any,
+          type: (type || undefined) as any,
+          page,
+          per_page: 12,
+        },
+        token ?? undefined,
+      ),
   });
 
   const apiEvents = data?.data ?? [];
@@ -231,7 +234,9 @@ export default function Home() {
           ) : (
             <motion.div
               variants={item}
-              className="mt-10 grid grid-cols-4 gap-x-6 gap-y-4"
+              initial="hidden"
+              animate="show"
+              className="mt-10 grid grid-cols-4 gap-x-2 gap-y-4"
             >
               {apiEvents.map((event) => (
                 <EventCard key={event.id} event={event} />

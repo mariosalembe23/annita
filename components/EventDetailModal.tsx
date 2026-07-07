@@ -22,6 +22,7 @@ import {
 import { cn } from "@/lib/utils";
 import { ImageViewerModal } from "./ImageViewerModal";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useUser } from "@/hooks/use-user";
 import { useToast } from "@/hooks/use-toast";
@@ -63,6 +64,7 @@ export function EventDetailModal({
   const { token } = useUser();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const voteMutation = useMutation({
     mutationFn: (voteType: "UPVOTE" | "DOWNVOTE") =>
@@ -117,9 +119,10 @@ export function EventDetailModal({
           "Erro ao registar voto",
       );
     },
+    // Não invalidar as listas após votar: o GET /events não devolve o
+    // userVote, e o refetch apagaria o voto acabado de registar. A cache
+    // já foi atualizada otimisticamente no onMutate.
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["events"] });
-      queryClient.invalidateQueries({ queryKey: ["my-events"] });
       queryClient.invalidateQueries({ queryKey: ["event-details", event.id] });
     },
   });
@@ -127,7 +130,7 @@ export function EventDetailModal({
   const handleVote = (e: React.MouseEvent, voteType: "UPVOTE" | "DOWNVOTE") => {
     e.stopPropagation();
     if (!token) {
-      toast("error", "Deve iniciar sessão para votar num evento.");
+      router.push("/signin");
       return;
     }
 

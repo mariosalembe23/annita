@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { getUser } from "@/lib/api/auth";
-import { decodeToken, getCookie } from "@/lib/utils";
+import { decodeToken, getCookie, removeCookie } from "@/lib/utils";
 
 export function useUser() {
   const [session, setSession] = useState<{
@@ -17,6 +17,10 @@ export function useUser() {
     setHasChecked(true);
     if (!token) return;
     const payload = decodeToken(token);
+    if (payload?.exp && payload.exp * 1000 <= Date.now()) {
+      removeCookie("token");
+      return;
+    }
     if (payload?.userId) {
       setSession({ token, userId: payload.userId });
     }

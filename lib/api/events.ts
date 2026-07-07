@@ -1,3 +1,4 @@
+import { isAxiosError } from "axios";
 import api from "../api";
 
 export interface ApiEventCategory {
@@ -53,7 +54,12 @@ export interface EventsFilters {
   per_page?: number;
 }
 
-export async function getEvents(filters: EventsFilters = {}) {
+const onlyApproved = (response: EventsResponse): EventsResponse => ({
+  ...response,
+  data: (response.data ?? []).filter((event) => event.status === "APPROVED"),
+});
+
+export async function getEvents(filters: EventsFilters = {}, token?: string) {
   const params = new URLSearchParams();
   if (filters.search) params.set("search", filters.search);
   if (filters.categoryId) params.set("categoryId", filters.categoryId);
@@ -62,8 +68,21 @@ export async function getEvents(filters: EventsFilters = {}) {
   if (filters.page) params.set("page", String(filters.page));
   if (filters.per_page) params.set("per_page", String(filters.per_page));
 
+  if (token) {
+    try {
+      const { data } = await api.get<EventsResponse>("/events", {
+        params,
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return onlyApproved(data);
+    } catch (error) {
+      // Um token inválido/expirado não deve esconder a listagem pública
+      if (!isAxiosError(error) || error.response?.status !== 401) throw error;
+    }
+  }
+
   const { data } = await api.get<EventsResponse>("/events", { params });
-  return data;
+  return onlyApproved(data);
 }
 
 export interface CreateEventPayload {

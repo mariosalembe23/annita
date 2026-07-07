@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import { EventCard } from "@/components/EventCard";
 import { getEvents } from "@/lib/api/events";
+import { useUser } from "@/hooks/use-user";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -37,21 +38,25 @@ const item = {
 };
 
 export function EventsList() {
+  const { token } = useUser();
   const [search, setSearch] = useState("");
   const [modality, setModality] = useState("");
   const [type, setType] = useState("");
   const [page, setPage] = useState(1);
 
   const { data, isPending } = useQuery({
-    queryKey: ["events", search, modality, type, page],
+    queryKey: ["events", search, modality, type, page, token],
     queryFn: () =>
-      getEvents({
-        search: search || undefined,
-        modality: (modality || undefined) as any,
-        type: (type || undefined) as any,
-        page,
-        per_page: 12,
-      }),
+      getEvents(
+        {
+          search: search || undefined,
+          modality: (modality || undefined) as any,
+          type: (type || undefined) as any,
+          page,
+          per_page: 12,
+        },
+        token ?? undefined,
+      ),
   });
 
   const apiEvents = data?.data ?? [];

@@ -24,6 +24,7 @@ import {
 import { EventDetailModal } from "./EventDetailModal";
 import { EventActionsDropdown } from "./EventActionsDropdown";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useUser } from "@/hooks/use-user";
 import { useToast } from "@/hooks/use-toast";
@@ -73,6 +74,7 @@ export function EventCard({
   const { token, payload } = useUser();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const isOwner = payload?.userId === event.createdById;
 
@@ -164,9 +166,10 @@ export function EventCard({
           "Erro ao registar voto",
       );
     },
+    // Não invalidar as listas após votar: o GET /events não devolve o
+    // userVote, e o refetch apagaria o voto acabado de registar. A cache
+    // já foi atualizada otimisticamente no onMutate.
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["events"] });
-      queryClient.invalidateQueries({ queryKey: ["my-events"] });
       queryClient.invalidateQueries({ queryKey: ["event-details", event.id] });
     },
   });
@@ -174,7 +177,7 @@ export function EventCard({
   const handleVote = (e: React.MouseEvent, voteType: "UPVOTE" | "DOWNVOTE") => {
     e.stopPropagation();
     if (!token) {
-      toast("error", "Deve iniciar sessão para votar num evento.");
+      router.push("/signin");
       return;
     }
 
@@ -391,7 +394,13 @@ export function EventCard({
         open={dropdownOpen}
         onClose={() => setDropdownOpen(false)}
         onViewDetails={() => setDetailOpen(true)}
-        onReport={() => setReportDialogOpen(true)}
+        onReport={() => {
+          if (!token) {
+            router.push("/signin");
+            return;
+          }
+          setReportDialogOpen(true);
+        }}
         onCopyLink={handleCopyLink}
         onDelete={() => setDeleteDialogOpen(true)}
         isOwner={isOwner}
