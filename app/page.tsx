@@ -42,7 +42,7 @@ const item = {
 };
 
 export default function Home() {
-  const { isLoggedIn, user, isLoading, token } = useUser();
+  const { token } = useUser();
   const [search, setSearch] = useState("");
   const [modality, setModality] = useState("");
   const [type, setType] = useState("");
@@ -154,7 +154,7 @@ export default function Home() {
                   setPage(1);
                 }}
               >
-                <SelectTrigger className="w-36">
+                <SelectTrigger className="w-36 py-4.5">
                   <SelectValue placeholder="Modalidade" />
                 </SelectTrigger>
                 <SelectContent>
@@ -171,7 +171,7 @@ export default function Home() {
                   setPage(1);
                 }}
               >
-                <SelectTrigger className="w-28">
+                <SelectTrigger className="w-28 py-4.5">
                   <SelectValue placeholder="Tipo" />
                 </SelectTrigger>
                 <SelectContent>

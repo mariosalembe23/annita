@@ -3,12 +3,11 @@
 import { useRef, useState, useEffect } from "react";
 import {
   RiMore2Fill,
-  RiMouseFill,
-  RiAlertLine,
   RiThumbUpLine,
   RiThumbUpFill,
   RiThumbDownLine,
   RiThumbDownFill,
+  RiUserStarFill,
 } from "@remixicon/react";
 import { cn } from "@/lib/utils";
 import type { ApiEvent } from "@/lib/api/events";
@@ -82,7 +81,9 @@ export function EventCard({
 
   const [localVote, setLocalVote] = useState(event.userVote);
   const [localUpvotes, setLocalUpvotes] = useState(event.upvoteCount ?? 0);
-  const [localDownvotes, setLocalDownvotes] = useState(event.downvoteCount ?? 0);
+  const [localDownvotes, setLocalDownvotes] = useState(
+    event.downvoteCount ?? 0,
+  );
 
   useEffect(() => {
     setLocalVote(event.userVote);
@@ -119,11 +120,20 @@ export function EventCard({
     onMutate: async (voteType) => {
       await queryClient.cancelQueries({ queryKey: ["events"] });
       await queryClient.cancelQueries({ queryKey: ["my-events"] });
-      await queryClient.cancelQueries({ queryKey: ["event-details", event.id] });
+      await queryClient.cancelQueries({
+        queryKey: ["event-details", event.id],
+      });
 
-      const previousEventsData = queryClient.getQueriesData({ queryKey: ["events"] });
-      const previousMyEventsData = queryClient.getQueriesData({ queryKey: ["my-events"] });
-      const previousEventDetails = queryClient.getQueryData(["event-details", event.id]);
+      const previousEventsData = queryClient.getQueriesData({
+        queryKey: ["events"],
+      });
+      const previousMyEventsData = queryClient.getQueriesData({
+        queryKey: ["my-events"],
+      });
+      const previousEventDetails = queryClient.getQueryData([
+        "event-details",
+        event.id,
+      ]);
 
       const nextState = getOptimisticVoteState(event, voteType);
 
@@ -132,7 +142,7 @@ export function EventCard({
         return {
           ...oldData,
           data: oldData.data.map((e: ApiEvent) =>
-            e.id === event.id ? { ...e, ...nextState } : e
+            e.id === event.id ? { ...e, ...nextState } : e,
           ),
         };
       };
@@ -155,7 +165,10 @@ export function EventCard({
           queryClient.setQueryData(queryKey, queryData);
         });
         if (context.previousEventDetails) {
-          queryClient.setQueryData(["event-details", event.id], context.previousEventDetails);
+          queryClient.setQueryData(
+            ["event-details", event.id],
+            context.previousEventDetails,
+          );
         }
       }
 
@@ -186,8 +199,12 @@ export function EventCard({
     const previousDownvotes = localDownvotes;
 
     const nextState = getOptimisticVoteState(
-      { userVote: localVote, upvoteCount: localUpvotes, downvoteCount: localDownvotes },
-      voteType
+      {
+        userVote: localVote,
+        upvoteCount: localUpvotes,
+        downvoteCount: localDownvotes,
+      },
+      voteType,
     );
 
     setLocalVote(nextState.userVote);
@@ -291,8 +308,18 @@ export function EventCard({
         </header>
         <div className="h-full w-full flex-col flex justify-between p-5 rounded-t-2xl shadow-2xl bg-white -mt-5">
           <div>
-            <div className="flex items-center justify-between">
-              <p className="text-sm text-gray-600 mb-2">{subtitle}</p>
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-3 ">
+                <p className="text-sm text-gray-600">{subtitle}</p>
+                {isOwner && (
+                  <p
+                    title="Este evento pertence-te"
+                    className="rounded inline-flex items-center text-amber-700"
+                  >
+                    <RiUserStarFill className="size-4" />
+                  </p>
+                )}
+              </div>
               <div className="flex items-center ">
                 {event.coverImage ? (
                   <img
@@ -349,9 +376,7 @@ export function EventCard({
                   ) : (
                     <RiThumbUpLine className="size-5 shrink-0" />
                   )}
-                  <span className="text-sm font-medium">
-                    {localUpvotes}
-                  </span>
+                  <span className="text-sm font-medium">{localUpvotes}</span>
                 </button>
                 <button
                   type="button"
@@ -368,9 +393,7 @@ export function EventCard({
                   ) : (
                     <RiThumbDownLine className="size-5 shrink-0" />
                   )}
-                  <span className="text-sm font-medium">
-                    {localDownvotes}
-                  </span>
+                  <span className="text-sm font-medium">{localDownvotes}</span>
                 </button>
               </div>
             )}
@@ -543,7 +566,8 @@ export function EventCard({
           <DialogHeader className="flex p-2 flex-col items-start">
             <DialogTitle>Eliminar Evento</DialogTitle>
             <DialogDescription>
-              Tem a certeza de que deseja eliminar o evento "{event.title}"? Esta ação não pode ser desfeita.
+              Tem a certeza de que deseja eliminar o evento "{event.title}"?
+              Esta ação não pode ser desfeita.
             </DialogDescription>
           </DialogHeader>
 

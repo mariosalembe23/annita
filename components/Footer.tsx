@@ -57,25 +57,9 @@ export function Footer() {
               href="https://linkedin.com/company/annita"
               target="_blank"
               rel="noopener noreferrer"
-              className="size-9 rounded-lg border border-zinc-200 flex items-center justify-center text-zinc-600 hover:text-design-2 hover:border-design-2/40 transition-colors"
+              className="size-9 rounded-lg flex items-center justify-center text-zinc-600 hover:text-design-2 hover:border-design-2/40 transition-colors"
             >
-              <RiLinkedinFill className="size-4" />
-            </a>
-            <a
-              href="https://instagram.com/annita"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="size-9 rounded-lg border border-zinc-200 flex items-center justify-center text-zinc-600 hover:text-design-2 hover:border-design-2/40 transition-colors"
-            >
-              <RiInstagramLine className="size-4" />
-            </a>
-            <a
-              href="https://github.com/annita"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="size-9 rounded-lg border border-zinc-200 flex items-center justify-center text-zinc-600 hover:text-design-2 hover:border-design-2/40 transition-colors"
-            >
-              <RiGithubFill className="size-4" />
+              <RiLinkedinFill className="size-8" />
             </a>
           </div>
         </div>

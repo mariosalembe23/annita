@@ -74,8 +74,8 @@ export function EventsList() {
           <h1 className="text-5xl font-medium">Eventos</h1>
           {!isPending && (
             <p className="text-zinc-500 mt-1 text-[15px]">
-              {meta?.totalElements ?? apiEvents.length}{" "}
-              {(meta?.totalElements ?? apiEvents.length) === 1
+              {apiEvents.length}{" "}
+              {apiEvents.length === 1
                 ? "evento encontrado"
                 : "eventos encontrados"}
             </p>
@@ -89,7 +89,7 @@ export function EventsList() {
               setPage(1);
             }}
           >
-            <SelectTrigger className="w-36">
+            <SelectTrigger className="w-36 py-4.5">
               <SelectValue placeholder="Modalidade" />
             </SelectTrigger>
             <SelectContent>
@@ -106,7 +106,7 @@ export function EventsList() {
               setPage(1);
             }}
           >
-            <SelectTrigger className="w-28">
+            <SelectTrigger className="w-28 py-4.5">
               <SelectValue placeholder="Tipo" />
             </SelectTrigger>
             <SelectContent>

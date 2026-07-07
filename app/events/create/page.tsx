@@ -9,6 +9,7 @@ import {
   RiGlobalLine,
   RiGroup3Line,
   RiImageAddLine,
+  RiMapPinLine,
   RiTeamLine,
 } from "@remixicon/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -29,7 +30,6 @@ import {
 } from "@/components/ui/popover";
 import { PublishConfirmationModal } from "@/components/PublishConfirmationModal";
 import { createEvent, getCategories } from "@/lib/api/events";
-import type { ApiEventCategory } from "@/lib/api/events";
 import { uploadImage } from "@/lib/upload-image";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/hooks/use-user";
@@ -37,6 +37,7 @@ import { useUser } from "@/hooks/use-user";
 interface CreateEventForm {
   title: string;
   description: string;
+  location: string;
   link: string;
   categoryId: string;
   coverImage: File | null;
@@ -108,6 +109,7 @@ export default function CreateEventPage() {
     defaultValues: {
       title: "",
       description: "",
+      location: "",
       link: "",
       categoryId: "",
       coverImage: null,
@@ -128,6 +130,7 @@ export default function CreateEventPage() {
         const f = parsed.form;
         if (f.title) setValue("title", f.title);
         if (f.description) setValue("description", f.description);
+        if (f.location) setValue("location", f.location);
         if (f.link) setValue("link", f.link);
         if (f.categoryId) setValue("categoryId", f.categoryId);
         if (f.modality) setValue("modality", f.modality);
@@ -193,6 +196,7 @@ export default function CreateEventPage() {
       const payload = {
         title: formData.title.trim(),
         description: formData.description.trim(),
+        location: formData.location.trim() || undefined,
         link: formData.link.trim(),
         categoryId: formData.categoryId,
         modality: MODALITY_MAP[formData.modality] as
@@ -272,7 +276,7 @@ export default function CreateEventPage() {
 
   async function handleNext() {
     let fields: (keyof CreateEventForm)[] = [];
-    if (step === 0) fields = ["title", "description"];
+    if (step === 0) fields = ["title", "description", "location"];
     else if (step === 1) fields = ["link", "categoryId"];
     else if (step === 2) fields = ["modality"];
     else if (step === 3) fields = ["startDate", "type"];
@@ -411,6 +415,48 @@ export default function CreateEventPage() {
                         {errors.description && (
                           <p className="text-red-500 text-sm mt-2">
                             {errors.description.message}
+                          </p>
+                        )}
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-zinc-700 mb-2 block">
+                          Localização{" "}
+                          <span className="text-zinc-400 font-normal">
+                            (opcional)
+                          </span>
+                        </label>
+                        <div
+                          className={`flex bg-white transition-all focus-within:ring-4 items-start px-3 py-2.5 rounded-lg border ${
+                            errors.location
+                              ? "border-red-400 focus-within:ring-red-100 focus-within:border-red-400"
+                              : "focus-within:ring-blue-100 focus-within:border-blue-400 border-gray-200"
+                          }`}
+                        >
+                          <RiMapPinLine className="size-5 text-zinc-400 shrink-0" />
+                          <textarea
+                            className="w-full outline-none ps-2 text-[15px] resize-none overflow-y-auto"
+                            rows={1}
+                            placeholder="Ex.: Centro de Convenções de Talatona, Luanda"
+                            style={{ maxHeight: "120px" }}
+                            {...register("location", {
+                              maxLength: {
+                                value: 120,
+                                message:
+                                  "A localização deve ter no máximo 120 caracteres",
+                              },
+                              validate: (value) =>
+                                !value ||
+                                value.trim().length >= 3 ||
+                                "A localização deve ter pelo menos 3 caracteres",
+                              onChange: (e) => {
+                                resizeDescription(e);
+                              },
+                            })}
+                          />
+                        </div>
+                        {errors.location && (
+                          <p className="text-red-500 text-sm mt-2">
+                            {errors.location.message}
                           </p>
                         )}
                       </div>

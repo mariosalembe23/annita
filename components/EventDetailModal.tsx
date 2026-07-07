@@ -3,11 +3,12 @@
 import { useState, useEffect } from "react";
 import {
   RiCloseLine,
-  RiMouseFill,
+  RiMapPinLine,
   RiThumbUpLine,
   RiThumbUpFill,
   RiThumbDownLine,
   RiThumbDownFill,
+  RiUserStarFill,
 } from "@remixicon/react";
 import { AnimatePresence, motion } from "framer-motion";
 import type { ApiEvent } from "@/lib/api/events";
@@ -53,7 +54,9 @@ export function EventDetailModal({
 
   const [localVote, setLocalVote] = useState(event.userVote);
   const [localUpvotes, setLocalUpvotes] = useState(event.upvoteCount ?? 0);
-  const [localDownvotes, setLocalDownvotes] = useState(event.downvoteCount ?? 0);
+  const [localDownvotes, setLocalDownvotes] = useState(
+    event.downvoteCount ?? 0,
+  );
 
   useEffect(() => {
     setLocalVote(event.userVote);
@@ -61,10 +64,12 @@ export function EventDetailModal({
     setLocalDownvotes(event.downvoteCount ?? 0);
   }, [event.userVote, event.upvoteCount, event.downvoteCount]);
 
-  const { token } = useUser();
+  const { token, payload } = useUser();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const router = useRouter();
+
+  const isOwner = payload?.userId === event.createdById;
 
   const voteMutation = useMutation({
     mutationFn: (voteType: "UPVOTE" | "DOWNVOTE") =>
@@ -72,11 +77,20 @@ export function EventDetailModal({
     onMutate: async (voteType) => {
       await queryClient.cancelQueries({ queryKey: ["events"] });
       await queryClient.cancelQueries({ queryKey: ["my-events"] });
-      await queryClient.cancelQueries({ queryKey: ["event-details", event.id] });
+      await queryClient.cancelQueries({
+        queryKey: ["event-details", event.id],
+      });
 
-      const previousEventsData = queryClient.getQueriesData({ queryKey: ["events"] });
-      const previousMyEventsData = queryClient.getQueriesData({ queryKey: ["my-events"] });
-      const previousEventDetails = queryClient.getQueryData(["event-details", event.id]);
+      const previousEventsData = queryClient.getQueriesData({
+        queryKey: ["events"],
+      });
+      const previousMyEventsData = queryClient.getQueriesData({
+        queryKey: ["my-events"],
+      });
+      const previousEventDetails = queryClient.getQueryData([
+        "event-details",
+        event.id,
+      ]);
 
       const nextState = getOptimisticVoteState(event, voteType);
 
@@ -85,7 +99,7 @@ export function EventDetailModal({
         return {
           ...oldData,
           data: oldData.data.map((e: ApiEvent) =>
-            e.id === event.id ? { ...e, ...nextState } : e
+            e.id === event.id ? { ...e, ...nextState } : e,
           ),
         };
       };
@@ -108,7 +122,10 @@ export function EventDetailModal({
           queryClient.setQueryData(queryKey, queryData);
         });
         if (context.previousEventDetails) {
-          queryClient.setQueryData(["event-details", event.id], context.previousEventDetails);
+          queryClient.setQueryData(
+            ["event-details", event.id],
+            context.previousEventDetails,
+          );
         }
       }
 
@@ -139,8 +156,12 @@ export function EventDetailModal({
     const previousDownvotes = localDownvotes;
 
     const nextState = getOptimisticVoteState(
-      { userVote: localVote, upvoteCount: localUpvotes, downvoteCount: localDownvotes },
-      voteType
+      {
+        userVote: localVote,
+        upvoteCount: localUpvotes,
+        downvoteCount: localDownvotes,
+      },
+      voteType,
     );
 
     setLocalVote(nextState.userVote);
@@ -212,6 +233,14 @@ export function EventDetailModal({
                       {categoryName}
                     </span>
                     <span className="text-sm text-zinc-600">{timeAgo}</span>
+                    {isOwner && (
+                      <span
+                        title="Este evento pertence-te"
+                        className="inline-flex items-center text-amber-700"
+                      >
+                        <RiUserStarFill className="size-4" />
+                      </span>
+                    )}
                   </div>
                   <button
                     type="button"
@@ -251,10 +280,34 @@ export function EventDetailModal({
                   </p>
                 </div>
 
+                {event.location && (
+                  <div className="mt-6">
+                    <p className="text-sm text-zinc-500 mb-1">Localização</p>
+                    <p className="text-zinc-700 text-[15px] flex items-center gap-1.5">
+                      <RiMapPinLine className="size-4 text-zinc-400 shrink-0" />
+                      {event.location}
+                    </p>
+                  </div>
+                )}
+
                 <div className="mt-6 flex items-center justify-between">
-                  <div className="">
-                    <p className="text-sm text-zinc-500 mb-1">Data do Evento</p>
-                    <p className="text-base text-zinc-800">{dateFormatted}</p>
+                  <div className="flex items-center gap-8">
+                    <div>
+                      <p className="text-sm text-zinc-500 mb-1">
+                        Data do Evento
+                      </p>
+                      <p className="text-base text-zinc-800">{dateFormatted}</p>
+                    </div>
+                    {event.createdByUsername && (
+                      <div>
+                        <p className="text-sm text-zinc-500 mb-1">
+                          Publicado por
+                        </p>
+                        <p className="text-base text-zinc-800">
+                          @{event.createdByUsername}
+                        </p>
+                      </div>
+                    )}
                   </div>
                   <div className="flex items-center">
                     {images.map((img, i) => (

@@ -94,6 +94,7 @@ export interface CreateEventPayload {
   startDate: string;
   type: EventType;
   coverImage: string;
+  location?: string;
 }
 
 export async function getMyEvents(token: string) {
