@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  RiCloseLine,
   RiGithubFill,
   RiMoonLine,
   RiSettings3Line,
@@ -10,6 +11,7 @@ import {
   RiUser6Line,
   RiGovernmentLine,
   RiMegaphoneLine,
+  RiMenu4Fill,
 } from "@remixicon/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -67,8 +69,22 @@ export function Nav({ links = defaultLinks }: NavProps) {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const { theme, toggleTheme } = useTheme();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [notificationsTab, setNotificationsTab] =
     useState<NotificationsTab>("all");
+
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") setMobileMenuOpen(false);
+    }
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [mobileMenuOpen]);
 
   const { data: notificationsResponse } = useQuery({
     queryKey: ["notifications"],
@@ -128,7 +144,7 @@ export function Nav({ links = defaultLinks }: NavProps) {
 
   return (
     <div className="w-full fixed bg-background z-50 right-0 top-0 left-0">
-      <nav className="max-w-7xl bg-background border-b border-gray-100 dark:border-zinc-700/50 py-5 mx-auto flex items-center justify-between">
+      <nav className="max-w-7xl bg-background border-b border-gray-100 dark:border-zinc-700/50 py-5 px-5 det:px-0 mx-auto flex items-center justify-between">
         <div>
           <Link href={"/"} className="flex items-center gap-2">
             <Image
@@ -141,8 +157,8 @@ export function Nav({ links = defaultLinks }: NavProps) {
             <p className="text-3xl dark:text-white text-design-3 ">annita</p>
           </Link>
         </div>
-        <div className="flex items-center gap-10">
-          <div className="flex items-center gap-16">
+        <div className="flex items-center gap-4 pot:gap-10">
+          <div className="hidden pot:flex items-center gap-8 det:gap-16">
             {links.map((item) => (
               <Link
                 key={item.name}
@@ -352,18 +368,115 @@ export function Nav({ links = defaultLinks }: NavProps) {
                 </AnimatePresence>
               </div>
             ) : isLoading ? (
-              <div className="w-24 py-4.5 rounded-lg bg-gray-200 dark:bg-zinc-700 animate-pulse" />
+              <div className="w-24 py-4.5 pot:inline-flex hidden rounded-lg bg-gray-200 dark:bg-zinc-700 animate-pulse" />
             ) : (
               <Link href={"/signin"}>
-                <button className="text-base transition-all hover:opacity-75 text-white bg-design-2 border-design-2 border rounded-lg px-3 py-1.5 font-normal flex items-center gap-2">
+                <button className="text-base pot:flex hidden transition-all hover:opacity-75 text-white bg-design-2 border-design-2 border rounded-lg px-3 py-1.5 font-normal  items-center gap-2">
                   <RiUser6Fill className="size-4" />
                   Entrar
                 </button>
               </Link>
             )}
+            <button
+              type="button"
+              aria-label="Abrir menu"
+              onClick={() => setMobileMenuOpen(true)}
+              className="text-base pot:hidden p-2 border-gray-200 dark:border-zinc-700 border rounded-lg text-zinc-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-900 transition-all flex items-center justify-center"
+            >
+              <RiMenu4Fill className="size-5" />
+            </button>
           </div>
         </div>
       </nav>
+
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <>
+            <motion.div
+              key="mobile-menu-overlay"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 z-50 bg-black/20 dark:bg-black/50 backdrop-blur-sm pot:hidden"
+              onClick={() => setMobileMenuOpen(false)}
+            />
+            <motion.aside
+              key="mobile-menu"
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
+              className="fixed top-0 right-0 z-50 h-dvh w-72 max-w-[85vw] bg-white dark:bg-zinc-900 border-l border-gray-100 dark:border-zinc-700/50 shadow-2xl dark:shadow-black/40 pot:hidden flex flex-col"
+            >
+              <div className="flex items-center justify-between px-5 py-5 border-b border-gray-100 dark:border-zinc-800">
+                <Link
+                  href={"/"}
+                  className="flex items-center gap-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Image
+                    src={"/img-logo/simple-logo.svg"}
+                    alt={"Logo"}
+                    width={100}
+                    className="w-5 mt-1"
+                    height={100}
+                  />
+                  <p className="text-2xl dark:text-white text-design-3">
+                    annita
+                  </p>
+                </Link>
+                <button
+                  type="button"
+                  aria-label="Fechar menu"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 transition-colors"
+                >
+                  <RiCloseLine className="size-6" />
+                </button>
+              </div>
+
+              <nav className="flex flex-col gap-3 p-3">
+                {links.map((item) => (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    target={item.href.startsWith("http") ? "_blank" : undefined}
+                    rel={
+                      item.href.startsWith("http")
+                        ? "noopener noreferrer"
+                        : undefined
+                    }
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={cn(
+                      "text-[15px] font-normal px-3 py-2.5 rounded-lg transition-all",
+                      pathname === item.href
+                        ? "text-design-2 bg-design-2/10 dark:bg-design-2/20"
+                        : "text-zinc-900 dark:text-zinc-100 hover:bg-gray-50 dark:hover:bg-zinc-800",
+                    )}
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+              </nav>
+
+              {!isLoggedIn && !isLoading && (
+                <div className="mt-auto p-4 border-t border-gray-100 dark:border-zinc-800">
+                  <Link
+                    href={"/signin"}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <button className="w-full text-base transition-all hover:opacity-75 text-white bg-design-2 border-design-2 border rounded-lg px-3 py-2 font-normal flex items-center justify-center gap-2">
+                      <RiUser6Fill className="size-4" />
+                      Entrar
+                    </button>
+                  </Link>
+                </div>
+              )}
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

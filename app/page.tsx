@@ -67,8 +67,7 @@ export default function Home() {
 
   const { data: categoriesResponse } = useQuery({
     queryKey: ["categories"],
-    queryFn: () => getCategories(token!, 1, 1000),
-    enabled: !!token,
+    queryFn: () => getCategories(undefined, 1, 1000),
   });
 
   const categories = categoriesResponse?.data ?? [];
@@ -81,15 +80,15 @@ export default function Home() {
       <Nav />
 
       <motion.header variants={container} initial="hidden" animate="show">
-        <section className="grid pt-24 max-w-7xl mt-16 gap-32 items-center mx-auto grid-cols-[50%_50%]">
-          <motion.div variants={item} className="max-w-3xl">
+        <section className="grid pt-24 max-w-7xl mt-16 gap-16 pot:gap-32 items-center mx-auto px-4 det:px-0 grid-cols-1 pot:grid-cols-[50%_50%]">
+          <motion.div variants={item} className="max-w-3xl pot:px-0 px-4">
             <Link href={"/newsletter"}>
-              <button className="px-4 py-2 rounded-full text-sm font-normal bg-design-2/10 dark:bg-design-2/20 gap-2 items-center gap- text-design-3 dark:text-design-1 inline-flex mb-6">
+              <button className="px-4 py-2 transition-all hover:bg-design-2/40 hover:text-design-1 rounded-full text-sm font-normal bg-design-2/10 dark:bg-design-2/20 gap-2 items-center gap- text-design-3 dark:text-design-1 inline-flex mb-6">
                 <RiMailSendFill className="size-4" />
                 Subscreva a nossa newsletter
               </button>
             </Link>
-            <h1 className="text-7xl leading-16 font-medium">
+            <h1 className="text-5xl  small:text-6xl pot:text-7xl pot:leading-16 font-medium">
               O teu próximo{" "}
               <span className="text-design-2 font-medium">evento</span> começa
               aqui.
@@ -101,7 +100,7 @@ export default function Home() {
             </p>
             <motion.div
               variants={item}
-              className="flex items-center gap-2 mt-6"
+              className="flex items-center flex-wrap gap-2 mt-6"
             >
               <Link href={"/events"}>
                 <button className="text-base transition-all hover:opacity-75 text-white bg-design-2 border-design-2 border rounded-lg px-3 py-1.5 font-normal  flex items-center gap-2 ">
@@ -116,7 +115,10 @@ export default function Home() {
                 </button>
               </Link>
             </motion.div>
-            <motion.footer variants={item} className="flex items-center gap-12">
+            <motion.footer
+              variants={item}
+              className="flex items-center flex-wrap gap-8 small:gap-12"
+            >
               <div className="flex flex-col gap-1">
                 <p className="flex items-center text-gray-500 dark:text-zinc-500 gap-0.5 mt-10">
                   Inscritos
@@ -143,8 +145,8 @@ export default function Home() {
               </div>
             </motion.footer>
           </motion.div>
-          <motion.div variants={item} className="relative mt-20">
-            <div className="flex items-center ms-20 gap-2 relative justify-center">
+          <motion.div variants={item} className="relative mt-4 pot:mt-20">
+            <div className="flex items-center   pot:ms-20 gap-4 pot:gap-2 flex-nowrap relative justify-center">
               {events.slice(0, 3).map((event) => (
                 <EventCard type="presentation" key={event.id} event={event} />
               ))}
@@ -160,34 +162,32 @@ export default function Home() {
         viewport={{ once: true, margin: "-100px" }}
         className="mt-28"
       >
-        <section className="max-w-7xl mx-auto w-full">
+        <section className="max-w-7xl mx-auto w-full px-5 det:px-0">
           <motion.header
             variants={item}
-            className="flex items-center mt-10 justify-between"
+            className="flex flex-col pot:flex-row pot:items-center gap-6 mt-10 justify-between"
           >
-            <h2 className="text-5xl font-medium">Eventos</h2>
-            <div className="flex items-center gap-3">
-              {categories.length > 0 && (
-                <Select
-                  value={categoryId || "all"}
-                  onValueChange={(v) => {
-                    setCategoryId(v === "all" ? "" : v);
-                    setPage(1);
-                  }}
-                >
-                  <SelectTrigger className="w-40 py-4.5">
-                    <SelectValue placeholder="Categoria" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Todas as categorias</SelectItem>
-                    {categories.map((cat) => (
-                      <SelectItem key={cat.id} value={cat.id}>
-                        {cat.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
+            <h2 className="text-4xl pot:text-5xl font-medium">Eventos</h2>
+            <div className="flex items-center flex-wrap gap-3">
+              <Select
+                value={categoryId || "all"}
+                onValueChange={(v) => {
+                  setCategoryId(v === "all" ? "" : v);
+                  setPage(1);
+                }}
+              >
+                <SelectTrigger className="w-40 py-4.5">
+                  <SelectValue placeholder="Categoria" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todas as categorias</SelectItem>
+                  {categories.map((cat) => (
+                    <SelectItem key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <Select
                 value={modality || "all"}
                 onValueChange={(v) => {
@@ -221,7 +221,7 @@ export default function Home() {
                   <SelectItem value="PAID">Pago</SelectItem>
                 </SelectContent>
               </Select>
-              <div className="flex w-72 bg-white dark:bg-white/5 transition-all focus-within:ring-4 focus-within:ring-blue-100 dark:focus-within:ring-blue-500/20 focus-within:border-blue-400 items-center justify-between px-3 py-2 rounded-lg border border-gray-200 dark:border-zinc-600">
+              <div className="flex w-full small:w-72 bg-white dark:bg-white/5 transition-all focus-within:ring-4 focus-within:ring-blue-100 dark:focus-within:ring-blue-500/20 focus-within:border-blue-400 items-center justify-between px-3 py-2 rounded-lg border border-gray-200 dark:border-zinc-600">
                 <RiSearchLine className="size-5 text-zinc-400 shrink-0" />
                 <input
                   className="w-full outline-none ps-2 text-sm bg-transparent"
@@ -252,7 +252,7 @@ export default function Home() {
           </motion.header>
 
           {isPending ? (
-            <div className="mt-10 grid grid-cols-4 gap-x-6 gap-y-4">
+            <div className="mt-10 grid grid-cols-1 small:grid-cols-2 pot:grid-cols-3 det:grid-cols-4 gap-x-6 gap-y-4">
               {Array.from({ length: 8 }).map((_, i) => (
                 <div
                   key={i}
@@ -278,7 +278,7 @@ export default function Home() {
               variants={item}
               initial="hidden"
               animate="show"
-              className="mt-10 grid grid-cols-4 gap-x-2 gap-y-4"
+              className="mt-10 grid grid-cols-1 small:grid-cols-2 pot:grid-cols-3 det:grid-cols-4 gap-x-2 gap-y-4"
             >
               {apiEvents.map((event) => (
                 <EventCard key={event.id} event={event} />
@@ -287,7 +287,7 @@ export default function Home() {
           )}
 
           {meta && meta.totalPages > 1 && (
-            <div className="flex items-center justify-center gap-2 mt-12">
+            <div className="flex items-center justify-center flex-wrap gap-2 mt-12">
               <button
                 disabled={page <= 1}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}

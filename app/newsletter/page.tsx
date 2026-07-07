@@ -16,7 +16,6 @@ import { Confetti } from "@/components/ui/confetti";
 import { getCategories } from "@/lib/api/events";
 import { subscribeNewsletter } from "@/lib/api/newsletter";
 import { useToast } from "@/hooks/use-toast";
-import { useUser } from "@/hooks/use-user";
 
 interface NewsletterForm {
   name: string;
@@ -32,7 +31,6 @@ const MIN_CATEGORIES = 3;
 
 export default function NewsletterPage() {
   const { toast } = useToast();
-  const { token, isLoading: userLoading } = useUser();
 
   const [[step, direction], setStep] = useState([0, 0]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -43,14 +41,12 @@ export default function NewsletterPage() {
     document.title = "Newsletter — Annita";
   }, []);
 
-  const { data: categoriesResponse, isLoading: categoriesLoading } = useQuery({
+  const { data: categoriesResponse, isPending: loadingCategories } = useQuery({
     queryKey: ["categories"],
-    queryFn: () => getCategories(token!, 1, 1000),
-    enabled: !!token,
+    queryFn: () => getCategories(undefined, 1, 1000),
   });
 
   const categories = categoriesResponse?.data ?? [];
-  const loadingCategories = userLoading || categoriesLoading;
 
   const {
     register,
@@ -92,11 +88,10 @@ export default function NewsletterPage() {
   }
 
   async function handleNext() {
-    if (step === 0) {
-      const required =
-        categories.length > 0
-          ? Math.min(MIN_CATEGORIES, categories.length)
-          : MIN_CATEGORIES;
+    // O mínimo de categorias só se aplica quando há categorias para escolher
+    // (o GET /categories exige sessão); anónimos subscrevem sem categorias.
+    if (step === 0 && categories.length > 0) {
+      const required = Math.min(MIN_CATEGORIES, categories.length);
       if (selectedCategories.length < required) {
         setCategoriesError(
           `Seleciona pelo menos ${required} categorias para continuar`,
@@ -241,7 +236,9 @@ export default function NewsletterPage() {
                             <span>
                               Categorias de interesse{" "}
                               <span className="text-zinc-400 font-normal">
-                                (seleciona pelo menos {MIN_CATEGORIES})
+                                {categories.length > 0
+                                  ? `(seleciona pelo menos ${MIN_CATEGORIES})`
+                                  : "(opcional)"}
                               </span>
                             </span>
                             {categories.length > 0 && (
@@ -284,20 +281,8 @@ export default function NewsletterPage() {
                             </div>
                           ) : (
                             <p className="text-sm text-zinc-500 dark:text-zinc-400 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2.5">
-                              {token ? (
-                                "Sem categorias disponíveis de momento. Tenta novamente mais tarde."
-                              ) : (
-                                <>
-                                  Precisas de{" "}
-                                  <Link
-                                    href={"/signin"}
-                                    className="text-design-2 hover:underline"
-                                  >
-                                    iniciar sessão
-                                  </Link>{" "}
-                                  para escolheres as categorias de interesse.
-                                </>
-                              )}
+                              Sem categorias disponíveis de momento. Podes
+                              continuar sem selecionar.
                             </p>
                           )}
                           {categoriesError && (

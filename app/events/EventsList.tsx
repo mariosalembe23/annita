@@ -63,8 +63,7 @@ export function EventsList() {
 
   const { data: categoriesResponse } = useQuery({
     queryKey: ["categories"],
-    queryFn: () => getCategories(token!, 1, 1000),
-    enabled: !!token,
+    queryFn: () => getCategories(undefined, 1, 1000),
   });
 
   const categories = categoriesResponse?.data ?? [];
@@ -92,27 +91,25 @@ export function EventsList() {
           )}
         </motion.div>
         <motion.div variants={item} className="flex items-center gap-3">
-          {categories.length > 0 && (
-            <Select
-              value={categoryId || "all"}
-              onValueChange={(v) => {
-                setCategoryId(v === "all" ? "" : v);
-                setPage(1);
-              }}
-            >
-              <SelectTrigger className="w-40 py-4.5">
-                <SelectValue placeholder="Categoria" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todas as categorias</SelectItem>
-                {categories.map((cat) => (
-                  <SelectItem key={cat.id} value={cat.id}>
-                    {cat.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
+          <Select
+            value={categoryId || "all"}
+            onValueChange={(v) => {
+              setCategoryId(v === "all" ? "" : v);
+              setPage(1);
+            }}
+          >
+            <SelectTrigger className="w-40 py-4.5">
+              <SelectValue placeholder="Categoria" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todas as categorias</SelectItem>
+              {categories.map((cat) => (
+                <SelectItem key={cat.id} value={cat.id}>
+                  {cat.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <Select
             value={modality || "all"}
             onValueChange={(v) => {

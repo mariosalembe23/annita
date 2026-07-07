@@ -191,13 +191,14 @@ export interface CategoriesResponse {
 }
 
 export async function getCategories(
-  token: string,
+  token?: string,
   page = 1,
   perPage = 10,
   search?: string,
 ) {
+  const headers = token ? { Authorization: `Bearer ${token}` } : {};
   const { data } = await api.get<CategoriesResponse>("/categories", {
-    headers: { Authorization: `Bearer ${token}` },
+    headers,
     params: { page, per_page: perPage, ...(search ? { search } : {}) },
   });
   return data;

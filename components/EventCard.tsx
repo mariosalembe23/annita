@@ -281,7 +281,7 @@ export function EventCard({
     <>
       <div
         className={cn(
-          "h-96 bg-transparent shrink-0 overflow-hidden flex flex-col justify-between border border-gray-200 dark:border-zinc-700/50 dark:shadow-none shadow-2xl shadow-gray-200 dark:shadow-black/40 z-20 rounded-3xl w-full max-w-80 mx-auto cursor-pointer transition-all hover:shadow-gray-300 dark:hover:shadow-black/60 hover:-translate-y-0.5",
+          `h-96 bg-transparent shrink-0 overflow-hidden flex flex-col justify-between border border-gray-200 dark:border-zinc-700/50 dark:shadow-none shadow-2xl shadow-gray-200 dark:shadow-black/40 z-20 rounded-3xl w-full ${type === "usual" ? "pot:max-w-80" : "max-w-80"} mx-auto cursor-pointer transition-all hover:shadow-gray-300 dark:hover:shadow-black/60 hover:-translate-y-0.5`,
           className,
         )}
         onClick={() => (type === "usual" ? setDetailOpen(true) : null)}
