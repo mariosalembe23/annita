@@ -122,12 +122,12 @@ export default function NewsletterPage() {
   };
 
   return (
-    <div className="overflow-x-hidden h-dvh bg-[#f5f5f5]">
+    <div className="overflow-x-hidden h-dvh bg-[#f5f5f5] dark:bg-[#242424]">
       <main className="h-screen grid grid-cols-1">
         <section className="h-full overflow-y-auto py-20 relative w-full">
           <button
             onClick={() => window.history.back()}
-            className="absolute size-9 rounded-full bg-gray-100 flex items-center justify-center top-6 right-6 text-zinc-600 hover:text-zinc-700 transition-opacity"
+            className="absolute size-9 rounded-full bg-gray-100 dark:bg-zinc-800 flex items-center justify-center top-6 right-6 text-zinc-600 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 transition-opacity"
           >
             <X className="size-5" />
           </button>
@@ -169,7 +169,7 @@ export default function NewsletterPage() {
                     ],
                   }}
                 />
-              <div className="flex max-w-[90%] mx-auto border rounded-2xl border-zinc-200 px-5 py-14 flex-col items-center text-center gap-4 mt-20">
+              <div className="flex max-w-[90%] mx-auto border rounded-2xl border-zinc-200 dark:border-zinc-700 px-5 py-14 flex-col items-center text-center gap-4 mt-20">
                 <div className="pot:mt-3 mt-7">
                   <Image
                     src={"/img/happy.png"}
@@ -180,7 +180,7 @@ export default function NewsletterPage() {
                   />
                 </div>
                 <h1 className="text-3xl font-medium">Inscrição confirmada!</h1>
-                <p className="text-zinc-600 text-[15px] max-w-sm">
+                <p className="text-zinc-600 dark:text-zinc-400 text-[15px] max-w-sm">
                   Obrigado por subscreveres a nossa newsletter. Vais passar a
                   receber as novidades dos eventos tech em Angola no teu email.
                 </p>
@@ -206,14 +206,14 @@ export default function NewsletterPage() {
                   <h1 className="text-3xl mt-4 font-medium">
                     Subscrever newsletter
                   </h1>
-                  <p className="text-zinc-500 text-[15px] mt-1">
+                  <p className="text-zinc-500 dark:text-zinc-400 text-[15px] mt-1">
                     Recebe no teu email os próximos eventos tech em Angola —
                     meetups, conferências, hackathons e muito mais.
                   </p>
                 </header>
 
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="flex-1 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                  <div className="flex-1 h-1.5 bg-gray-200 dark:bg-zinc-700 rounded-full overflow-hidden">
                     <motion.div
                       className="h-full bg-linear-to-r from-design-1 to-design-2 rounded-full"
                       animate={{
@@ -237,7 +237,7 @@ export default function NewsletterPage() {
                     <div className="flex flex-col gap-5">
                       {step === 0 && (
                         <div className="">
-                          <label className="text-sm mb-6 font-medium text-zinc-700 flex items-center justify-between">
+                          <label className="text-sm mb-6 font-medium text-zinc-700 dark:text-zinc-300 flex items-center justify-between">
                             <span>
                               Categorias de interesse{" "}
                               <span className="text-zinc-400 font-normal">
@@ -261,7 +261,7 @@ export default function NewsletterPage() {
                               {Array.from({ length: 8 }).map((_, i) => (
                                 <div
                                   key={i}
-                                  className="h-9 w-28 rounded-lg bg-gray-200 animate-pulse"
+                                  className="h-9 w-28 rounded-lg bg-gray-200 dark:bg-zinc-700 animate-pulse"
                                 />
                               ))}
                             </div>
@@ -275,7 +275,7 @@ export default function NewsletterPage() {
                                   className={`px-3 py-1.5 rounded-lg border text-[15px] transition-all ${
                                     selectedCategories.includes(cat.id)
                                       ? "border-design-2 bg-design-2 text-white font-medium"
-                                      : "border-gray-200 bg-white text-zinc-600 hover:border-gray-300"
+                                      : "border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 hover:border-gray-300 dark:hover:border-zinc-500"
                                   }`}
                                 >
                                   {cat.name}
@@ -283,7 +283,7 @@ export default function NewsletterPage() {
                               ))}
                             </div>
                           ) : (
-                            <p className="text-sm text-zinc-500 bg-white border border-gray-200 rounded-lg px-3 py-2.5">
+                            <p className="text-sm text-zinc-500 dark:text-zinc-400 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2.5">
                               {token ? (
                                 "Sem categorias disponíveis de momento. Tenta novamente mais tarde."
                               ) : (
@@ -311,14 +311,14 @@ export default function NewsletterPage() {
                       {step === 1 && (
                         <>
                           <div>
-                            <label className="text-sm font-medium text-zinc-700 mb-2 block">
+                            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2 block">
                               Nome
                             </label>
                             <div
-                              className={`flex bg-white transition-all focus-within:ring-4 items-center px-3 py-2.5 rounded-lg border ${
+                              className={`flex bg-white dark:bg-white/5 transition-all focus-within:ring-4 items-center px-3 py-2.5 rounded-lg border ${
                                 errors.name
-                                  ? "border-red-400 focus-within:ring-red-100 focus-within:border-red-400"
-                                  : "focus-within:ring-blue-100 focus-within:border-blue-400 border-gray-200"
+                                  ? "border-red-400 focus-within:ring-red-100 dark:focus-within:ring-red-500/20 focus-within:border-red-400"
+                                  : "focus-within:ring-blue-100 dark:focus-within:ring-blue-500/20 focus-within:border-blue-400 border-gray-200 dark:border-zinc-700"
                               }`}
                             >
                               <RiUser6Line className="size-5 text-zinc-400 shrink-0" />
@@ -344,14 +344,14 @@ export default function NewsletterPage() {
                           </div>
 
                           <div>
-                            <label className="text-sm font-medium text-zinc-700 mb-2 block">
+                            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2 block">
                               Email
                             </label>
                             <div
-                              className={`flex bg-white transition-all focus-within:ring-4 items-center px-3 py-2.5 rounded-lg border ${
+                              className={`flex bg-white dark:bg-white/5 transition-all focus-within:ring-4 items-center px-3 py-2.5 rounded-lg border ${
                                 errors.email
-                                  ? "border-red-400 focus-within:ring-red-100 focus-within:border-red-400"
-                                  : "focus-within:ring-blue-100 focus-within:border-blue-400 border-gray-200"
+                                  ? "border-red-400 focus-within:ring-red-100 dark:focus-within:ring-red-500/20 focus-within:border-red-400"
+                                  : "focus-within:ring-blue-100 dark:focus-within:ring-blue-500/20 focus-within:border-blue-400 border-gray-200 dark:border-zinc-700"
                               }`}
                             >
                               <RiMailLine className="size-5 text-zinc-400 shrink-0" />
@@ -377,11 +377,11 @@ export default function NewsletterPage() {
                         </>
                       )}
 
-                      <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                      <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-zinc-800">
                         <button
                           type="button"
                           onClick={() => goToStep(step - 1)}
-                          className={`text-base transition-all bg-white hover:bg-gray-50 text-zinc-700 border border-gray-200 rounded-lg px-4 py-2 font-normal ${
+                          className={`text-base transition-all bg-white dark:bg-zinc-900 hover:bg-gray-50 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-gray-200 dark:border-zinc-700 rounded-lg px-4 py-2 font-normal ${
                             step === 0 ? "invisible" : ""
                           }`}
                         >

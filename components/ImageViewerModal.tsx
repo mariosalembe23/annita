@@ -109,7 +109,7 @@ export function ImageViewerModal({
                   <span
                     key={i}
                     className={`size-2 rounded-full transition-colors ${
-                      i === currentIndex ? "bg-white" : "bg-white/40"
+                      i === currentIndex ? "bg-white dark:bg-zinc-900" : "bg-white/40"
                     }`}
                   />
                 ))}

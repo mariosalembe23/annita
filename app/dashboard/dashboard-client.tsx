@@ -28,13 +28,13 @@ export default function DashboardClient({ initialTab }: DashboardClientProps) {
   }
 
   return (
-    <div className="w-full h-dvh bg-[#f5f5f5] grid grid-cols-[4%_96%]">
+    <div className="w-full h-dvh bg-[#f5f5f5] dark:bg-[#242424] grid grid-cols-[4%_96%]">
       <Sidebar activeTab={activeTab} onTabChange={handleTabChange} />
       <main className="h-dvh overflow-y-auto">
         <section id="dashboard" className="p-10">
           <header className="flex items-center justify-between">
             <div className="w-full">
-              <InputGroup className="max-w-lg bg-white">
+              <InputGroup className="max-w-lg bg-white dark:bg-zinc-900">
                 <InputGroupInput placeholder="Search..." />
                 <InputGroupAddon>
                   <Search />
@@ -45,7 +45,7 @@ export default function DashboardClient({ initialTab }: DashboardClientProps) {
               </InputGroup>
             </div>
             <div>
-              <button className="px-5 py-1.5 gap-2 border bg-white hover:bg-zinc-100 transition-all border-gray-200 rounded-lg flex items-center">
+              <button className="px-5 py-1.5 gap-2 border bg-white dark:bg-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all border-gray-200 dark:border-zinc-700 rounded-lg flex items-center">
                 <Image
                   src={"/img/avatar.png"}
                   alt={"Avatar"}
@@ -53,7 +53,7 @@ export default function DashboardClient({ initialTab }: DashboardClientProps) {
                   className="size-5"
                   height={100}
                 />
-                <span className="text-zinc-900 inline-flex pe-2 text-sm">
+                <span className="text-zinc-900 dark:text-zinc-100 inline-flex pe-2 text-sm">
                   msalembe
                 </span>
               </button>

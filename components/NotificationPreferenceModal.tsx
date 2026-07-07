@@ -36,7 +36,7 @@ export function NotificationPreferenceModal({
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
             onClick={(e) => e.stopPropagation()}
-            className="flex w-full max-w-xl bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl overflow-hidden"
+            className="flex w-full max-w-xl dark:border border-zinc-800 bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl overflow-hidden"
           >
             <div className="flex-1 relative p-10">
               <button
@@ -53,7 +53,7 @@ export function NotificationPreferenceModal({
                   alt="icon"
                   width={100}
                   height={100}
-                  className="w-20 mb-4"
+                  className="w-20 mb-4 dark:invert"
                 />
               </div>
 

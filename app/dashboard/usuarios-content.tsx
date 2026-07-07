@@ -67,13 +67,13 @@ export default function UsuariosContent() {
         {userMetrics.map((item, index) => (
           <div
             key={index}
-            className="bg-white relative border overflow-hidden border-zinc-200 p-6 rounded-2xl"
+            className="bg-white dark:bg-zinc-900 relative border overflow-hidden border-zinc-200 dark:border-zinc-700 p-6 rounded-2xl"
           >
             <header className="flex items-center justify-between">
-              <span className="text-zinc-800 font-medium text-md">
+              <span className="text-zinc-800 dark:text-zinc-200 font-medium text-md">
                 {item.label}
               </span>
-              <item.icon className="absolute size-32 text-zinc-300! -bottom-10 -right-6" />
+              <item.icon className="absolute size-32 text-zinc-300 dark:text-zinc-600! -bottom-10 -right-6" />
             </header>
             <footer className="pt-6">
               <p className="text-4xl">{item.value}</p>
@@ -87,26 +87,26 @@ export default function UsuariosContent() {
           <h3 className="text-3xl">Usuários</h3>
         </header>
 
-        <div className="mt-6 overflow-x-auto rounded-2xl border border-zinc-200 bg-white">
+        <div className="mt-6 overflow-x-auto rounded-2xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-zinc-200 bg-zinc-50">
-                <th className="text-left px-5 py-3.5 font-medium text-zinc-600">
+              <tr className="border-b border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800/60">
+                <th className="text-left px-5 py-3.5 font-medium text-zinc-600 dark:text-zinc-400">
                   Utilizador
                 </th>
-                <th className="text-left px-5 py-3.5 font-medium text-zinc-600">
+                <th className="text-left px-5 py-3.5 font-medium text-zinc-600 dark:text-zinc-400">
                   Email
                 </th>
-                <th className="text-left px-5 py-3.5 font-medium text-zinc-600">
+                <th className="text-left px-5 py-3.5 font-medium text-zinc-600 dark:text-zinc-400">
                   Função
                 </th>
-                <th className="text-left px-5 py-3.5 font-medium text-zinc-600">
+                <th className="text-left px-5 py-3.5 font-medium text-zinc-600 dark:text-zinc-400">
                   Estado
                 </th>
-                <th className="text-left px-5 py-3.5 font-medium text-zinc-600">
+                <th className="text-left px-5 py-3.5 font-medium text-zinc-600 dark:text-zinc-400">
                   Verificado
                 </th>
-                <th className="text-left px-5 py-3.5 font-medium text-zinc-600">
+                <th className="text-left px-5 py-3.5 font-medium text-zinc-600 dark:text-zinc-400">
                   Criado em
                 </th>
               </tr>
@@ -117,7 +117,7 @@ export default function UsuariosContent() {
                     <tr key={i} className="border-b border-zinc-100">
                       {Array.from({ length: 6 }).map((_, j) => (
                         <td key={j} className="px-5 py-4">
-                          <div className="h-4 bg-zinc-200 rounded w-24 animate-pulse" />
+                          <div className="h-4 bg-zinc-200 dark:bg-zinc-700 rounded w-24 animate-pulse" />
                         </td>
                       ))}
                     </tr>
@@ -125,19 +125,19 @@ export default function UsuariosContent() {
                 : users.map((user) => (
                     <tr
                       key={user.id}
-                      className="border-b border-zinc-100 last:border-0 hover:bg-zinc-50 transition-colors"
+                      className="border-b border-zinc-100 last:border-0 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
                     >
                       <td className="px-5 py-4">
                         <div className="flex items-center gap-3">
                           <div className="size-8 rounded-full bg-design-2/10 flex items-center justify-center text-sm font-medium text-design-2">
                             {user.username.charAt(0).toUpperCase()}
                           </div>
-                          <span className="font-medium text-zinc-900">
+                          <span className="font-medium text-zinc-900 dark:text-zinc-100">
                             {user.username}
                           </span>
                         </div>
                       </td>
-                      <td className="px-5 py-4 text-zinc-600">
+                      <td className="px-5 py-4 text-zinc-600 dark:text-zinc-400">
                         {user.email}
                       </td>
                       <td className="px-5 py-4">
@@ -147,12 +147,12 @@ export default function UsuariosContent() {
                       </td>
                       <td className="px-5 py-4">
                         {user.active ? (
-                          <span className="inline-flex items-center gap-1 text-green-700 bg-green-50 px-2.5 py-0.5 rounded-full text-xs font-medium">
+                          <span className="inline-flex items-center gap-1 text-green-700 dark:text-green-300 bg-green-50 px-2.5 py-0.5 rounded-full text-xs font-medium">
                             <span className="size-1.5 rounded-full bg-green-500" />
                             Ativo
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 text-red-700 bg-red-50 px-2.5 py-0.5 rounded-full text-xs font-medium">
+                          <span className="inline-flex items-center gap-1 text-red-700 dark:text-red-300 bg-red-50 px-2.5 py-0.5 rounded-full text-xs font-medium">
                             <span className="size-1.5 rounded-full bg-red-500" />
                             Inativo
                           </span>
@@ -169,7 +169,7 @@ export default function UsuariosContent() {
                           </span>
                         )}
                       </td>
-                      <td className="px-5 py-4 text-zinc-500 text-xs">
+                      <td className="px-5 py-4 text-zinc-500 dark:text-zinc-400 text-xs">
                         {format(new Date(user.createdAt), "dd/MM/yyyy", {
                           locale: ptBR,
                         })}

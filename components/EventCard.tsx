@@ -327,10 +327,10 @@ export function EventCard({
                   <img
                     src={event.coverImage}
                     alt={event.title}
-                    className="size-10 rounded-full object-cover border-2 border-white bg-gray-100"
+                    className="size-10 rounded-full object-cover border-2 border-white dark:border-zinc-900 bg-gray-100 dark:bg-zinc-800"
                   />
                 ) : (
-                  <div className="size-10 rounded-full bg-gray-100 border-2 border-white" />
+                  <div className="size-10 rounded-full bg-gray-100 dark:bg-zinc-800 border-2 border-white dark:border-zinc-900" />
                 )}
               </div>
             </div>
@@ -462,7 +462,7 @@ export function EventCard({
 
           <form onSubmit={handleOpenConfirm} className="space-y-4 py-2">
             <div className="space-y-1.5 flex flex-col">
-              <label className="text-sm font-medium text-zinc-700">
+              <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
                 Razão da Denúncia
               </label>
               <Select
@@ -500,11 +500,11 @@ export function EventCard({
             </div>
 
             <div className="space-y-1.5 flex flex-col">
-              <label className="text-sm font-medium text-zinc-700">
+              <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
                 Descrição / Detalhes
               </label>
               <textarea
-                className="w-full min-h-24 p-3 border border-gray-200 rounded-lg text-sm outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-400"
+                className="w-full min-h-24 p-3 border border-gray-200 dark:border-zinc-700 rounded-lg text-sm outline-none focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-500/20 focus:border-blue-400"
                 placeholder="Por favor, forneça mais informações sobre a sua denúncia..."
                 value={reportDescription}
                 onChange={(e) => setReportDescription(e.target.value)}
@@ -512,7 +512,7 @@ export function EventCard({
               />
             </div>
 
-            <DialogFooter className="mt-6 border-zinc-200">
+            <DialogFooter className="mt-6 border-zinc-200 dark:border-zinc-700">
               <DialogClose asChild>
                 <Button type="button" variant="outline">
                   Cancelar
@@ -540,7 +540,7 @@ export function EventCard({
             </DialogDescription>
           </DialogHeader>
 
-          <DialogFooter className="bg-white justify-between! border-zinc-200 flex sm:justify-center gap-2">
+          <DialogFooter className="bg-white dark:bg-zinc-900 justify-between! border-zinc-200 dark:border-zinc-700 flex sm:justify-center gap-2">
             <Button
               type="button"
               variant="outline"
@@ -575,7 +575,7 @@ export function EventCard({
             </DialogDescription>
           </DialogHeader>
 
-          <DialogFooter className="bg-white justify-between! border-zinc-200 flex sm:justify-center gap-2">
+          <DialogFooter className="bg-white dark:bg-zinc-900 justify-between! border-zinc-200 dark:border-zinc-700 flex sm:justify-center gap-2">
             <Button
               type="button"
               variant="outline"

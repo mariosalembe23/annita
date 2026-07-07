@@ -29,19 +29,19 @@ export default function EventPage({ params }: EventPageProps) {
   });
 
   return (
-    <div className="overflow-x-hidden min-h-screen flex flex-col justify-between bg-zinc-50/50">
+    <div className="overflow-x-hidden min-h-screen flex flex-col justify-between bg-zinc-50 dark:bg-zinc-800/60/50">
       <main className="flex-1 pt-32 pb-24 flex flex-col items-center justify-center px-4 w-full max-w-7xl mx-auto">
         {isPending ? (
           <div className="flex flex-col items-center gap-6 w-full">
-            <div className="h-96 w-full max-w-80 bg-gray-200/60 animate-pulse rounded-3xl" />
-            <div className="h-10 w-44 bg-gray-200/60 animate-pulse rounded-lg" />
+            <div className="h-96 w-full max-w-80 bg-gray-200 dark:bg-zinc-700/60 animate-pulse rounded-3xl" />
+            <div className="h-10 w-44 bg-gray-200 dark:bg-zinc-700/60 animate-pulse rounded-lg" />
           </div>
         ) : error || !event ? (
-          <div className="text-center bg-white p-8 rounded-3xl border border-zinc-200 shadow-sm max-w-md w-full">
-            <h2 className="text-2xl font-medium text-zinc-800">
+          <div className="text-center bg-white dark:bg-zinc-900 p-8 rounded-3xl border border-zinc-200 dark:border-zinc-700 shadow-sm max-w-md w-full">
+            <h2 className="text-2xl font-medium text-zinc-800 dark:text-zinc-200">
               Evento Não Encontrado
             </h2>
-            <p className="text-zinc-500 mt-2 text-sm">
+            <p className="text-zinc-500 dark:text-zinc-400 mt-2 text-sm">
               O evento que procura não existe ou foi removido.
             </p>
             <Link href="/events" className="mt-6 inline-block">
@@ -54,7 +54,7 @@ export default function EventPage({ params }: EventPageProps) {
           <div className="flex flex-col items-center gap-8 w-full">
             <EventCard event={event} className="shadow-2xl shadow-zinc-200" />
             <Link href="/events">
-              <button className="text-sm transition-all hover:opacity-75 bg-white text-zinc-700 border-zinc-200 border rounded-lg px-4 py-2 font-normal flex items-center gap-2 ">
+              <button className="text-sm transition-all hover:opacity-75 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700 border rounded-lg px-4 py-2 font-normal flex items-center gap-2 ">
                 Ver todos os eventos
               </button>
             </Link>

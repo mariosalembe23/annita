@@ -22,7 +22,7 @@ export default function EventsPage() {
           { name: "Início", href: "/" },
           {
             name: "Contribuir",
-            href: "/contribute",
+            href: "https://github.com/mariosalembe23/annita",
           },
         ]}
       />

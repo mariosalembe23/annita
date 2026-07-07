@@ -68,10 +68,10 @@ export default function DashboardContent({
         <div className="mt-6 flex flex-wrap items-center gap-3">
           <Input
             placeholder="Pesquisar eventos..."
-            className="max-w-xs bg-white"
+            className="max-w-xs bg-white dark:bg-zinc-900"
           />
           <Select>
-            <SelectTrigger className="w-36 bg-white">
+            <SelectTrigger className="w-36 bg-white dark:bg-zinc-900">
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
@@ -82,7 +82,7 @@ export default function DashboardContent({
             </SelectContent>
           </Select>
           <Select>
-            <SelectTrigger className="w-28 bg-white">
+            <SelectTrigger className="w-28 bg-white dark:bg-zinc-900">
               <SelectValue placeholder="Tipo" />
             </SelectTrigger>
             <SelectContent>
@@ -91,7 +91,7 @@ export default function DashboardContent({
             </SelectContent>
           </Select>
           <Select>
-            <SelectTrigger className="w-36 bg-white">
+            <SelectTrigger className="w-36 bg-white dark:bg-zinc-900">
               <SelectValue placeholder="Modalidade" />
             </SelectTrigger>
             <SelectContent>
@@ -101,7 +101,7 @@ export default function DashboardContent({
             </SelectContent>
           </Select>
           <Select>
-            <SelectTrigger className="w-36 bg-white">
+            <SelectTrigger className="w-36 bg-white dark:bg-zinc-900">
               <SelectValue placeholder="Categoria" />
             </SelectTrigger>
             <SelectContent>
@@ -157,18 +157,18 @@ export default function DashboardContent({
             Array.from({ length: 4 }).map((_, i) => (
               <div
                 key={i}
-                className="bg-white border border-zinc-200 rounded-2xl p-5 animate-pulse space-y-3"
+                className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-2xl p-5 animate-pulse space-y-3"
               >
-                <div className="h-5 bg-zinc-200 rounded w-3/4" />
-                <div className="h-4 bg-zinc-200 rounded w-full" />
-                <div className="h-4 bg-zinc-200 rounded w-5/6" />
+                <div className="h-5 bg-zinc-200 dark:bg-zinc-700 rounded w-3/4" />
+                <div className="h-4 bg-zinc-200 dark:bg-zinc-700 rounded w-full" />
+                <div className="h-4 bg-zinc-200 dark:bg-zinc-700 rounded w-5/6" />
                 <div className="flex gap-2">
-                  <div className="h-5 bg-zinc-200 rounded w-14" />
-                  <div className="h-5 bg-zinc-200 rounded w-16" />
+                  <div className="h-5 bg-zinc-200 dark:bg-zinc-700 rounded w-14" />
+                  <div className="h-5 bg-zinc-200 dark:bg-zinc-700 rounded w-16" />
                 </div>
-                <div className="flex items-center justify-between pt-4 border-t border-zinc-200">
-                  <div className="h-4 bg-zinc-200 rounded w-24" />
-                  <div className="size-8 bg-zinc-200 rounded" />
+                <div className="flex items-center justify-between pt-4 border-t border-zinc-200 dark:border-zinc-700">
+                  <div className="h-4 bg-zinc-200 dark:bg-zinc-700 rounded w-24" />
+                  <div className="size-8 bg-zinc-200 dark:bg-zinc-700 rounded" />
                 </div>
               </div>
             ))

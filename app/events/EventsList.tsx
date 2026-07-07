@@ -83,7 +83,7 @@ export function EventsList() {
         <motion.div variants={item}>
           <h1 className="text-5xl font-medium">Eventos</h1>
           {!isPending && (
-            <p className="text-zinc-500 mt-1 text-[15px]">
+            <p className="text-zinc-500 dark:text-zinc-400 mt-1 text-[15px]">
               {apiEvents.length}{" "}
               {apiEvents.length === 1
                 ? "evento encontrado"

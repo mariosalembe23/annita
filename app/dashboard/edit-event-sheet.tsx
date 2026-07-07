@@ -187,7 +187,7 @@ export default function EditEventSheet({
       >
         <div className="flex items-center mt-5 w-full  justify-end">
           <button
-            className="text-zinc-600 bg-zinc-100 rounded-full p-1"
+            className="text-zinc-600 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-800 rounded-full p-1"
             onClick={onClose}
           >
             <X className="size-5" />
@@ -202,7 +202,7 @@ export default function EditEventSheet({
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-2 flex flex-col">
-            <label className="text-sm font-medium text-zinc-700">Título</label>
+            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Título</label>
             <Input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -212,7 +212,7 @@ export default function EditEventSheet({
           </div>
 
           <div className="space-y-2 flex flex-col">
-            <label className="text-sm font-medium text-zinc-700">
+            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
               Descrição
             </label>
             <Textarea
@@ -225,7 +225,7 @@ export default function EditEventSheet({
           </div>
 
           <div className="space-y-2 flex flex-col">
-            <label className="text-sm font-medium text-zinc-700">Link</label>
+            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Link</label>
             <Input
               value={link}
               onChange={(e) => setLink(e.target.value)}
@@ -237,11 +237,11 @@ export default function EditEventSheet({
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2 flex flex-col">
-              <label className="text-sm font-medium text-zinc-700">
+              <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
                 Categoria
               </label>
               <Select value={categoryId} onValueChange={setCategoryId}>
-                <SelectTrigger className="w-full bg-white">
+                <SelectTrigger className="w-full bg-white dark:bg-zinc-900">
                   <SelectValue placeholder="Selecionar" />
                 </SelectTrigger>
                 <SelectContent>
@@ -255,12 +255,12 @@ export default function EditEventSheet({
             </div>
 
             <div className="space-y-2 flex flex-col">
-              <label className="text-sm font-medium text-zinc-700">Tipo</label>
+              <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Tipo</label>
               <Select
                 value={type}
                 onValueChange={(v) => setType(v as EventType)}
               >
-                <SelectTrigger className="w-full bg-white">
+                <SelectTrigger className="w-full bg-white dark:bg-zinc-900">
                   <SelectValue placeholder="Selecionar" />
                 </SelectTrigger>
                 <SelectContent>
@@ -276,14 +276,14 @@ export default function EditEventSheet({
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2 flex flex-col">
-              <label className="text-sm font-medium text-zinc-700">
+              <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
                 Modalidade
               </label>
               <Select
                 value={modality}
                 onValueChange={(v) => setModality(v as EventModality)}
               >
-                <SelectTrigger className="w-full bg-white">
+                <SelectTrigger className="w-full bg-white dark:bg-zinc-900">
                   <SelectValue placeholder="Selecionar" />
                 </SelectTrigger>
                 <SelectContent>
@@ -297,7 +297,7 @@ export default function EditEventSheet({
             </div>
 
             <div className="space-y-2 flex flex-col">
-              <label className="text-sm font-medium text-zinc-700">
+              <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
                 Data de Início
               </label>
               <Input
@@ -310,7 +310,7 @@ export default function EditEventSheet({
           </div>
 
           <div className="space-y-3 flex flex-col">
-            <label className="text-sm font-medium text-zinc-700">
+            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
               Imagem de Capa
             </label>
             <input
@@ -321,7 +321,7 @@ export default function EditEventSheet({
               className="hidden"
             />
             {coverImageFile || coverImageUrl ? (
-              <div className="relative aspect-video w-full overflow-hidden rounded-lg border border-zinc-200 bg-zinc-100 group">
+              <div className="relative aspect-video w-full overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 group">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={previewUrl ?? coverImageUrl}
@@ -334,14 +334,14 @@ export default function EditEventSheet({
                     onClick={() => fileInputRef.current?.click()}
                     className="size-9 bg-white/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white"
                   >
-                    <RiImageAddLine className="size-5 text-zinc-700" />
+                    <RiImageAddLine className="size-5 text-zinc-700 dark:text-zinc-300" />
                   </button>
                   <button
                     type="button"
                     onClick={handleRemoveImage}
                     className="size-9 bg-white/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white"
                   >
-                    <RiCloseLine className="size-5 text-zinc-700" />
+                    <RiCloseLine className="size-5 text-zinc-700 dark:text-zinc-300" />
                   </button>
                 </div>
               </div>
@@ -349,7 +349,7 @@ export default function EditEventSheet({
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="flex aspect-video w-full cursor-pointer items-center justify-center gap-2 rounded-lg border-2 border-dashed border-zinc-200 bg-zinc-50 text-zinc-400 transition-colors hover:border-design-2/40 hover:text-design-2 hover:bg-design-2/5"
+                className="flex aspect-video w-full cursor-pointer items-center justify-center gap-2 rounded-lg border-2 border-dashed border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800/60 text-zinc-400 transition-colors hover:border-design-2/40 hover:text-design-2 hover:bg-design-2/5"
               >
                 <RiImageAddLine className="size-6" />
                 <span className="text-sm">Adicionar imagem</span>

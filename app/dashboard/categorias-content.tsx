@@ -32,15 +32,15 @@ import { Input } from "@/components/ui/input";
 
 function CategoriaRow({ category }: { category: ApiEventCategory }) {
   return (
-    <tr className="border-b border-zinc-200 last:border-b-0 hover:bg-zinc-50 transition-colors">
-      <td className="py-3 px-4 text-sm text-zinc-900 uppercase font-mono font-medium">
+    <tr className="border-b border-zinc-200 dark:border-zinc-700 last:border-b-0 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors">
+      <td className="py-3 px-4 text-sm text-zinc-900 dark:text-zinc-100 uppercase font-mono font-medium">
         {category.id.slice(0, 6)}
       </td>
-      <td className="py-3 px-4 text-sm text-zinc-900 font-medium">
+      <td className="py-3 px-4 text-sm text-zinc-900 dark:text-zinc-100 font-medium">
         {category.name}
       </td>
-      <td className="py-3 px-4 text-sm text-zinc-600">{category.groupName}</td>
-      <td className="py-3 px-4 text-sm text-zinc-600">
+      <td className="py-3 px-4 text-sm text-zinc-600 dark:text-zinc-400">{category.groupName}</td>
+      <td className="py-3 px-4 text-sm text-zinc-600 dark:text-zinc-400">
         {format(new Date(category.createdAt), "dd/MM/yyyy")}
       </td>
       <td className="py-3 px-4">
@@ -137,7 +137,7 @@ export default function CategoriasContent() {
   return (
     <div className="mt-10">
       <header className="flex items-center justify-between">
-        <h2 className="text-3xl font-medium text-zinc-800">Categorias</h2>
+        <h2 className="text-3xl font-medium text-zinc-800 dark:text-zinc-200">Categorias</h2>
         <button
           onClick={() => setOpen(true)}
           className="text-base transition-all hover:opacity-75 text-white bg-design-2 border-design-2 border rounded-lg px-3 py-1.5 font-normal flex items-center gap-2 cursor-pointer"
@@ -150,7 +150,7 @@ export default function CategoriasContent() {
       <div className="mt-6">
         <Input
           placeholder="Pesquisar"
-          className="max-w-lg bg-white mb-4"
+          className="max-w-lg bg-white dark:bg-zinc-900 mb-4"
           value={search}
           onChange={(e) => {
             setSearch(e.target.value);
@@ -159,20 +159,20 @@ export default function CategoriasContent() {
         />
       </div>
 
-      <div className="bg-white border border-zinc-200 rounded-2xl overflow-hidden">
+      <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-2xl overflow-hidden">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-zinc-200 bg-zinc-50">
-              <th className="py-3 px-4 text-left text-xs font-semibold text-zinc-500 uppercase tracking-wider">
+            <tr className="border-b border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800/60">
+              <th className="py-3 px-4 text-left text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
                 ID
               </th>
-              <th className="py-3 px-4 text-left text-xs font-semibold text-zinc-500 uppercase tracking-wider">
+              <th className="py-3 px-4 text-left text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
                 Nome
               </th>
-              <th className="py-3 px-4 text-left text-xs font-semibold text-zinc-500 uppercase tracking-wider">
+              <th className="py-3 px-4 text-left text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
                 Grupo
               </th>
-              <th className="py-3 px-4 text-left text-xs font-semibold text-zinc-500 uppercase tracking-wider">
+              <th className="py-3 px-4 text-left text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
                 Data
               </th>
               <th className="py-3 px-4 w-16" />
@@ -183,22 +183,22 @@ export default function CategoriasContent() {
               Array.from({ length: 5 }).map((_, i) => (
                 <tr
                   key={i}
-                  className="border-b border-zinc-200 last:border-b-0"
+                  className="border-b border-zinc-200 dark:border-zinc-700 last:border-b-0"
                 >
                   <td className="py-3 px-4">
-                    <div className="h-4 bg-zinc-200 rounded animate-pulse w-24" />
+                    <div className="h-4 bg-zinc-200 dark:bg-zinc-700 rounded animate-pulse w-24" />
                   </td>
                   <td className="py-3 px-4">
-                    <div className="h-4 bg-zinc-200 rounded animate-pulse w-32" />
+                    <div className="h-4 bg-zinc-200 dark:bg-zinc-700 rounded animate-pulse w-32" />
                   </td>
                   <td className="py-3 px-4">
-                    <div className="h-4 bg-zinc-200 rounded animate-pulse w-20" />
+                    <div className="h-4 bg-zinc-200 dark:bg-zinc-700 rounded animate-pulse w-20" />
                   </td>
                   <td className="py-3 px-4">
-                    <div className="h-4 bg-zinc-200 rounded animate-pulse w-24" />
+                    <div className="h-4 bg-zinc-200 dark:bg-zinc-700 rounded animate-pulse w-24" />
                   </td>
                   <td className="py-3 px-4">
-                    <div className="size-8 bg-zinc-200 rounded animate-pulse" />
+                    <div className="size-8 bg-zinc-200 dark:bg-zinc-700 rounded animate-pulse" />
                   </td>
                 </tr>
               ))
@@ -206,7 +206,7 @@ export default function CategoriasContent() {
               <tr>
                 <td
                   colSpan={5}
-                  className="py-8 text-center text-sm text-zinc-500"
+                  className="py-8 text-center text-sm text-zinc-500 dark:text-zinc-400"
                 >
                   Nenhuma categoria encontrada.
                 </td>
@@ -221,7 +221,7 @@ export default function CategoriasContent() {
       </div>
 
       {meta && (
-        <div className="mt-4 flex items-center justify-between text-sm text-zinc-600">
+        <div className="mt-4 flex items-center justify-between text-sm text-zinc-600 dark:text-zinc-400">
           <p>
             Página {meta.page + 1} de {meta.totalPages} ({meta.totalElements}{" "}
             categorias)
@@ -230,7 +230,7 @@ export default function CategoriasContent() {
             <button
               onClick={() => setPage((p) => Math.max(0, p - 1))}
               disabled={meta.page <= 0}
-              className="px-3 py-1.5 bg-white rounded-lg border border-zinc-300 hover:bg-zinc-100 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors"
+              className="px-3 py-1.5 bg-white dark:bg-zinc-900 rounded-lg border border-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors"
             >
               Anterior
             </button>
@@ -239,7 +239,7 @@ export default function CategoriasContent() {
                 setPage((p) => Math.min(meta.totalPages - 1, p + 1))
               }
               disabled={meta.page >= meta.totalPages - 1}
-              className="px-3 py-1.5 bg-white rounded-lg border border-zinc-300 hover:bg-zinc-100 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors"
+              className="px-3 py-1.5 bg-white dark:bg-zinc-900 rounded-lg border border-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors"
             >
               Seguinte
             </button>
@@ -277,7 +277,7 @@ export default function CategoriasContent() {
             />
             <label
               htmlFor="useSameGroup"
-              className="text-sm text-zinc-600 cursor-pointer select-none"
+              className="text-sm text-zinc-600 dark:text-zinc-400 cursor-pointer select-none"
             >
               Usar mesmo grupo para todas
             </label>
@@ -287,15 +287,15 @@ export default function CategoriasContent() {
             {entries.map((entry, i) => (
               <div
                 key={i}
-                className="space-y-2 p-3 rounded-lg border border-zinc-200"
+                className="space-y-2 p-3 rounded-lg border border-zinc-200 dark:border-zinc-700"
               >
                 <div className="mb-3">
-                  <span className="text-sm px-2 font-normal text-zinc-600">
+                  <span className="text-sm px-2 font-normal text-zinc-600 dark:text-zinc-400">
                     Categoria {i + 1}
                   </span>
                 </div>
                 <div className="space-y-1.5 flex flex-col">
-                  <label className="text-sm px-2 font-medium text-zinc-700">
+                  <label className="text-sm px-2 font-medium text-zinc-700 dark:text-zinc-300">
                     Nome
                   </label>
                   <Input
@@ -305,7 +305,7 @@ export default function CategoriasContent() {
                   />
                 </div>
                 <div className="space-y-1.5 flex flex-col">
-                  <label className="text-sm px-2 font-medium text-zinc-700">
+                  <label className="text-sm px-2 font-medium text-zinc-700 dark:text-zinc-300">
                     Grupo
                   </label>
                   <Input
@@ -320,7 +320,7 @@ export default function CategoriasContent() {
             ))}
           </div>
 
-          <DialogFooter className="border-zinc-200">
+          <DialogFooter className="border-zinc-200 dark:border-zinc-700">
             <DialogClose asChild>
               <Button variant="outline" size="default">
                 Cancelar

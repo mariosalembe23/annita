@@ -55,14 +55,14 @@ export default function EventDetailsDialog({
                 <DialogTitle className="text-xl">
                   {event.title}
                 </DialogTitle>
-                <DialogDescription className="text-sm text-zinc-600 mt-1">
+                <DialogDescription className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">
                   {event.description}
                 </DialogDescription>
               </div>
               {event.coverImage && (
                 <button
                   onClick={() => setIsImageZoomed(true)}
-                  className="shrink-0 relative group focus:outline-none rounded-full overflow-hidden border border-zinc-200 shadow-sm"
+                  className="shrink-0 relative group focus:outline-none rounded-full overflow-hidden border border-zinc-200 dark:border-zinc-700 shadow-sm"
                 >
                   <Image
                     src={event.coverImage}
@@ -80,77 +80,77 @@ export default function EventDetailsDialog({
 
             <div className="flex-1 overflow-y-auto space-y-4 px-1">
               <div className="grid mt-4 grid-cols-4 gap-x-8 gap-y-6 text-sm">
-                <div className="py-2 border-b border-zinc-200">
-                  <span className="text-zinc-600 text-sm">Status</span>
+                <div className="py-2 border-b border-zinc-200 dark:border-zinc-700">
+                  <span className="text-zinc-600 dark:text-zinc-400 text-sm">Status</span>
                   <p
-                    className={`text-xs font-medium mt-0.5 ${statusColors[event.status] || "text-zinc-800"}`}
+                    className={`text-xs font-medium mt-0.5 ${statusColors[event.status] || "text-zinc-800 dark:text-zinc-200"}`}
                   >
                     {statusLabels[event.status] || event.status}
                   </p>
                 </div>
-                <div className="py-2 border-b border-zinc-200">
-                  <span className="text-zinc-600 text-sm">Tipo</span>
-                  <p className="text-zinc-800 text-sm mt-0.5">
+                <div className="py-2 border-b border-zinc-200 dark:border-zinc-700">
+                  <span className="text-zinc-600 dark:text-zinc-400 text-sm">Tipo</span>
+                  <p className="text-zinc-800 dark:text-zinc-200 text-sm mt-0.5">
                     {typeLabels[event.type] || event.type}
                   </p>
                 </div>
-                <div className="py-2 border-b border-zinc-200">
-                  <span className="text-zinc-600 text-sm">Modalidade</span>
-                  <p className="text-zinc-800 text-sm mt-0.5">
+                <div className="py-2 border-b border-zinc-200 dark:border-zinc-700">
+                  <span className="text-zinc-600 dark:text-zinc-400 text-sm">Modalidade</span>
+                  <p className="text-zinc-800 dark:text-zinc-200 text-sm mt-0.5">
                     {Array.isArray(event.modality)
                       ? event.modality.map((m) => modalityLabels[m] || m).join(", ")
                       : (modalityLabels[event.modality as any] || event.modality)}
                   </p>
                 </div>
-                <div className="py-2 border-b border-zinc-200">
-                  <span className="text-zinc-600 text-sm">Categoria</span>
-                  <p className="text-zinc-800 text-sm mt-0.5">
+                <div className="py-2 border-b border-zinc-200 dark:border-zinc-700">
+                  <span className="text-zinc-600 dark:text-zinc-400 text-sm">Categoria</span>
+                  <p className="text-zinc-800 dark:text-zinc-200 text-sm mt-0.5">
                     {event.category.name}
                   </p>
                 </div>
-                <div className="py-2 border-b border-zinc-200">
-                  <span className="text-zinc-600 text-sm">Grupo</span>
-                  <p className="text-zinc-800 text-sm mt-0.5">
+                <div className="py-2 border-b border-zinc-200 dark:border-zinc-700">
+                  <span className="text-zinc-600 dark:text-zinc-400 text-sm">Grupo</span>
+                  <p className="text-zinc-800 dark:text-zinc-200 text-sm mt-0.5">
                     {event.category.groupName}
                   </p>
                 </div>
-                <div className="py-2 border-b border-zinc-200">
-                  <span className="text-zinc-600 text-sm">Link</span>
-                  <p className="text-zinc-800 text-sm mt-0.5 truncate">
+                <div className="py-2 border-b border-zinc-200 dark:border-zinc-700">
+                  <span className="text-zinc-600 dark:text-zinc-400 text-sm">Link</span>
+                  <p className="text-zinc-800 dark:text-zinc-200 text-sm mt-0.5 truncate">
                     {event.link}
                   </p>
                 </div>
-                <div className="py-2 border-b border-zinc-200">
-                  <span className="text-zinc-600 text-sm">
+                <div className="py-2 border-b border-zinc-200 dark:border-zinc-700">
+                  <span className="text-zinc-600 dark:text-zinc-400 text-sm">
                     Data de Início
                   </span>
-                  <p className="text-zinc-800 text-sm mt-0.5">
+                  <p className="text-zinc-800 dark:text-zinc-200 text-sm mt-0.5">
                     {format(
                       new Date(event.startDate),
                       "dd/MM/yyyy 'às' HH:mm",
                     )}
                   </p>
                 </div>
-                <div className="py-2 border-b border-zinc-200">
-                  <span className="text-zinc-600 text-sm">Criado por</span>
-                  <p className="text-zinc-800 text-sm mt-0.5">
+                <div className="py-2 border-b border-zinc-200 dark:border-zinc-700">
+                  <span className="text-zinc-600 dark:text-zinc-400 text-sm">Criado por</span>
+                  <p className="text-zinc-800 dark:text-zinc-200 text-sm mt-0.5">
                     {event.createdByUsername}
                   </p>
                 </div>
-                <div className="py-2 border-b border-zinc-200">
-                  <span className="text-zinc-600 text-sm">Criado em</span>
-                  <p className="text-zinc-800 text-sm mt-0.5">
+                <div className="py-2 border-b border-zinc-200 dark:border-zinc-700">
+                  <span className="text-zinc-600 dark:text-zinc-400 text-sm">Criado em</span>
+                  <p className="text-zinc-800 dark:text-zinc-200 text-sm mt-0.5">
                     {format(
                       new Date(event.createdAt),
                       "dd/MM/yyyy 'às' HH:mm",
                     )}
                   </p>
                 </div>
-                <div className="py-2 border-b border-zinc-200">
-                  <span className="text-zinc-600 text-sm">
+                <div className="py-2 border-b border-zinc-200 dark:border-zinc-700">
+                  <span className="text-zinc-600 dark:text-zinc-400 text-sm">
                     Actualizado em
                   </span>
-                  <p className="text-zinc-800 text-sm mt-0.5">
+                  <p className="text-zinc-800 dark:text-zinc-200 text-sm mt-0.5">
                     {format(
                       new Date(event.updatedAt),
                       "dd/MM/yyyy 'às' HH:mm",
@@ -160,7 +160,7 @@ export default function EventDetailsDialog({
               </div>
             </div>
 
-            <DialogFooter className="border-t bg-white border-white pt-4 mt-4">
+            <DialogFooter className="border-t bg-white dark:bg-zinc-900 border-white dark:border-zinc-900 pt-4 mt-4">
               <div className="flex items-center gap-2 w-full justify-end">
                 <DialogClose asChild>
                   <Button variant="outline" size="sm">

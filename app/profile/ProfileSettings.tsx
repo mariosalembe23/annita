@@ -50,44 +50,44 @@ export function ProfileSettings({
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-xl font-semibold text-zinc-900 border-zinc-200 mb-2 pb-2">
+        <h3 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100 border-zinc-200 dark:border-zinc-700 mb-2 pb-2">
           Informações da Conta
         </h3>
         <div className="grid grid-cols-1 max-w-xl md:grid-cols-2 gap-4">
           <div className="space-y-2 flex flex-col">
-            <label className="text-sm font-medium text-zinc-500">
+            <label className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
               Nome de Utilizador
             </label>
             <input
               type="text"
               disabled
               value={user.username}
-              className="w-full px-3 py-2 border border-zinc-200 rounded-lg bg-zinc-50 text-zinc-600 outline-none text-sm cursor-not-allowed"
+              className="w-full px-3 py-2 border border-zinc-200 dark:border-zinc-700 rounded-lg bg-zinc-50 dark:bg-zinc-800/60 text-zinc-600 dark:text-zinc-400 outline-none text-sm cursor-not-allowed"
             />
           </div>
           <div className="space-y-2 flex flex-col">
-            <label className="text-sm font-medium text-zinc-500">E-mail</label>
+            <label className="text-sm font-medium text-zinc-500 dark:text-zinc-400">E-mail</label>
             <input
               type="email"
               disabled
               value={user.email}
-              className="w-full px-3 py-2 border border-zinc-200 rounded-lg bg-zinc-50 text-zinc-600 outline-none text-sm cursor-not-allowed"
+              className="w-full px-3 py-2 border border-zinc-200 dark:border-zinc-700 rounded-lg bg-zinc-50 dark:bg-zinc-800/60 text-zinc-600 dark:text-zinc-400 outline-none text-sm cursor-not-allowed"
             />
           </div>
         </div>
       </div>
 
       <div className="mt-10">
-        <h3 className="text-xl font-semibold text-zinc-900 border-zinc-200 mb-2 pb-2">
+        <h3 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100 border-zinc-200 dark:border-zinc-700 mb-2 pb-2">
           Preferências
         </h3>
         <div className="space-y-4 max-w-xl">
-          <div className="flex items-center justify-between p-4 rounded-xl border border-zinc-200">
+          <div className="flex items-center justify-between p-4 rounded-xl border border-zinc-200 dark:border-zinc-700">
             <div className="space-y-0.5">
-              <p className="text-base font-medium text-zinc-800 flex items-center gap-1.5">
+              <p className="text-base font-medium text-zinc-800 dark:text-zinc-200 flex items-center gap-1.5">
                 Receber Notificações por E-mail
               </p>
-              <p className="text-sm text-zinc-500">
+              <p className="text-sm text-zinc-500 dark:text-zinc-400">
                 Fique a par de novos eventos publicados na plataforma.
               </p>
             </div>
@@ -99,12 +99,12 @@ export function ProfileSettings({
             />
           </div>
 
-          <div className="flex items-center justify-between p-4 rounded-xl border border-zinc-200">
+          <div className="flex items-center justify-between p-4 rounded-xl border border-zinc-200 dark:border-zinc-700">
             <div className="space-y-0.5">
-              <p className="text-base font-medium text-zinc-800 flex items-center gap-1.5">
+              <p className="text-base font-medium text-zinc-800 dark:text-zinc-200 flex items-center gap-1.5">
                 Assinar Newsletter Semanal
               </p>
-              <p className="text-sm max-w-[80%] text-zinc-500">
+              <p className="text-sm max-w-[80%] text-zinc-500 dark:text-zinc-400">
                 Receba resumos semanais de eventos, notícias e novidades da
                 tecnologia em Angola.
               </p>
@@ -120,7 +120,7 @@ export function ProfileSettings({
       </div>
 
       <div className="mt-10">
-        <h3 className="text-xl font-semibold text-zinc-900 border-zinc-200 mb-2 pb-2">
+        <h3 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100 border-zinc-200 dark:border-zinc-700 mb-2 pb-2">
           Eliminar Conta
         </h3>
         <div className="space-y-4 max-w-xl">
@@ -146,10 +146,10 @@ export function ProfileSettings({
         </div>
       </div>
 
-      <div className="pt-4 border-t border-zinc-200 flex items-center justify-between gap-4">
+      <div className="pt-4 border-t border-zinc-200 dark:border-zinc-700 flex items-center justify-between gap-4">
         <Button
           variant="outline"
-          className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200 hover:border-red-300 gap-2 font-normal"
+          className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/40 border-red-200 hover:border-red-300 gap-2 font-normal"
           onClick={onSignout}
         >
           <RiLogoutCircleRLine className="size-4" />
@@ -168,7 +168,7 @@ export function ProfileSettings({
             </DialogDescription>
           </DialogHeader>
 
-          <DialogFooter className="bg-white justify-between border-zinc-200 flex sm:justify-center gap-2">
+          <DialogFooter className="bg-white dark:bg-zinc-900 justify-between border-zinc-200 dark:border-zinc-700 flex sm:justify-center gap-2">
             <DialogClose asChild>
               <Button type="button" variant="outline">
                 Cancelar

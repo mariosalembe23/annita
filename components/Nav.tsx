@@ -32,14 +32,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+const GITHUB_REPO_URL = "https://github.com/mariosalembe23/annita";
+
 const defaultLinks = [
   { name: "Eventos", href: "/events" },
   { name: "Contacto", href: "/contact" },
-  { name: "Contribuir", href: "/contribute" },
+  { name: "Contribuir", href: GITHUB_REPO_URL },
   { name: "Newsletter", href: "/newsletter" },
 ];
-
-const GITHUB_REPO_URL = "https://github.com/mariosalembe23/annita";
 
 function formatStars(count: number) {
   if (count >= 1000) return `${(count / 1000).toFixed(1).replace(/\.0$/, "")}K`;
@@ -147,6 +147,12 @@ export function Nav({ links = defaultLinks }: NavProps) {
               <Link
                 key={item.name}
                 href={item.href}
+                target={item.href.startsWith("http") ? "_blank" : undefined}
+                rel={
+                  item.href.startsWith("http")
+                    ? "noopener noreferrer"
+                    : undefined
+                }
                 className={cn(
                   "text-[15px] font-normal transition-all ",
                   pathname === item.href

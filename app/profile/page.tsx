@@ -66,13 +66,13 @@ export default function ProfilePage() {
   if (isLoading || !user) {
     return (
       <div className="h-screen w-full flex items-center justify-center">
-        <div className="h-8 w-8 rounded-full border-4 border-zinc-200 border-t-design-2 animate-spin" />
+        <div className="h-8 w-8 rounded-full border-4 border-zinc-200 dark:border-zinc-700 border-t-design-2 animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="w-full min-h-screen bg-white pb-16">
+    <div className="w-full min-h-screen bg-white dark:bg-zinc-900 pb-16">
       <header className="max-w-[90%] mx-auto px-4">
         <div className="flex py-4 items-center justify-between">
           <div>
@@ -95,7 +95,7 @@ export default function ProfilePage() {
             <button className="relative">
               <RiMoonLine />
             </button>
-            <button className="text-sm transition-all hover:opacity-75 bg-white text-black border-gray-200 border rounded-lg px-3 py-1.5 font-normal flex items-center gap-1.5">
+            <button className="text-sm transition-all hover:opacity-75 bg-white dark:bg-zinc-900 text-black dark:text-zinc-100 border-gray-200 dark:border-zinc-700 border rounded-lg px-3 py-1.5 font-normal flex items-center gap-1.5">
               <RiShareForwardLine className="size-5" />
               Partilhar
             </button>
@@ -108,7 +108,7 @@ export default function ProfilePage() {
               {(user.role === "ADMIN" || user.role === "MODERATOR") && (
                 <button
                   onClick={() => router.push("/dashboard")}
-                  className="text-sm transition-all hover:opacity-75 bg-white text-black rounded-lg px-4 py-1.5 font-normal flex items-center gap-2 cursor-pointer shadow-sm"
+                  className="text-sm transition-all hover:opacity-75 bg-white dark:bg-zinc-900 text-black dark:text-zinc-100 rounded-lg px-4 py-1.5 font-normal flex items-center gap-2 cursor-pointer shadow-sm"
                 >
                   Painel de Adminstração
                 </button>
@@ -117,7 +117,7 @@ export default function ProfilePage() {
           </div>
           <div className="-mt-22 mx-7 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
             <div className="flex items-end gap-4">
-              <div className="size-24 overflow-hidden border-4 border-zinc-100 flex items-center justify-center rounded-full bg-white ">
+              <div className="size-24 overflow-hidden border-4 border-zinc-100 flex items-center justify-center rounded-full bg-white dark:bg-zinc-900 ">
                 <Image
                   src={"/img/avatar.png"}
                   alt={"Avatar"}
@@ -127,13 +127,13 @@ export default function ProfilePage() {
                 />
               </div>
               <div className="mb-2 pt-6 mt-20">
-                <h2 className="text-2xl font-bold text-zinc-900">
+                <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
                   {user.username}
                 </h2>
-                <p className="text-sm text-zinc-500">{user.email}</p>
+                <p className="text-sm text-zinc-500 dark:text-zinc-400">{user.email}</p>
               </div>
             </div>
-            <div className="flex flex-wrap pb-5 items-center gap-4 mb-2 text-base text-zinc-600">
+            <div className="flex flex-wrap pb-5 items-center gap-4 mb-2 text-base text-zinc-600 dark:text-zinc-400">
               <span className="flex items-center gap-1">
                 Registado desde {formatDate(user.createdAt)}
               </span>
@@ -142,7 +142,7 @@ export default function ProfilePage() {
         </section>
 
         {/* Tabs Navigation */}
-        <div className="mt-10 border-b border-zinc-200">
+        <div className="mt-10 border-b border-zinc-200 dark:border-zinc-700">
           <div className="flex gap-12 mx-7">
             {[
               {
@@ -161,7 +161,7 @@ export default function ProfilePage() {
                   className={`relative py-4 text-[15px] font-medium flex items-center gap-2 cursor-pointer transition-colors ${
                     isActive
                       ? "text-design-2"
-                      : "text-zinc-500 hover:text-zinc-800"
+                      : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-800"
                   }`}
                 >
                   {tab.label}

@@ -26,7 +26,7 @@ const navItems = [
 
 export default function Sidebar({ activeTab, onTabChange }: SidebarProps) {
   return (
-    <header className="border-r py-5 flex bg-white flex-col items-center justify-between border-zinc-200">
+    <header className="border-r py-5 flex bg-white dark:bg-zinc-900 flex-col items-center justify-between border-zinc-200 dark:border-zinc-700">
       <div>
         <Image
           src="/img-logo/simple-logo.svg"
@@ -47,7 +47,7 @@ export default function Sidebar({ activeTab, onTabChange }: SidebarProps) {
               className={`relative group flex items-center justify-center transition-colors ${
                 isActive
                   ? "text-design-2"
-                  : "text-zinc-400 hover:text-zinc-600"
+                  : "text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300"
               }`}
             >
               <Icon />
@@ -59,10 +59,10 @@ export default function Sidebar({ activeTab, onTabChange }: SidebarProps) {
         })}
       </nav>
       <footer className="flex flex-col gap-7">
-        <button className="text-zinc-400 hover:text-zinc-600 transition-colors">
+        <button className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors">
           <RiNotificationLine />
         </button>
-        <button className="text-zinc-400 hover:text-zinc-600 transition-colors">
+        <button className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors">
           <RiSettings6Line />
         </button>
       </footer>

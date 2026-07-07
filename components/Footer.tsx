@@ -15,7 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 const navigation = [
   { name: "Eventos", href: "/events" },
   { name: "Contacto", href: "/contact" },
-  { name: "Contribuir", href: "/contribute" },
+  { name: "Contribuir", href: "https://github.com/mariosalembe23/annita" },
 ];
 
 const policies = [
@@ -71,6 +71,12 @@ export function Footer() {
               <li key={item.name}>
                 <Link
                   href={item.href}
+                  target={item.href.startsWith("http") ? "_blank" : undefined}
+                  rel={
+                    item.href.startsWith("http")
+                      ? "noopener noreferrer"
+                      : undefined
+                  }
                   className="text-[15px] text-zinc-600 dark:text-zinc-400 hover:text-design-2 dark:hover:text-design-1 transition-colors"
                 >
                   {item.name}

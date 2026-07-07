@@ -73,22 +73,22 @@ export default function EventCard({ event, onSelect, onEdit }: EventCardProps) {
 
   return (
     <>
-      <div className="bg-white border border-zinc-200 rounded-2xl p-5">
+      <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-2xl p-5">
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 min-w-0">
-            <h4 className="text-md font-medium text-zinc-900 truncate">
+            <h4 className="text-md font-medium text-zinc-900 dark:text-zinc-100 truncate">
               {event.title}
             </h4>
           </div>
           <span
             className={`shrink-0 ps-3 py-0.5 rounded-full text-xs font-medium ${
-              statusColors[event.status] || "text-zinc-800"
+              statusColors[event.status] || "text-zinc-800 dark:text-zinc-200"
             }`}
           >
             {statusLabels[event.status] || event.status}
           </span>
         </div>
-        <p className="mt-1 text-sm text-zinc-500 line-clamp-2">
+        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400 line-clamp-2">
           {event.description}
         </p>
         <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-white">
@@ -110,7 +110,7 @@ export default function EventCard({ event, onSelect, onEdit }: EventCardProps) {
             {event.category.name}
           </span>
         </div>
-        <div className="pt-4 border-zinc-200 flex items-center justify-between border-t mt-4 text-sm text-zinc-800">
+        <div className="pt-4 border-zinc-200 dark:border-zinc-700 flex items-center justify-between border-t mt-4 text-sm text-zinc-800 dark:text-zinc-200">
           <p>por @{event.createdByUsername}</p>
           <div>
             <DropdownMenu>
@@ -172,12 +172,12 @@ export default function EventCard({ event, onSelect, onEdit }: EventCardProps) {
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="text-lg">Aprovar evento</DialogTitle>
-            <DialogDescription className="text-zinc-700">
+            <DialogDescription className="text-zinc-700 dark:text-zinc-300">
               Tem certeza que deseja aprovar o evento &ldquo;{event.title}
               &rdquo;?
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter className="border-zinc-200">
+          <DialogFooter className="border-zinc-200 dark:border-zinc-700">
             <DialogClose asChild>
               <Button variant="outline" disabled={approveMutation.isPending}>
                 Cancelar
@@ -198,12 +198,12 @@ export default function EventCard({ event, onSelect, onEdit }: EventCardProps) {
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="text-lg">Rejeitar evento</DialogTitle>
-            <DialogDescription className="text-zinc-700">
+            <DialogDescription className="text-zinc-700 dark:text-zinc-300">
               Tem certeza que deseja rejeitar o evento &ldquo;{event.title}
               &rdquo;?
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter className="border-zinc-200">
+          <DialogFooter className="border-zinc-200 dark:border-zinc-700">
             <DialogClose asChild>
               <Button variant="outline" disabled={rejectMutation.isPending}>
                 Cancelar
