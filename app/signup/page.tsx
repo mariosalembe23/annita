@@ -216,7 +216,7 @@ export default function SignUpPage() {
   return (
     <div className="overflow-x-hidden">
       <main className="pt-32 min-h-[calc(100vh-200px)] flex items-center justify-center">
-        <div className="w-full max-w-xs mx-auto">
+        <div className="w-full max-w-xs mx-auto px-4 small:px-0">
           <div className="flex flex-col items-center mb-10">
             <Link href={"/"} className="flex items-center gap-2 mb-1">
               <Image

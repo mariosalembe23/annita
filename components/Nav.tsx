@@ -461,14 +461,23 @@ export function Nav({ links = defaultLinks }: NavProps) {
               </nav>
 
               {!isLoggedIn && !isLoading && (
-                <div className="mt-auto p-4 border-t border-gray-100 dark:border-zinc-800">
+                <div className="mt-auto p-4 border-t border-gray-100 dark:border-zinc-800 flex flex-col gap-2">
                   <Link
                     href={"/signin"}
                     onClick={() => setMobileMenuOpen(false)}
+                    className="w-full"
                   >
-                    <button className="w-full text-base transition-all hover:opacity-75 text-white bg-design-2 border-design-2 border rounded-lg px-3 py-2 font-normal flex items-center justify-center gap-2">
-                      <RiUser6Fill className="size-4" />
+                    <button className="w-full text-[15px] transition-all hover:opacity-75 text-white bg-design-2 border-design-2 border rounded-lg px-3 py-2 font-normal flex items-center justify-center gap-2 cursor-pointer">
                       Entrar
+                    </button>
+                  </Link>
+                  <Link
+                    href={"/signup"}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="w-full"
+                  >
+                    <button className="w-full text-[15px] transition-all hover:bg-gray-50 dark:hover:bg-zinc-800 text-zinc-900 dark:text-zinc-100 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 font-normal flex items-center justify-center gap-2 cursor-pointer bg-transparent">
+                      Registar-se
                     </button>
                   </Link>
                 </div>
