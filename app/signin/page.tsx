@@ -111,9 +111,9 @@ export default function SignInPage() {
                 className="w-5 mt-1"
                 height={100}
               />
-              <p className="text-3xl text-design-3">annita</p>
+              <p className="text-3xl text-design-3 dark:text-white">annita</p>
             </Link>
-            <p className="text-zinc-800 text-[15px]">
+            <p className="text-zinc-800 dark:text-zinc-400 text-[15px]">
               Inicie sessão para continuar
             </p>
           </div>
@@ -124,7 +124,7 @@ export default function SignInPage() {
           >
             <button
               type="button"
-              className="w-full flex items-center justify-center gap-3 px-3 py-2.5 rounded-lg border border-gray-200 text-base font-normal text-zinc-900 hover:bg-gray-50 transition-colors"
+              className="w-full flex items-center justify-center gap-3 px-3 py-2.5 rounded-lg border border-gray-200 dark:border-zinc-700 text-base font-normal text-zinc-900 dark:text-zinc-100 bg-white dark:bg-white/5 hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors"
             >
               <Image
                 src={"/img/google.png"}
@@ -136,22 +136,22 @@ export default function SignInPage() {
             </button>
 
             <div className="flex items-center gap-3 my-2">
-              <div className="h-px flex-1 bg-gray-200" />
-              <span className="text-sm text-zinc-400">ou</span>
-              <div className="h-px flex-1 bg-gray-200" />
+              <div className="h-px flex-1 bg-gray-200 dark:bg-zinc-700" />
+              <span className="text-sm text-zinc-400 dark:text-zinc-500">ou</span>
+              <div className="h-px flex-1 bg-gray-200 dark:bg-zinc-700" />
             </div>
 
             <div>
               <div
-                className={`flex transition-all focus-within:ring-4 items-center px-3 py-2.5 rounded-lg border ${
+                className={`flex transition-all focus-within:ring-4 items-center px-3 py-2.5 rounded-lg border bg-white dark:bg-white/5 ${
                   errors.username
-                    ? "border-red-400 focus-within:ring-red-100 focus-within:border-red-400"
-                    : "focus-within:ring-blue-100 focus-within:border-blue-400 border-gray-200"
+                    ? "border-red-400 focus-within:ring-red-100 dark:focus-within:ring-red-500/20 focus-within:border-red-400 dark:focus-within:border-red-500"
+                    : "focus-within:ring-blue-100 dark:focus-within:ring-blue-500/20 focus-within:border-blue-400 dark:focus-within:border-blue-500 border-gray-200 dark:border-zinc-700"
                 }`}
               >
                 <RiUser6Line className="size-5 text-zinc-400 shrink-0" />
                 <input
-                  className="w-full outline-none ps-2 text-[15px]"
+                  className="w-full outline-none ps-2 text-[15px] bg-transparent text-zinc-900 dark:text-zinc-100"
                   type="text"
                   placeholder="Email ou nome de utilizador"
                   {...register("username", {
@@ -160,7 +160,7 @@ export default function SignInPage() {
                 />
               </div>
               {errors.username && (
-                <p className="text-red-500 text-sm mt-3">
+                <p className="text-red-500 dark:text-red-400 text-sm mt-3">
                   {errors.username.message}
                 </p>
               )}
@@ -168,15 +168,15 @@ export default function SignInPage() {
 
             <div>
               <div
-                className={`flex transition-all focus-within:ring-4 items-center px-3 py-2.5 rounded-lg border ${
+                className={`flex transition-all focus-within:ring-4 items-center px-3 py-2.5 rounded-lg border bg-white dark:bg-white/5 ${
                   errors.password
-                    ? "border-red-400 focus-within:ring-red-100 focus-within:border-red-400"
-                    : "focus-within:ring-blue-100 focus-within:border-blue-400 border-gray-200"
+                    ? "border-red-400 focus-within:ring-red-100 dark:focus-within:ring-red-500/20 focus-within:border-red-400 dark:focus-within:border-red-500"
+                    : "focus-within:ring-blue-100 dark:focus-within:ring-blue-500/20 focus-within:border-blue-400 dark:focus-within:border-blue-500 border-gray-200 dark:border-zinc-700"
                 }`}
               >
                 <RiLockLine className="size-5 text-zinc-400 shrink-0" />
                 <input
-                  className="w-full outline-none ps-2 text-[15px]"
+                  className="w-full outline-none ps-2 text-[15px] bg-transparent text-zinc-900 dark:text-zinc-100"
                   type={showPassword ? "text" : "password"}
                   placeholder="Palavra-chave"
                   {...register("password", {
@@ -186,7 +186,7 @@ export default function SignInPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="text-zinc-400 hover:text-zinc-600 transition-colors"
+                  className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors"
                 >
                   {showPassword ? (
                     <RiEyeOffLine className="size-5" />
@@ -196,7 +196,7 @@ export default function SignInPage() {
                 </button>
               </div>
               {errors.password && (
-                <p className="text-red-500 text-sm mt-3">
+                <p className="text-red-500 dark:text-red-400 text-sm mt-3">
                   {errors.password.message}
                 </p>
               )}
@@ -211,9 +211,9 @@ export default function SignInPage() {
             </button>
           </form>
 
-          <p className="text-center text-[15px] text-zinc-500 mt-8">
+          <p className="text-center text-[15px] text-zinc-500 dark:text-zinc-400 mt-8">
             Não tens conta?{" "}
-            <Link href="/signup" className="text-design-2 hover:underline">
+            <Link href="/signup" className="text-design-2 dark:text-design-1 hover:underline">
               Criar conta
             </Link>
           </p>

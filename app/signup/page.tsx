@@ -143,19 +143,19 @@ export default function SignUpPage() {
     password.length === 0
       ? []
       : passwordStrength <= 2
-        ? ["bg-red-500", "bg-gray-200", "bg-gray-200"]
+        ? ["bg-red-500", "bg-gray-200 dark:bg-zinc-700", "bg-gray-200 dark:bg-zinc-700"]
         : passwordStrength <= 3
-          ? ["bg-amber-500", "bg-amber-500", "bg-gray-200"]
+          ? ["bg-amber-500", "bg-amber-500", "bg-gray-200 dark:bg-zinc-700"]
           : ["bg-green-500", "bg-green-500", "bg-green-500"];
 
   const strengthTextColor =
     password.length === 0
       ? ""
       : passwordStrength <= 2
-        ? "text-red-600"
+        ? "text-red-600 dark:text-red-400"
         : passwordStrength <= 3
-          ? "text-amber-600"
-          : "text-green-600";
+          ? "text-amber-600 dark:text-amber-400"
+          : "text-green-600 dark:text-green-400";
 
   const mutation = useMutation({
     mutationFn: (data: {
@@ -221,9 +221,9 @@ export default function SignUpPage() {
                 className="w-5 mt-1"
                 height={100}
               />
-              <p className="text-3xl text-design-3">annita</p>
+              <p className="text-3xl text-design-3 dark:text-white">annita</p>
             </Link>
-            <p className="text-zinc-800 text-[15px]">Crie a sua conta</p>
+            <p className="text-zinc-800 dark:text-zinc-400 text-[15px]">Crie a sua conta</p>
           </div>
 
           <form
@@ -232,7 +232,7 @@ export default function SignUpPage() {
           >
             <button
               type="button"
-              className="w-full flex items-center justify-center gap-3 px-3 py-2.5 rounded-lg border border-gray-200 text-base font-normal text-zinc-900 hover:bg-gray-50 transition-colors"
+              className="w-full flex items-center justify-center gap-3 px-3 py-2.5 rounded-lg border border-gray-200 dark:border-zinc-700 text-base font-normal text-zinc-900 dark:text-zinc-100 bg-white dark:bg-white/5 hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors"
             >
               <Image
                 src={"/img/google.png"}
@@ -244,22 +244,22 @@ export default function SignUpPage() {
             </button>
 
             <div className="flex items-center gap-3 my-2">
-              <div className="h-px flex-1 bg-gray-200" />
-              <span className="text-sm text-zinc-400">ou</span>
-              <div className="h-px flex-1 bg-gray-200" />
+              <div className="h-px flex-1 bg-gray-200 dark:bg-zinc-700" />
+              <span className="text-sm text-zinc-400 dark:text-zinc-500">ou</span>
+              <div className="h-px flex-1 bg-gray-200 dark:bg-zinc-700" />
             </div>
 
             <div>
               <div
-                className={`flex transition-all focus-within:ring-4 items-center px-3 py-2.5 rounded-lg border ${
+                className={`flex transition-all focus-within:ring-4 items-center px-3 py-2.5 rounded-lg border bg-white dark:bg-white/5 ${
                   errors.username
-                    ? "border-red-400 focus-within:ring-red-100 focus-within:border-red-400"
-                    : "focus-within:ring-blue-100 focus-within:border-blue-400 border-gray-200"
+                    ? "border-red-400 focus-within:ring-red-100 dark:focus-within:ring-red-500/20 focus-within:border-red-400 dark:focus-within:border-red-500"
+                    : "focus-within:ring-blue-100 dark:focus-within:ring-blue-500/20 focus-within:border-blue-400 dark:focus-within:border-blue-500 border-gray-200 dark:border-zinc-700"
                 }`}
               >
                 <RiUser6Line className="size-5 text-zinc-400 shrink-0" />
                 <input
-                  className="w-full outline-none ps-2 text-[15px]"
+                  className="w-full outline-none ps-2 text-[15px] bg-transparent text-zinc-900 dark:text-zinc-100"
                   type="text"
                   placeholder="Nome de Utilizador"
                   {...register("username", {
@@ -286,14 +286,14 @@ export default function SignUpPage() {
                   <RiLoader2Line className="size-5 text-zinc-400 animate-spin shrink-0 ms-2" />
                 )}
                 {!isCheckingUsername && isUsernameAvailable === true && (
-                  <RiCheckLine className="size-5 text-green-500 shrink-0 ms-2" />
+                  <RiCheckLine className="size-5 text-green-500 dark:text-green-400 shrink-0 ms-2" />
                 )}
                 {!isCheckingUsername && isUsernameAvailable === false && (
-                  <RiErrorWarningLine className="size-5 text-red-500 shrink-0 ms-2" />
+                  <RiErrorWarningLine className="size-5 text-red-500 dark:text-red-400 shrink-0 ms-2" />
                 )}
               </div>
               {errors.username && (
-                <p className="text-red-500 text-sm mt-3">
+                <p className="text-red-500 dark:text-red-400 text-sm mt-3">
                   {errors.username.message}
                 </p>
               )}
@@ -301,15 +301,15 @@ export default function SignUpPage() {
 
             <div>
               <div
-                className={`flex transition-all focus-within:ring-4 items-center px-3 py-2.5 rounded-lg border ${
+                className={`flex transition-all focus-within:ring-4 items-center px-3 py-2.5 rounded-lg border bg-white dark:bg-white/5 ${
                   errors.email
-                    ? "border-red-400 focus-within:ring-red-100 focus-within:border-red-400"
-                    : "focus-within:ring-blue-100 focus-within:border-blue-400 border-gray-200"
+                    ? "border-red-400 focus-within:ring-red-100 dark:focus-within:ring-red-500/20 focus-within:border-red-400 dark:focus-within:border-red-500"
+                    : "focus-within:ring-blue-100 dark:focus-within:ring-blue-500/20 focus-within:border-blue-400 dark:focus-within:border-blue-500 border-gray-200 dark:border-zinc-700"
                 }`}
               >
                 <RiMailLine className="size-5 text-zinc-400 shrink-0" />
                 <input
-                  className="w-full outline-none ps-2 text-[15px]"
+                  className="w-full outline-none ps-2 text-[15px] bg-transparent text-zinc-900 dark:text-zinc-100"
                   type="email"
                   placeholder="Email"
                   {...register("email", {
@@ -322,7 +322,7 @@ export default function SignUpPage() {
                 />
               </div>
               {errors.email && (
-                <p className="text-red-500 text-sm mt-3">
+                <p className="text-red-500 dark:text-red-400 text-sm mt-3">
                   {errors.email.message}
                 </p>
               )}
@@ -330,15 +330,15 @@ export default function SignUpPage() {
 
             <div>
               <div
-                className={`flex transition-all focus-within:ring-4 items-center px-3 py-2.5 rounded-lg border ${
+                className={`flex transition-all focus-within:ring-4 items-center px-3 py-2.5 rounded-lg border bg-white dark:bg-white/5 ${
                   errors.password
-                    ? "border-red-400 focus-within:ring-red-100 focus-within:border-red-400"
-                    : "focus-within:ring-blue-100 focus-within:border-blue-400 border-gray-200"
+                    ? "border-red-400 focus-within:ring-red-100 dark:focus-within:ring-red-500/20 focus-within:border-red-400 dark:focus-within:border-red-500"
+                    : "focus-within:ring-blue-100 dark:focus-within:ring-blue-500/20 focus-within:border-blue-400 dark:focus-within:border-blue-500 border-gray-200 dark:border-zinc-700"
                 }`}
               >
                 <RiLockLine className="size-5 text-zinc-400 shrink-0" />
                 <input
-                  className="w-full outline-none ps-2 text-[15px]"
+                  className="w-full outline-none ps-2 text-[15px] bg-transparent text-zinc-900 dark:text-zinc-100"
                   type={showPassword ? "text" : "password"}
                   placeholder="Palavra-chave"
                   {...register("password", {
@@ -352,7 +352,7 @@ export default function SignUpPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="text-zinc-400 hover:text-zinc-600 transition-colors"
+                  className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors"
                 >
                   {showPassword ? (
                     <RiEyeOffLine className="size-5" />
@@ -362,7 +362,7 @@ export default function SignUpPage() {
                 </button>
               </div>
               {errors.password && (
-                <p className="text-red-500 text-sm mt-3">
+                <p className="text-red-500 dark:text-red-400 text-sm mt-3">
                   {errors.password.message}
                 </p>
               )}
@@ -371,13 +371,13 @@ export default function SignUpPage() {
                 <div className="mt-3 space-y-1.5">
                   <div className="flex gap-1.5">
                     {[0, 1, 2].map((i) => (
-                      <motion.div
-                        key={i}
-                        initial={{ width: 0, opacity: 0 }}
-                        animate={{ width: "100%", opacity: 1 }}
-                        transition={{ duration: 0.3, delay: i * 0.08 }}
-                        className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${strengthColors[i]}`}
-                      />
+                       <motion.div
+                         key={i}
+                         initial={{ width: 0, opacity: 0 }}
+                         animate={{ width: "100%", opacity: 1 }}
+                         transition={{ duration: 0.3, delay: i * 0.08 }}
+                         className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${strengthColors[i]}`}
+                       />
                     ))}
                   </div>
                   <p className={`text-xs font-medium ${strengthTextColor}`}>
@@ -389,15 +389,15 @@ export default function SignUpPage() {
 
             <div>
               <div
-                className={`flex transition-all focus-within:ring-4 items-center px-3 py-2.5 rounded-lg border ${
+                className={`flex transition-all focus-within:ring-4 items-center px-3 py-2.5 rounded-lg border bg-white dark:bg-white/5 ${
                   errors.confirmPassword
-                    ? "border-red-400 focus-within:ring-red-100 focus-within:border-red-400"
-                    : "focus-within:ring-blue-100 focus-within:border-blue-400 border-gray-200"
+                    ? "border-red-400 focus-within:ring-red-100 dark:focus-within:ring-red-500/20 focus-within:border-red-400 dark:focus-within:border-red-500"
+                    : "focus-within:ring-blue-100 dark:focus-within:ring-blue-500/20 focus-within:border-blue-400 dark:focus-within:border-blue-500 border-gray-200 dark:border-zinc-700"
                 }`}
               >
                 <RiLockLine className="size-5 text-zinc-400 shrink-0" />
                 <input
-                  className="w-full outline-none ps-2 text-[15px]"
+                  className="w-full outline-none ps-2 text-[15px] bg-transparent text-zinc-900 dark:text-zinc-100"
                   type={showConfirmPassword ? "text" : "password"}
                   placeholder="Confirmar palavra-chave"
                   {...register("confirmPassword", {
@@ -410,7 +410,7 @@ export default function SignUpPage() {
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="text-zinc-400 hover:text-zinc-600 transition-colors"
+                  className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors"
                 >
                   {showConfirmPassword ? (
                     <RiEyeOffLine className="size-5" />
@@ -420,7 +420,7 @@ export default function SignUpPage() {
                 </button>
               </div>
               {errors.confirmPassword && (
-                <p className="text-red-500 text-sm mt-3">
+                <p className="text-red-500 dark:text-red-400 text-sm mt-3">
                   {errors.confirmPassword.message}
                 </p>
               )}
@@ -440,9 +440,9 @@ export default function SignUpPage() {
             </button>
           </form>
 
-          <p className="text-center text-[15px] text-zinc-500 mt-8">
+          <p className="text-center text-[15px] text-zinc-500 dark:text-zinc-400 mt-8">
             Já tens conta?{" "}
-            <Link href="/signin" className="text-design-2 hover:underline">
+            <Link href="/signin" className="text-design-2 dark:text-design-1 hover:underline">
               Iniciar sessão
             </Link>
           </p>

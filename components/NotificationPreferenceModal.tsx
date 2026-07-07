@@ -36,12 +36,12 @@ export function NotificationPreferenceModal({
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
             onClick={(e) => e.stopPropagation()}
-            className="flex w-full max-w-xl bg-white rounded-3xl shadow-2xl overflow-hidden"
+            className="flex w-full max-w-xl bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl overflow-hidden"
           >
             <div className="flex-1 relative p-10">
               <button
                 type="button"
-                className="absolute top-4 right-4 text-zinc-400 hover:text-zinc-700 transition-opacity"
+                className="absolute top-4 right-4 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 transition-opacity"
                 onClick={onClose}
               >
                 <RiCloseLine />
@@ -57,14 +57,14 @@ export function NotificationPreferenceModal({
                 />
               </div>
 
-              <h2 className="text-2xl font-medium text-zinc-900">
+              <h2 className="text-2xl font-medium text-zinc-900 dark:text-zinc-100">
                 Notificações de eventos
               </h2>
-              <p className="text-[15px] text-zinc-600 mt-3 leading-relaxed">
+              <p className="text-[15px] text-zinc-600 dark:text-zinc-400 mt-3 leading-relaxed">
                 Desejas ser notificado(a) quando houverem eventos disponíveis na
                 plataforma?
               </p>
-              <p className="text-[15px] text-zinc-600 mt-3 leading-relaxed">
+              <p className="text-[15px] text-zinc-600 dark:text-zinc-400 mt-3 leading-relaxed">
                 Assim que novos eventos forem publicados, enviaremos uma
                 notificação para o teu email. Podes alterar esta preferência a
                 qualquer momento.
@@ -74,7 +74,7 @@ export function NotificationPreferenceModal({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="text-base transition-all hover:bg-gray-50 text-zinc-700 border border-gray-200 rounded-lg px-3 py-1.5 font-normal"
+                  className="text-base transition-all hover:bg-gray-50 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-1.5 font-normal"
                 >
                   Não, obrigado
                 </button>
