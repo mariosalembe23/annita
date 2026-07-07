@@ -221,7 +221,7 @@ export default function Home() {
                   <SelectItem value="PAID">Pago</SelectItem>
                 </SelectContent>
               </Select>
-              <div className="flex w-72 transition-all focus-within:ring-4 focus-within:ring-blue-100 dark:focus-within:ring-blue-500/20 focus-within:border-blue-400 items-center justify-between px-3 py-2 rounded-lg border border-gray-200 dark:border-zinc-700">
+              <div className="flex w-72 bg-white dark:bg-white/5 transition-all focus-within:ring-4 focus-within:ring-blue-100 dark:focus-within:ring-blue-500/20 focus-within:border-blue-400 items-center justify-between px-3 py-2 rounded-lg border border-gray-200 dark:border-zinc-600">
                 <RiSearchLine className="size-5 text-zinc-400 shrink-0" />
                 <input
                   className="w-full outline-none ps-2 text-sm bg-transparent"

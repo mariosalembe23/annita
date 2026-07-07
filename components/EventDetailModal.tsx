@@ -30,12 +30,12 @@ import { useToast } from "@/hooks/use-toast";
 import { voteEvent } from "@/lib/api/events";
 
 const badgeStyles: Record<string, string> = {
-  status: "bg-indigo-400/30 text-indigo-800",
+  status: "bg-indigo-400/30 text-indigo-800 dark:text-indigo-200",
   free: "bg-orange-600 text-white",
   paid: "bg-blue-600 text-white",
 };
 
-const pastBadgeStyle = "bg-red-500/10 text-red-700";
+const pastBadgeStyle = "bg-red-500/10 text-red-700 dark:text-red-300";
 
 interface EventDetailModalProps {
   open: boolean;
@@ -208,7 +208,7 @@ export function EventDetailModal({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm p-4"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 dark:bg-black/50 backdrop-blur-sm p-4"
             onClick={onClose}
           >
             <motion.div
@@ -218,7 +218,7 @@ export function EventDetailModal({
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
               transition={{ duration: 0.25, ease: "easeOut" }}
               onClick={(e) => e.stopPropagation()}
-              className="flex w-full max-w-xl bg-white rounded-3xl shadow-2xl overflow-hidden max-h-[90vh]"
+              className="flex w-full dark:border border-zinc-800 max-w-xl bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl dark:shadow-black/40 overflow-hidden max-h-[90vh]"
             >
               <div className="flex-1 overflow-y-auto p-8">
                 <div className="flex items-center justify-between mb-6">
@@ -232,11 +232,13 @@ export function EventDetailModal({
                     >
                       {categoryName}
                     </span>
-                    <span className="text-sm text-zinc-600">{timeAgo}</span>
+                    <span className="text-sm text-zinc-600 dark:text-zinc-400">
+                      {timeAgo}
+                    </span>
                     {isOwner && (
                       <span
                         title="Este evento pertence-te"
-                        className="inline-flex items-center text-amber-700"
+                        className="inline-flex items-center text-amber-700 dark:text-amber-300"
                       >
                         <RiUserStarFill className="size-4" />
                       </span>
@@ -244,14 +246,14 @@ export function EventDetailModal({
                   </div>
                   <button
                     type="button"
-                    className="text-zinc-400 hover:text-zinc-700 transition-colors"
+                    className="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 transition-colors"
                     onClick={onClose}
                   >
                     <RiCloseLine className="size-6" />
                   </button>
                 </div>
 
-                <h2 className="text-2xl font-semibold text-zinc-900 leading-tight">
+                <h2 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100 leading-tight">
                   {event.title}
                 </h2>
 
@@ -274,16 +276,20 @@ export function EventDetailModal({
                 )}
 
                 <div className="mt-6">
-                  <p className="text-sm text-zinc-500 mb-1">Sobre o evento</p>
-                  <p className="text-zinc-700 text-[15px] leading-relaxed">
+                  <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-1">
+                    Sobre o evento
+                  </p>
+                  <p className="text-zinc-700 dark:text-zinc-300 text-[15px] leading-relaxed">
                     {event.description}
                   </p>
                 </div>
 
                 {event.location && (
                   <div className="mt-6">
-                    <p className="text-sm text-zinc-500 mb-1">Localização</p>
-                    <p className="text-zinc-700 text-[15px] flex items-center gap-1.5">
+                    <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-1">
+                      Localização
+                    </p>
+                    <p className="text-zinc-700 dark:text-zinc-300 text-[15px] flex items-center gap-1.5">
                       <RiMapPinLine className="size-4 text-zinc-400 shrink-0" />
                       {event.location}
                     </p>
@@ -293,17 +299,19 @@ export function EventDetailModal({
                 <div className="mt-6 flex items-center justify-between">
                   <div className="flex items-center gap-8">
                     <div>
-                      <p className="text-sm text-zinc-500 mb-1">
+                      <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-1">
                         Data do Evento
                       </p>
-                      <p className="text-base text-zinc-800">{dateFormatted}</p>
+                      <p className="text-base text-zinc-800 dark:text-zinc-200">
+                        {dateFormatted}
+                      </p>
                     </div>
                     {event.createdByUsername && (
                       <div>
-                        <p className="text-sm text-zinc-500 mb-1">
+                        <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-1">
                           Publicado por
                         </p>
-                        <p className="text-base text-zinc-800">
+                        <p className="text-base text-zinc-800 dark:text-zinc-200">
                           @{event.createdByUsername}
                         </p>
                       </div>
@@ -314,7 +322,7 @@ export function EventDetailModal({
                       <button
                         key={i}
                         type="button"
-                        className="rounded-full overflow-hidden border-2 border-white hover:opacity-85 transition-opacity shrink-0"
+                        className="rounded-full overflow-hidden border-2 border-white dark:border-zinc-900 hover:opacity-85 transition-opacity shrink-0"
                         style={{ marginLeft: i === 0 ? 0 : -10 }}
                         onClick={() => setSelectedImageIndex(i)}
                       >
@@ -329,7 +337,7 @@ export function EventDetailModal({
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between mt-8 pt-6 border-t border-gray-100">
+                <div className="flex items-center justify-between mt-8 pt-6 border-t border-gray-100 dark:border-zinc-800">
                   <div className="flex items-center gap-3">
                     <button
                       type="button"
@@ -337,7 +345,7 @@ export function EventDetailModal({
                         "flex transition-all items-center gap-1.5 cursor-pointer",
                         localVote === "UPVOTE"
                           ? "text-green-600"
-                          : "text-zinc-500 hover:text-green-600",
+                          : "text-zinc-500 dark:text-zinc-400 hover:text-green-600",
                       )}
                       onClick={(e) => handleVote(e, "UPVOTE")}
                     >
@@ -356,7 +364,7 @@ export function EventDetailModal({
                         "flex transition-all items-center gap-1.5 cursor-pointer",
                         localVote === "DOWNVOTE"
                           ? "text-red-600"
-                          : "text-zinc-500 hover:text-red-600",
+                          : "text-zinc-500 dark:text-zinc-400 hover:text-red-600",
                       )}
                       onClick={(e) => handleVote(e, "DOWNVOTE")}
                     >
