@@ -66,11 +66,17 @@ export default function RootLayout({
     <html
       lang="pt"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
       <head>
         <meta name="application-name" content="Annita" />
         <meta name="theme-color" content="#ffffff" />
         <meta name="author" content="Annita" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{if(localStorage.getItem("theme")==="dark")document.documentElement.classList.add("dark")}catch(e){}`,
+          }}
+        />
       </head>
       <body className="min-h-full flex flex-col">
           <Providers>{children}</Providers>

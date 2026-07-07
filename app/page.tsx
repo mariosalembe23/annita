@@ -83,16 +83,18 @@ export default function Home() {
       <motion.header variants={container} initial="hidden" animate="show">
         <section className="grid pt-24 max-w-7xl mt-16 gap-32 items-center mx-auto grid-cols-[50%_50%]">
           <motion.div variants={item} className="max-w-3xl">
-            <p className="px-4 py-2 rounded-full text-sm font-normal bg-design-2/10 gap-2 items-center gap- text-design-3 inline-flex mb-6">
-              <RiMailSendFill className="size-4" />
-              Subscreva a nossa newsletter
-            </p>
+            <Link href={"/newsletter"}>
+              <button className="px-4 py-2 rounded-full text-sm font-normal bg-design-2/10 dark:bg-design-2/20 gap-2 items-center gap- text-design-3 dark:text-design-1 inline-flex mb-6">
+                <RiMailSendFill className="size-4" />
+                Subscreva a nossa newsletter
+              </button>
+            </Link>
             <h1 className="text-7xl leading-16 font-medium">
               O teu próximo{" "}
               <span className="text-design-2 font-medium">evento</span> começa
               aqui.
             </h1>
-            <p className="mt-10 text-lg font-normal max-w-xl text-zinc-600">
+            <p className="mt-10 text-lg font-normal max-w-xl text-zinc-600 dark:text-zinc-400">
               Publique ou encontre eventos relacionados com a tecnologia em
               Angola. Desde meetups a conferências, tudo o que precisas para
               estares a par do que se passa no mundo tech.
@@ -108,7 +110,7 @@ export default function Home() {
                 </button>
               </Link>
               <Link href={"/events/create"}>
-                <button className="text-base transition-all hover:opacity-75 bg-white text-black border-gray-200 border rounded-lg px-3 py-1.5 font-normal  flex items-center gap-2 ">
+                <button className="text-base transition-all hover:opacity-75 bg-white dark:bg-zinc-900 text-black dark:text-zinc-100 border-gray-200 dark:border-zinc-700 border rounded-lg px-3 py-1.5 font-normal  flex items-center gap-2 ">
                   <RiStickyNoteAddFill className="size-4" />
                   Publicar evento
                 </button>
@@ -116,22 +118,28 @@ export default function Home() {
             </motion.div>
             <motion.footer variants={item} className="flex items-center gap-12">
               <div className="flex flex-col gap-1">
-                <p className="flex items-center text-gray-500 gap-0.5 mt-10">
+                <p className="flex items-center text-gray-500 dark:text-zinc-500 gap-0.5 mt-10">
                   Inscritos
                 </p>
-                <p className="text-xl text-black gap-0.5">2K</p>
+                <p className="text-xl text-black dark:text-zinc-100 gap-0.5">
+                  2K
+                </p>
               </div>
               <div className="flex flex-col gap-1">
-                <p className="flex items-center text-gray-500 gap-0.5 mt-10">
+                <p className="flex items-center text-gray-500 dark:text-zinc-500 gap-0.5 mt-10">
                   Eventos
                 </p>
-                <p className="text-xl text-black gap-0.5">50</p>
+                <p className="text-xl text-black dark:text-zinc-100 gap-0.5">
+                  50
+                </p>
               </div>
               <div className="flex flex-col gap-1">
-                <p className="flex items-center text-gray-500 gap-0.5 mt-10">
+                <p className="flex items-center text-gray-500 dark:text-zinc-500 gap-0.5 mt-10">
                   Contribuidores
                 </p>
-                <p className="text-xl text-black gap-0.5">12</p>
+                <p className="text-xl text-black dark:text-zinc-100 gap-0.5">
+                  12
+                </p>
               </div>
             </motion.footer>
           </motion.div>
@@ -213,10 +221,10 @@ export default function Home() {
                   <SelectItem value="PAID">Pago</SelectItem>
                 </SelectContent>
               </Select>
-              <div className="flex w-72 transition-all focus-within:ring-4 focus-within:ring-blue-100 focus-within:border-blue-400 items-center justify-between px-3 py-2 rounded-lg border border-gray-200">
+              <div className="flex w-72 transition-all focus-within:ring-4 focus-within:ring-blue-100 dark:focus-within:ring-blue-500/20 focus-within:border-blue-400 items-center justify-between px-3 py-2 rounded-lg border border-gray-200 dark:border-zinc-700">
                 <RiSearchLine className="size-5 text-zinc-400 shrink-0" />
                 <input
-                  className="w-full outline-none ps-2 text-sm"
+                  className="w-full outline-none ps-2 text-sm bg-transparent"
                   type="text"
                   placeholder="Pesquisar"
                   value={search}
@@ -234,7 +242,7 @@ export default function Home() {
                       setCategoryId("");
                       setPage(1);
                     }}
-                    className="text-xs text-zinc-400 hover:text-zinc-700 transition-colors shrink-0"
+                    className="text-xs text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 transition-colors shrink-0"
                   >
                     Limpar
                   </button>
@@ -248,14 +256,14 @@ export default function Home() {
               {Array.from({ length: 8 }).map((_, i) => (
                 <div
                   key={i}
-                  className="h-96 rounded-3xl bg-gray-100 animate-pulse"
+                  className="h-96 rounded-3xl bg-gray-100 dark:bg-zinc-700 animate-pulse"
                 />
               ))}
             </div>
           ) : apiEvents.length === 0 ? (
-            <div className="mt-20 text-center flex flex-col items-center justify-center gap-4 text-zinc-300">
+            <div className="mt-20 text-center flex flex-col items-center justify-center gap-4 text-zinc-300 dark:text-zinc-700">
               <RiStackFill className="size-24" />
-              <p className="text-base text-zinc-500">
+              <p className="text-base text-zinc-500 dark:text-zinc-400">
                 Seja o primeiro a publicar um evento.
               </p>
               <Link href={"/events/create"}>
@@ -283,7 +291,7 @@ export default function Home() {
               <button
                 disabled={page <= 1}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
-                className="px-4 py-2 rounded-lg border border-gray-200 text-sm hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                className="px-4 py-2 rounded-lg border border-gray-200 dark:border-zinc-700 text-sm hover:bg-gray-50 dark:hover:bg-zinc-900 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
               >
                 Anterior
               </button>
@@ -295,7 +303,7 @@ export default function Home() {
                     className={`size-10 rounded-lg text-sm font-medium transition-all ${
                       p === page
                         ? "bg-design-2 text-white"
-                        : "border border-gray-200 hover:bg-gray-50"
+                        : "border border-gray-200 dark:border-zinc-700 hover:bg-gray-50 dark:hover:bg-zinc-900"
                     }`}
                   >
                     {p}
@@ -305,7 +313,7 @@ export default function Home() {
               <button
                 disabled={page >= meta.totalPages}
                 onClick={() => setPage((p) => Math.min(meta.totalPages, p + 1))}
-                className="px-4 py-2 rounded-lg border border-gray-200 text-sm hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                className="px-4 py-2 rounded-lg border border-gray-200 dark:border-zinc-700 text-sm hover:bg-gray-50 dark:hover:bg-zinc-900 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
               >
                 Seguinte
               </button>

@@ -48,12 +48,12 @@ import {
 import Image from "next/image";
 
 const badgeStyles: Record<string, string> = {
-  status: "bg-indigo-400/30 text-indigo-800",
+  status: "bg-indigo-400/30 text-indigo-800 dark:text-indigo-200",
   free: "bg-orange-600 text-white",
   paid: "bg-blue-600 text-white",
 };
 
-const pastBadgeStyle = "bg-red-500/10 text-red-700";
+const pastBadgeStyle = "bg-red-500/10 text-red-700 dark:text-red-300";
 
 interface EventCardProps {
   event: ApiEvent;
@@ -281,7 +281,7 @@ export function EventCard({
     <>
       <div
         className={cn(
-          "h-96 bg-transparent shrink-0 overflow-hidden flex flex-col justify-between border border-gray-200 shadow-2xl shadow-gray-200 z-20 rounded-3xl w-full max-w-80 mx-auto cursor-pointer transition-all hover:shadow-gray-300 hover:-translate-y-0.5",
+          "h-96 bg-transparent shrink-0 overflow-hidden flex flex-col justify-between border border-gray-200 dark:border-zinc-700/50 dark:shadow-none shadow-2xl shadow-gray-200 dark:shadow-black/40 z-20 rounded-3xl w-full max-w-80 mx-auto cursor-pointer transition-all hover:shadow-gray-300 dark:hover:shadow-black/60 hover:-translate-y-0.5",
           className,
         )}
         onClick={() => (type === "usual" ? setDetailOpen(true) : null)}
@@ -306,15 +306,17 @@ export function EventCard({
             </div>
           </div>
         </header>
-        <div className="h-full w-full flex-col flex justify-between p-5 rounded-t-2xl shadow-2xl bg-white -mt-5">
+        <div className="h-full w-full flex-col flex justify-between p-5 rounded-t-2xl shadow-2xl bg-white dark:bg-zinc-900 -mt-5">
           <div>
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-3 ">
-                <p className="text-sm text-gray-600">{subtitle}</p>
+                <p className="text-sm text-gray-600 dark:text-zinc-400">
+                  {subtitle}
+                </p>
                 {isOwner && (
                   <p
                     title="Este evento pertence-te"
-                    className="rounded inline-flex items-center text-amber-700"
+                    className="rounded inline-flex items-center text-amber-700 dark:text-amber-300"
                   >
                     <RiUserStarFill className="size-4" />
                   </p>
@@ -333,7 +335,7 @@ export function EventCard({
               </div>
             </div>
             <h3 className="text-xl mt-1 line-clamp-3">{event.title}</h3>
-            <p className="text-sm text-gray-600 mb-2 line-clamp-2 mt-2">
+            <p className="text-sm text-gray-600 dark:text-zinc-400 mb-2 line-clamp-2 mt-2">
               {event.description}
             </p>
             {badges.length > 0 && (
@@ -354,7 +356,9 @@ export function EventCard({
               </div>
             )}
             <div className="mt-6">
-              <p className="text-sm text-gray-600 mb-1">Data do Evento</p>
+              <p className="text-sm text-gray-600 dark:text-zinc-400 mb-1">
+                Data do Evento
+              </p>
               <p className="text-base">{dateFormatted}</p>
             </div>
           </div>
@@ -367,7 +371,7 @@ export function EventCard({
                     "flex transition-all items-center gap-1.5 cursor-pointer",
                     localVote === "UPVOTE"
                       ? "text-green-600"
-                      : "text-zinc-500 hover:text-green-600",
+                      : "text-zinc-500 dark:text-zinc-400 hover:text-green-600",
                   )}
                   onClick={(e) => handleVote(e, "UPVOTE")}
                 >
@@ -384,7 +388,7 @@ export function EventCard({
                     "flex transition-all items-center gap-1.5 cursor-pointer",
                     localVote === "DOWNVOTE"
                       ? "text-red-600"
-                      : "text-zinc-500 hover:text-red-600",
+                      : "text-zinc-500 dark:text-zinc-400 hover:text-red-600",
                   )}
                   onClick={(e) => handleVote(e, "DOWNVOTE")}
                 >

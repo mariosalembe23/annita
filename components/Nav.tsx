@@ -19,6 +19,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { cn, removeCookie } from "@/lib/utils";
 import { useUser } from "@/hooks/use-user";
+import { useTheme } from "@/hooks/use-theme";
 import {
   getNotifications,
   markNotificationRead,
@@ -65,7 +66,7 @@ export function Nav({ links = defaultLinks }: NavProps) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const { theme, toggleTheme } = useTheme();
   const [notificationsTab, setNotificationsTab] =
     useState<NotificationsTab>("all");
 
@@ -126,18 +127,18 @@ export function Nav({ links = defaultLinks }: NavProps) {
   }
 
   return (
-    <div className="w-full fixed bg-white z-50 right-0 top-0 left-0">
-      <nav className="max-w-7xl bg-white border-b border-gray-100 py-5 mx-auto flex items-center justify-between">
+    <div className="w-full fixed bg-background z-50 right-0 top-0 left-0">
+      <nav className="max-w-7xl bg-background border-b border-gray-100 dark:border-zinc-700/50 py-5 mx-auto flex items-center justify-between">
         <div>
           <Link href={"/"} className="flex items-center gap-2">
             <Image
-              src={"img-logo/simple-logo.svg"}
+              src={"/img-logo/simple-logo.svg"}
               alt={"Logo"}
               width={100}
               className="w-5 mt-1"
               height={100}
             />
-            <p className="text-3xl text-design-3">annita</p>
+            <p className="text-3xl dark:text-white text-design-3 ">annita</p>
           </Link>
         </div>
         <div className="flex items-center gap-10">
@@ -150,7 +151,7 @@ export function Nav({ links = defaultLinks }: NavProps) {
                   "text-[15px] font-normal transition-all ",
                   pathname === item.href
                     ? "text-design-2"
-                    : "text-zinc-900 hover:text-design-2",
+                    : "text-zinc-900 dark:text-zinc-100 hover:text-design-2 dark:hover:text-design-1",
                 )}
               >
                 {item.name}
@@ -159,16 +160,16 @@ export function Nav({ links = defaultLinks }: NavProps) {
           </div>
           <div className="flex items-center gap-2">
             {starsLoading ? (
-              <div className="w-16 py-4.5 rounded-lg bg-gray-200 animate-pulse" />
+              <div className="w-16 py-4.5 rounded-lg bg-gray-200 dark:bg-zinc-700 animate-pulse" />
             ) : (
               <a
                 href={GITHUB_REPO_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-base border-gray-200 border rounded-lg px-3 py-1.5 font-normal text-zinc-900 hover:bg-gray-50 transition-all flex items-center gap-2"
+                className="text-base border-gray-200 dark:border-zinc-700 border rounded-lg px-3 py-1.5 font-normal text-zinc-900 dark:text-zinc-100 hover:bg-gray-50 dark:hover:bg-zinc-900 transition-all flex items-center gap-2"
               >
                 {githubStars != null && formatStars(githubStars)}
-                <RiGithubFill className="size-5 text-gray-800" />
+                <RiGithubFill className="size-5 text-gray-800 dark:text-zinc-200" />
               </a>
             )}
             <button
@@ -178,10 +179,8 @@ export function Nav({ links = defaultLinks }: NavProps) {
                   ? "Mudar para tema escuro"
                   : "Mudar para tema claro"
               }
-              onClick={() =>
-                setTheme((t) => (t === "light" ? "dark" : "light"))
-              }
-              className="p-2 border-gray-200 border rounded-lg text-zinc-700 hover:bg-gray-50 transition-all flex items-center justify-center"
+              onClick={toggleTheme}
+              className="p-2 border-gray-200 dark:border-zinc-700 border rounded-lg text-zinc-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-900 transition-all flex items-center justify-center"
             >
               {theme === "light" ? (
                 <RiMoonLine className="size-5" />
@@ -195,7 +194,7 @@ export function Nav({ links = defaultLinks }: NavProps) {
                   <button
                     type="button"
                     title="Notificações"
-                    className="relative p-2 border-gray-200 border rounded-lg text-zinc-700 hover:bg-gray-50 transition-all flex items-center justify-center"
+                    className="relative p-2 border-gray-200 dark:border-zinc-700 border rounded-lg text-zinc-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-900 transition-all flex items-center justify-center"
                   >
                     <RiMegaphoneLine className="size-5" />
                     {unreadCount > 0 && (
@@ -206,8 +205,8 @@ export function Nav({ links = defaultLinks }: NavProps) {
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-80 p-0">
-                  <div className="px-3 pt-2.5 pb-2 border-b border-gray-100">
-                    <p className="text-sm font-medium text-zinc-900">
+                  <div className="px-3 pt-2.5 pb-2 border-b border-gray-100 dark:border-zinc-700">
+                    <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
                       Notificações
                     </p>
                     <div className="flex items-center gap-1 mt-2">
@@ -219,7 +218,7 @@ export function Nav({ links = defaultLinks }: NavProps) {
                           className={`px-2.5 py-1 rounded-md text-xs transition-all ${
                             notificationsTab === tab.value
                               ? "bg-design-2 text-white font-medium"
-                              : "text-zinc-600 hover:bg-gray-100"
+                              : "text-zinc-600 dark:text-zinc-400 hover:bg-gray-100 dark:hover:bg-zinc-800"
                           }`}
                         >
                           {tab.label}
@@ -255,8 +254,8 @@ export function Nav({ links = defaultLinks }: NavProps) {
                             <p
                               className={`text-sm truncate ${
                                 notification.read
-                                  ? "text-zinc-600"
-                                  : "text-zinc-900 font-medium"
+                                  ? "text-zinc-600 dark:text-zinc-400"
+                                  : "text-zinc-900 dark:text-zinc-100 font-medium"
                               }`}
                             >
                               {notification.eventTitle}
@@ -282,7 +281,7 @@ export function Nav({ links = defaultLinks }: NavProps) {
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setDropdownOpen(!dropdownOpen)}
-                  className="px-3 py-1.5 gap-2 border hover:bg-zinc-100 transition-all border-gray-200 rounded-lg flex items-center"
+                  className="px-3 py-1.5 gap-2 border hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-all border-gray-200 dark:border-zinc-700 rounded-lg flex items-center"
                 >
                   <Image
                     src={"/img/avatar.png"}
@@ -291,7 +290,9 @@ export function Nav({ links = defaultLinks }: NavProps) {
                     className="w-6 h-6"
                     height={100}
                   />
-                  <span className="text-zinc-900 text-sm">{user.username}</span>
+                  <span className="text-zinc-900 dark:text-zinc-100 text-sm">
+                    {user.username}
+                  </span>
                 </button>
 
                 <AnimatePresence>
@@ -301,13 +302,13 @@ export function Nav({ links = defaultLinks }: NavProps) {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: -8, scale: 0.95 }}
                       transition={{ duration: 0.15, ease: "easeOut" }}
-                      className="absolute border border-zinc-200 right-0 mt-2 w-56 bg-white rounded-xl shadow-lg overflow-hidden"
+                      className="absolute border border-zinc-200 dark:border-zinc-700 right-0 mt-2 w-56 bg-white dark:bg-zinc-900 rounded-xl shadow-lg overflow-hidden"
                     >
                       <div className="py-1">
                         <Link
                           href={"/profile"}
                           onClick={() => setDropdownOpen(false)}
-                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-700 hover:bg-gray-50 transition-colors"
+                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors"
                         >
                           <RiUser6Line className="size-4" />
                           Perfil
@@ -317,7 +318,7 @@ export function Nav({ links = defaultLinks }: NavProps) {
                           <Link
                             href={"/dashboard"}
                             onClick={() => setDropdownOpen(false)}
-                            className="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-700 hover:bg-gray-50 transition-colors"
+                            className="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors"
                           >
                             <RiGovernmentLine className="size-4" />
                             Gestão Geral
@@ -326,15 +327,15 @@ export function Nav({ links = defaultLinks }: NavProps) {
                         <Link
                           href={"/settings"}
                           onClick={() => setDropdownOpen(false)}
-                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-700 hover:bg-gray-50 transition-colors"
+                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors"
                         >
                           <RiSettings3Line className="size-4" />
                           Configurações
                         </Link>
-                        <hr className="my-1 border-gray-100" />
+                        <hr className="my-1 border-gray-100 dark:border-zinc-700" />
                         <button
                           onClick={handleLogout}
-                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors"
                         >
                           <RiLogoutCircleRLine className="size-4" />
                           Terminar Sessão
@@ -345,7 +346,7 @@ export function Nav({ links = defaultLinks }: NavProps) {
                 </AnimatePresence>
               </div>
             ) : isLoading ? (
-              <div className="w-24 py-4.5 rounded-lg bg-gray-200 animate-pulse" />
+              <div className="w-24 py-4.5 rounded-lg bg-gray-200 dark:bg-zinc-700 animate-pulse" />
             ) : (
               <Link href={"/signin"}>
                 <button className="text-base transition-all hover:opacity-75 text-white bg-design-2 border-design-2 border rounded-lg px-3 py-1.5 font-normal flex items-center gap-2">
