@@ -14,8 +14,10 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import Link from "next/link";
-import { updateUser } from "@/lib/api/users";
+import { updateUser, deleteUser } from "@/lib/api/users";
 import { useToast } from "@/hooks/use-toast";
+
+const DELETE_CONFIRMATION_PHRASE = "Eliminar minha conta";
 
 interface UserProfileData {
   id: string;
@@ -45,6 +47,7 @@ export function ProfileSettings({
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
   const [receiveNotifications, setReceiveNotifications] = useState(
     user.receiveNotifications,
   );
@@ -87,6 +90,31 @@ export function ProfileSettings({
   const handleToggleNotifications = (value: boolean) => {
     setReceiveNotifications(value);
     notificationsMutation.mutate(value);
+  };
+
+  const deleteAccountMutation = useMutation({
+    mutationFn: () => deleteUser(user.id, token),
+    onSuccess: () => {
+      setDeleteConfirmOpen(false);
+      setDeleteConfirmText("");
+      onDeleteAccount();
+    },
+    onError: (error: any) => {
+      toast(
+        "error",
+        error?.response?.data?.message ||
+          error?.message ||
+          "Erro ao eliminar a conta",
+      );
+    },
+  });
+
+  const canConfirmDelete =
+    deleteConfirmText.trim() === DELETE_CONFIRMATION_PHRASE;
+
+  const handleDeleteDialogChange = (open: boolean) => {
+    setDeleteConfirmOpen(open);
+    if (!open) setDeleteConfirmText("");
   };
 
   const handleSave = () => {
@@ -206,7 +234,7 @@ export function ProfileSettings({
       </div>
 
       {/* Delete Account Confirmation Dialog */}
-      <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+      <Dialog open={deleteConfirmOpen} onOpenChange={handleDeleteDialogChange}>
         <DialogContent className="sm:max-w-sm">
           <DialogHeader className="flex p-2 flex-col items-start">
             <DialogTitle>Confirmar Eliminação</DialogTitle>
@@ -216,21 +244,44 @@ export function ProfileSettings({
             </DialogDescription>
           </DialogHeader>
 
-          <DialogFooter className="bg-white dark:bg-zinc-900 justify-between border-zinc-200 dark:border-zinc-700 flex sm:justify-center gap-2">
+          <div className="px-2 space-y-2">
+            <label className="text-sm text-zinc-600 dark:text-zinc-400">
+              Para confirmar, escreva{" "}
+              <span className="font-semibold text-zinc-900 dark:text-zinc-100">
+                {DELETE_CONFIRMATION_PHRASE}
+              </span>{" "}
+              no campo abaixo.
+            </label>
+            <input
+              type="text"
+              autoComplete="off"
+              value={deleteConfirmText}
+              onChange={(e) => setDeleteConfirmText(e.target.value)}
+              placeholder={DELETE_CONFIRMATION_PHRASE}
+              disabled={deleteAccountMutation.isPending}
+              className="w-full px-3 mt-3 py-2 border border-zinc-200 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 outline-none text-base det:text-sm transition-all focus:ring-4 focus:ring-red-100 dark:focus:ring-red-500/20 focus:border-red-400 disabled:opacity-50"
+            />
+          </div>
+
+          <DialogFooter className="bg-white dark:bg-zinc-900 justify-between! border-zinc-200 dark:border-zinc-700 flex sm:justify-center gap-2">
             <DialogClose asChild>
-              <Button type="button" variant="outline">
+              <Button
+                type="button"
+                variant="outline"
+                disabled={deleteAccountMutation.isPending}
+              >
                 Cancelar
               </Button>
             </DialogClose>
             <Button
               type="button"
-              className="bg-red-600 hover:bg-red-700 text-white"
-              onClick={() => {
-                setDeleteConfirmOpen(false);
-                onDeleteAccount();
-              }}
+              className="bg-red-600 hover:bg-red-700 text-white disabled:opacity-50 disabled:pointer-events-none"
+              disabled={!canConfirmDelete || deleteAccountMutation.isPending}
+              onClick={() => deleteAccountMutation.mutate()}
             >
-              Sim, eliminar conta
+              {deleteAccountMutation.isPending
+                ? "A eliminar..."
+                : "Sim, eliminar conta"}
             </Button>
           </DialogFooter>
         </DialogContent>

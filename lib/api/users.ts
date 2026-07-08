@@ -51,3 +51,10 @@ export async function updateUser(
   });
   return data;
 }
+
+export async function deleteUser(id: string, token: string) {
+  const { data } = await api.delete(`/users/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return data;
+}
