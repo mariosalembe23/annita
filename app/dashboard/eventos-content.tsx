@@ -188,7 +188,7 @@ export default function EventosContent() {
           </Popover>
         </div>
 
-        <div className="mt-6 grid grid-cols-4 gap-4">
+        <div className="mt-6 grid grid-cols-5 gap-2">
           {isPending
             ? Array.from({ length: 4 }).map((_, i) => (
                 <div

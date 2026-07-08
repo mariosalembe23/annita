@@ -77,7 +77,7 @@ export default function DashboardClient({ initialTab }: DashboardClientProps) {
         <section id="dashboard" className="p-10">
           <header className="flex items-center justify-between">
             <div className="w-full">
-              <h1 className="text-3xl font-semibold text-zinc-900 dark:text-zinc-100">
+              <h1 className="text-lg font-medium text-zinc-600 dark:text-zinc-500">
                 {tabLabels[activeTab] || activeTab}
               </h1>
             </div>

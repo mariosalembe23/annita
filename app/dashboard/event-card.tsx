@@ -23,7 +23,7 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { ApiEvent, approveEvent, rejectEvent } from "@/lib/api/events";
+import { ApiEvent, approveEvent, rejectEvent, deleteEvent } from "@/lib/api/events";
 import { useUser } from "@/hooks/use-user";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -46,6 +46,7 @@ export default function EventCard({ event, onSelect, onEdit }: EventCardProps) {
   const queryClient = useQueryClient();
   const [approveOpen, setApproveOpen] = useState(false);
   const [rejectOpen, setRejectOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   const approveMutation = useMutation({
     mutationFn: () => approveEvent(event.id, token ?? ""),
@@ -68,6 +69,18 @@ export default function EventCard({ event, onSelect, onEdit }: EventCardProps) {
     },
     onError: () => {
       toast("error", "Erro ao rejeitar o evento. Tente novamente.");
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: () => deleteEvent(event.id, token ?? ""),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["events-admin"] });
+      toast("success", "Evento removido com sucesso.");
+      setDeleteOpen(false);
+    },
+    onError: () => {
+      toast("error", "Erro ao remover o evento. Tente novamente.");
     },
   });
 
@@ -104,7 +117,7 @@ export default function EventCard({ event, onSelect, onEdit }: EventCardProps) {
               ))
             ) : (
               <span className="px-2 py-0.5 rounded-md bg-design-3">
-                {modalityLabels[event.modality as any] || event.modality}
+                {modalityLabels[event.modality as string] || event.modality}
               </span>
             )}
             <span className="px-2.5 py-0.5 rounded-md bg-design-3">
@@ -160,6 +173,8 @@ export default function EventCard({ event, onSelect, onEdit }: EventCardProps) {
                 <DropdownMenuItem
                   className="cursor-pointer py-1 px-3 gap-2"
                   variant="destructive"
+                  onClick={() => setDeleteOpen(true)}
+                  disabled={deleteMutation.isPending}
                 >
                   <RiDeleteBinLine className="size-4" />
                   Remover
@@ -217,6 +232,32 @@ export default function EventCard({ event, onSelect, onEdit }: EventCardProps) {
               variant="destructive"
             >
               {rejectMutation.isPending ? "A rejeitar..." : "Sim, rejeitar"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="text-lg">Remover evento</DialogTitle>
+            <DialogDescription className="text-zinc-700 dark:text-zinc-300">
+              Tem certeza que deseja remover o evento &ldquo;{event.title}
+              &rdquo;? Esta ação não pode ser desfeita.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="border-zinc-200 dark:border-zinc-700">
+            <DialogClose asChild>
+              <Button variant="outline" disabled={deleteMutation.isPending}>
+                Cancelar
+              </Button>
+            </DialogClose>
+            <Button
+              onClick={() => deleteMutation.mutate()}
+              disabled={deleteMutation.isPending}
+              variant="destructive"
+            >
+              {deleteMutation.isPending ? "A remover..." : "Sim, remover"}
             </Button>
           </DialogFooter>
         </DialogContent>

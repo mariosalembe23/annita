@@ -152,36 +152,34 @@ export default function DashboardContent({
           </Popover>
         </div>
 
-        <div className="mt-6 grid grid-cols-4 gap-4">
-          {isPending ? (
-            Array.from({ length: 4 }).map((_, i) => (
-              <div
-                key={i}
-                className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-2xl p-5 animate-pulse space-y-3"
-              >
-                <div className="h-5 bg-zinc-200 dark:bg-zinc-700 rounded w-3/4" />
-                <div className="h-4 bg-zinc-200 dark:bg-zinc-700 rounded w-full" />
-                <div className="h-4 bg-zinc-200 dark:bg-zinc-700 rounded w-5/6" />
-                <div className="flex gap-2">
-                  <div className="h-5 bg-zinc-200 dark:bg-zinc-700 rounded w-14" />
-                  <div className="h-5 bg-zinc-200 dark:bg-zinc-700 rounded w-16" />
+        <div className="mt-6 grid grid-cols-5 gap-2">
+          {isPending
+            ? Array.from({ length: 4 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-2xl p-5 animate-pulse space-y-3"
+                >
+                  <div className="h-5 bg-zinc-200 dark:bg-zinc-700 rounded w-3/4" />
+                  <div className="h-4 bg-zinc-200 dark:bg-zinc-700 rounded w-full" />
+                  <div className="h-4 bg-zinc-200 dark:bg-zinc-700 rounded w-5/6" />
+                  <div className="flex gap-2">
+                    <div className="h-5 bg-zinc-200 dark:bg-zinc-700 rounded w-14" />
+                    <div className="h-5 bg-zinc-200 dark:bg-zinc-700 rounded w-16" />
+                  </div>
+                  <div className="flex items-center justify-between pt-4 border-t border-zinc-200 dark:border-zinc-700">
+                    <div className="h-4 bg-zinc-200 dark:bg-zinc-700 rounded w-24" />
+                    <div className="size-8 bg-zinc-200 dark:bg-zinc-700 rounded" />
+                  </div>
                 </div>
-                <div className="flex items-center justify-between pt-4 border-t border-zinc-200 dark:border-zinc-700">
-                  <div className="h-4 bg-zinc-200 dark:bg-zinc-700 rounded w-24" />
-                  <div className="size-8 bg-zinc-200 dark:bg-zinc-700 rounded" />
-                </div>
-              </div>
-            ))
-          ) : (
-            events.map((event) => (
+              ))
+            : events.map((event) => (
                 <EventCard
                   key={event.id}
                   event={event}
                   onSelect={setSelectedEvent}
                   onEdit={setEditingEvent}
                 />
-            ))
-          )}
+              ))}
         </div>
       </section>
 

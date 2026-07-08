@@ -7,6 +7,7 @@ import {
   RiDeleteBinLine,
   RiEyeLine,
   RiForbid2Line,
+  RiLoader2Line,
 } from "@remixicon/react";
 import {
   Dialog,
@@ -18,7 +19,10 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { ApiEvent } from "@/lib/api/events";
+import { ApiEvent, approveEvent, rejectEvent, deleteEvent } from "@/lib/api/events";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useUser } from "@/hooks/use-user";
+import { useToast } from "@/hooks/use-toast";
 import {
   statusColors,
   statusLabels,
@@ -36,6 +40,47 @@ export default function EventDetailsDialog({
   onClose,
 }: EventDetailsDialogProps) {
   const [isImageZoomed, setIsImageZoomed] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const { token } = useUser();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const approveMutation = useMutation({
+    mutationFn: () => approveEvent(event!.id, token ?? ""),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["events-admin"] });
+      toast("success", "Evento aprovado com sucesso.");
+      onClose();
+    },
+    onError: () => {
+      toast("error", "Erro ao aprovar o evento. Tente novamente.");
+    },
+  });
+
+  const rejectMutation = useMutation({
+    mutationFn: () => rejectEvent(event!.id, token ?? ""),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["events-admin"] });
+      toast("success", "Evento rejeitado com sucesso.");
+      onClose();
+    },
+    onError: () => {
+      toast("error", "Erro ao rejeitar o evento. Tente novamente.");
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: () => deleteEvent(event!.id, token ?? ""),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["events-admin"] });
+      toast("success", "Evento removido com sucesso.");
+      setDeleteOpen(false);
+      onClose();
+    },
+    onError: () => {
+      toast("error", "Erro ao remover o evento. Tente novamente.");
+    },
+  });
 
   return (
     <Dialog
@@ -99,7 +144,7 @@ export default function EventDetailsDialog({
                   <p className="text-zinc-800 dark:text-zinc-200 text-sm mt-0.5">
                     {Array.isArray(event.modality)
                       ? event.modality.map((m) => modalityLabels[m] || m).join(", ")
-                      : (modalityLabels[event.modality as any] || event.modality)}
+                      : (modalityLabels[event.modality as string] || event.modality)}
                   </p>
                 </div>
                 <div className="py-2 border-b border-zinc-200 dark:border-zinc-700">
@@ -160,30 +205,58 @@ export default function EventDetailsDialog({
               </div>
             </div>
 
-            <DialogFooter className="border-t bg-white dark:bg-zinc-900 border-white dark:border-zinc-900 pt-4 mt-4">
+            <DialogFooter className="border-t bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 pt-4 mt-4">
               <div className="flex items-center gap-2 w-full justify-end">
-                <DialogClose asChild>
-                  <Button variant="outline" size="sm">
-                    <RiForbid2Line className="size-4" />
+                {event.status === "PENDING" && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={rejectMutation.isPending || approveMutation.isPending || deleteMutation.isPending}
+                    onClick={() => {
+                      if (confirm("Tem certeza que deseja rejeitar este evento?")) {
+                        rejectMutation.mutate();
+                      }
+                    }}
+                  >
+                    {rejectMutation.isPending ? (
+                      <RiLoader2Line className="size-4 animate-spin" />
+                    ) : (
+                      <RiForbid2Line className="size-4" />
+                    )}
                     Rejeitar
                   </Button>
-                </DialogClose>
-                <DialogClose asChild>
+                )}
+
+                {(event.status === "PENDING" || event.status === "REJECTED") && (
                   <Button
                     variant="default"
                     size="sm"
-                    className="bg-design-2 hover:bg-design-2/90"
+                    className="bg-design-2 hover:bg-design-2/90 text-white"
+                    disabled={rejectMutation.isPending || approveMutation.isPending || deleteMutation.isPending}
+                    onClick={() => {
+                      if (confirm("Tem certeza que deseja aprovar este evento?")) {
+                        approveMutation.mutate();
+                      }
+                    }}
                   >
-                    <RiCheckboxMultipleLine className="size-4" />
+                    {approveMutation.isPending ? (
+                      <RiLoader2Line className="size-4 animate-spin" />
+                    ) : (
+                      <RiCheckboxMultipleLine className="size-4" />
+                    )}
                     Aprovar
                   </Button>
-                </DialogClose>
-                <DialogClose asChild>
-                  <Button variant="destructive" size="sm">
-                    <RiDeleteBinLine className="size-4" />
-                    Remover
-                  </Button>
-                </DialogClose>
+                )}
+
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  disabled={rejectMutation.isPending || approveMutation.isPending || deleteMutation.isPending}
+                  onClick={() => setDeleteOpen(true)}
+                >
+                  <RiDeleteBinLine className="size-4" />
+                  Remover
+                </Button>
               </div>
             </DialogFooter>
 
@@ -212,6 +285,32 @@ export default function EventDetailsDialog({
                 </div>
               </div>
             )}
+
+            <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle className="text-lg">Remover evento</DialogTitle>
+                  <DialogDescription className="text-zinc-700 dark:text-zinc-300">
+                    Tem certeza que deseja remover o evento &ldquo;{event.title}
+                    &rdquo;? Esta ação não pode ser desfeita.
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter className="border-zinc-200 dark:border-zinc-700">
+                  <DialogClose asChild>
+                    <Button variant="outline" disabled={deleteMutation.isPending} onClick={() => setDeleteOpen(false)}>
+                      Cancelar
+                    </Button>
+                  </DialogClose>
+                  <Button
+                    onClick={() => deleteMutation.mutate()}
+                    disabled={deleteMutation.isPending}
+                    variant="destructive"
+                  >
+                    {deleteMutation.isPending ? "A remover..." : "Sim, remover"}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </>
         )}
       </DialogContent>
