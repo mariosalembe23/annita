@@ -16,7 +16,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { getMyEvents, getCategories, type EventModality, type EventType } from "@/lib/api/events";
+import {
+  getMyEvents,
+  getCategories,
+  type EventModality,
+  type EventType,
+} from "@/lib/api/events";
 import { removeCookie } from "@/lib/utils";
 import { useUser, notifyAuthChange } from "@/hooks/use-user";
 import { useTheme } from "@/hooks/use-theme";
@@ -24,7 +29,13 @@ import { useToast } from "@/hooks/use-toast";
 import { NotificationsBell } from "@/components/NotificationsBell";
 import { ProfileEvents } from "./ProfileEvents";
 import { ProfileReports } from "./ProfileReports";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { ProfileSettings } from "./ProfileSettings";
 import { formatDate } from "@/data/events";
 
@@ -260,7 +271,7 @@ export default function ProfilePage() {
           {activeTab === "events" && (
             <div className="space-y-6">
               {/* Profile Event Filters */}
-              <div className="flex flex-col pot:flex-row pot:items-center gap-4 justify-between bg-zinc-50 dark:bg-zinc-800/40 p-4 rounded-2xl border border-zinc-100 dark:border-zinc-800">
+              <div className="flex flex-col pot:flex-row pot:items-center gap-4 justify-between rounded-2xl dark:border-zinc-800">
                 <div className="flex items-center flex-wrap gap-3 w-full pot:w-auto">
                   <Select
                     value={categoryId || "all"}
@@ -269,7 +280,7 @@ export default function ProfilePage() {
                       setPage(1);
                     }}
                   >
-                    <SelectTrigger className="w-full small:w-40 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100">
+                    <SelectTrigger className="w-full py-4.5 small:w-40 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100">
                       <SelectValue placeholder="Categoria" />
                     </SelectTrigger>
                     <SelectContent>
@@ -289,7 +300,7 @@ export default function ProfilePage() {
                       setPage(1);
                     }}
                   >
-                    <SelectTrigger className="w-full small:w-36 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100">
+                    <SelectTrigger className="w-full py-4.5 small:w-36 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100">
                       <SelectValue placeholder="Modalidade" />
                     </SelectTrigger>
                     <SelectContent>
@@ -307,7 +318,7 @@ export default function ProfilePage() {
                       setPage(1);
                     }}
                   >
-                    <SelectTrigger className="w-full small:w-28 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100">
+                    <SelectTrigger className="w-full py-4.5 small:w-28 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100">
                       <SelectValue placeholder="Tipo" />
                     </SelectTrigger>
                     <SelectContent>

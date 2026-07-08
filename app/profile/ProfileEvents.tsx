@@ -39,8 +39,7 @@ export function ProfileEvents({
 
   if (events.length === 0) {
     return (
-      <div className="text-center py-16 flex flex-col items-center justify-center border border-dashed border-zinc-200 dark:border-zinc-700 rounded-2xl bg-zinc-50 dark:bg-zinc-800/20">
-        <RiCalendarEventLine className="size-16 text-zinc-300 dark:text-zinc-600 mb-3" />
+      <div className=" max-w-80 py-16 flex flex-col">
         <p className="text-zinc-500 dark:text-zinc-400 text-base">
           Nenhum evento encontrado para os filtros selecionados.
         </p>
@@ -57,7 +56,12 @@ export function ProfileEvents({
     <div className="space-y-12">
       <div className="grid grid-cols-1 small:grid-cols-2 pot:grid-cols-3 det:grid-cols-4 gap-x-2 gap-y-4">
         {events.map((ev) => (
-          <EventCard key={ev.id} className="max-w-full!" event={ev} showStatus />
+          <EventCard
+            key={ev.id}
+            className="max-w-full!"
+            event={ev}
+            showStatus
+          />
         ))}
       </div>
 
