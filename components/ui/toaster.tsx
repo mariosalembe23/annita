@@ -8,7 +8,7 @@ export function Toaster() {
   const { toasts, dismiss } = useToast();
 
   return (
-    <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[100] flex flex-col gap-2 w-full max-w-md px-4 pointer-events-none">
+    <div className="fixed top-4 left-1/2 -translate-x-1/2 z-100 flex flex-col gap-2 w-full max-w-md px-4 pointer-events-none">
       <AnimatePresence mode="popLayout">
         {toasts.map((t) => (
           <Toast
