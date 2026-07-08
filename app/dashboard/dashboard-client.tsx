@@ -3,8 +3,12 @@
 import { RiEqualizerLine } from "@remixicon/react";
 import { Search } from "lucide-react";
 import Image from "next/image";
-import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
-import { useState } from "react";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
+import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Sidebar from "./sidebar";
 import DashboardContent from "./dashboard-content";
@@ -12,6 +16,8 @@ import EventosContent from "./eventos-content";
 import UsuariosContent from "./usuarios-content";
 import CategoriasContent from "./categorias-content";
 import NewsletterContent from "./newsletter-content";
+import { useUser } from "@/hooks/use-user";
+import { useDashboardStore } from "@/lib/store/dashboard-store";
 
 interface DashboardClientProps {
   initialTab: string;
@@ -21,6 +27,14 @@ export default function DashboardClient({ initialTab }: DashboardClientProps) {
   const [activeTab, setActiveTab] = useState(initialTab);
   const router = useRouter();
   const pathname = usePathname();
+  const { token, user } = useUser();
+  const fetchMetrics = useDashboardStore((state) => state.fetchMetrics);
+
+  useEffect(() => {
+    if (token) {
+      fetchMetrics(token);
+    }
+  }, [token, fetchMetrics]);
 
   function handleTabChange(tab: string) {
     setActiveTab(tab);
@@ -50,11 +64,11 @@ export default function DashboardClient({ initialTab }: DashboardClientProps) {
                   src={"/img/avatar.png"}
                   alt={"Avatar"}
                   width={100}
-                  className="size-5"
+                  className="size-5 dark:invert"
                   height={100}
                 />
                 <span className="text-zinc-900 dark:text-zinc-100 inline-flex pe-2 text-sm">
-                  msalembe
+                  {user?.username || "Admin"}
                 </span>
               </button>
             </div>
