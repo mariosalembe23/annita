@@ -174,7 +174,7 @@ export function EventsList() {
       </motion.header>
 
       {isPending ? (
-        <div className="mt-10 grid grid-cols-4 gap-x-4 gap-y-6">
+        <div className="mt-10 grid grid-cols-4 gap-x-2 gap-y-6">
           {Array.from({ length: 8 }).map((_, i) => (
             <div
               key={i}
@@ -200,7 +200,7 @@ export function EventsList() {
           variants={container}
           initial="hidden"
           animate="show"
-          className="mt-10 grid grid-cols-4 gap-x-4 gap-y-4"
+          className="mt-10 grid grid-cols-4 gap-x-2 gap-y-4"
         >
           {apiEvents.map((event) => (
             <motion.div key={event.id} variants={item}>
