@@ -1,14 +1,9 @@
 "use client";
 
-import {
-  RiGithubFill,
-  RiInstagramLine,
-  RiLinkedinFill,
-} from "@remixicon/react";
+import { RiLinkedinFill } from "@remixicon/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 
@@ -54,7 +49,7 @@ export function Footer() {
           </p>
           <div className="flex items-center gap-3 mt-6">
             <a
-              href="https://linkedin.com/company/annita"
+              href="https://www.linkedin.com/company/himersus/?viewAsMember=true"
               target="_blank"
               rel="noopener noreferrer"
               className="size-9 rounded-lg flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:text-design-2 hover:border-design-2/40 transition-colors"
@@ -129,7 +124,7 @@ export function Footer() {
           <form onSubmit={handleNewsletterSubmit} className="flex gap-2">
             <Button
               type="submit"
-              className="shrink-0 text-white bg-design-2 hover:bg-design-2/90"
+              className="shrink-0 py-4.5 px-4 text-white bg-design-2 hover:bg-design-2/90"
             >
               Subscrever
             </Button>
