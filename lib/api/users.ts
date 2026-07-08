@@ -24,10 +24,26 @@ export interface UsersResponse {
   meta: UsersMeta;
 }
 
-export async function getUsers(token: string) {
+export interface UsersFilters {
+  search?: string;
+  role?: string;
+  isActive?: boolean;
+  page?: number;
+  perPage?: number;
+}
+
+export async function getUsers(token: string, filters: UsersFilters = {}) {
+  const params = new URLSearchParams();
+  if (filters.search) params.set("search", filters.search);
+  if (filters.role) params.set("role", filters.role);
+  if (filters.isActive !== undefined) params.set("isActive", String(filters.isActive));
+  if (filters.page) params.set("page", String(filters.page));
+  if (filters.perPage) params.set("per_page", String(filters.perPage));
+
   const { data } = await api.get<UsersResponse | { data: UserData[] }>(
     "/users",
     {
+      params,
       headers: { Authorization: `Bearer ${token}` },
     },
   );

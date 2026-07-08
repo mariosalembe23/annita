@@ -57,7 +57,8 @@ export const mockEvents = [
     modality: "REMOTE" as const,
     startDate: "2026-07-15T09:00:00Z",
     type: "FREE" as const,
-    coverImage: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&auto=format&fit=crop&q=60",
+    coverImage:
+      "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&auto=format&fit=crop&q=60",
     status: "APPROVED" as const,
     createdById: "user-001",
     createdByUsername: "maria.silva",
@@ -80,7 +81,8 @@ export const mockEvents = [
     modality: "PRESENTIAL" as const,
     startDate: "2026-08-20T08:00:00Z",
     type: "PAID" as const,
-    coverImage: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&auto=format&fit=crop&q=60",
+    coverImage:
+      "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&auto=format&fit=crop&q=60",
     status: "APPROVED" as const,
     createdById: "user-002",
     createdByUsername: "joao.costa",
@@ -103,7 +105,8 @@ export const mockEvents = [
     modality: "HYBRID" as const,
     startDate: "2026-09-05T09:00:00Z",
     type: "FREE" as const,
-    coverImage: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&auto=format&fit=crop&q=60",
+    coverImage:
+      "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&auto=format&fit=crop&q=60",
     status: "PENDING" as const,
     createdById: "user-003",
     createdByUsername: "ana.santos",
@@ -126,7 +129,8 @@ export const mockEvents = [
     modality: "PRESENTIAL" as const,
     startDate: "2026-07-22T14:00:00Z",
     type: "PAID" as const,
-    coverImage: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800&auto=format&fit=crop&q=60",
+    coverImage:
+      "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800&auto=format&fit=crop&q=60",
     status: "APPROVED" as const,
     createdById: "user-004",
     createdByUsername: "carla.lima",
@@ -149,7 +153,8 @@ export const mockEvents = [
     modality: "REMOTE" as const,
     startDate: "2026-07-30T19:00:00Z",
     type: "FREE" as const,
-    coverImage: "https://images.unsplash.com/photo-1677442136019-21780efad99a?w=800&auto=format&fit=crop&q=60",
+    coverImage:
+      "https://images.unsplash.com/photo-1677442136019-21780efad99a?w=800&auto=format&fit=crop&q=60",
     status: "APPROVED" as const,
     createdById: "user-005",
     createdByUsername: "pedro.alves",
@@ -172,7 +177,8 @@ export const mockEvents = [
     modality: "PRESENTIAL" as const,
     startDate: "2026-08-12T09:00:00Z",
     type: "PAID" as const,
-    coverImage: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=800&auto=format&fit=crop&q=60",
+    coverImage:
+      "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=800&auto=format&fit=crop&q=60",
     status: "REJECTED" as const,
     createdById: "user-006",
     createdByUsername: "lucia.martins",
@@ -195,7 +201,8 @@ export const mockEvents = [
     modality: "HYBRID" as const,
     startDate: "2026-08-05T18:00:00Z",
     type: "FREE" as const,
-    coverImage: "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=800&auto=format&fit=crop&q=60",
+    coverImage:
+      "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=800&auto=format&fit=crop&q=60",
     status: "APPROVED" as const,
     createdById: "user-007",
     createdByUsername: "ricardo.gomes",
@@ -218,7 +225,8 @@ export const mockEvents = [
     modality: "PRESENTIAL" as const,
     startDate: "2026-09-10T09:00:00Z",
     type: "FREE" as const,
-    coverImage: "https://images.unsplash.com/photo-1521791136364-7286472b5899?w=800&auto=format&fit=crop&q=60",
+    coverImage:
+      "https://images.unsplash.com/photo-1521791136364-7286472b5899?w=800&auto=format&fit=crop&q=60",
     status: "PENDING" as const,
     createdById: "user-008",
     createdByUsername: "patricia.oliveira",
@@ -241,7 +249,8 @@ export const mockEvents = [
     modality: "REMOTE" as const,
     startDate: "2026-08-01T09:00:00Z",
     type: "PAID" as const,
-    coverImage: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&auto=format&fit=crop&q=60",
+    coverImage:
+      "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&auto=format&fit=crop&q=60",
     status: "APPROVED" as const,
     createdById: "user-009",
     createdByUsername: "andre.pereira",
@@ -264,7 +273,8 @@ export const mockEvents = [
     modality: "HYBRID" as const,
     startDate: "2026-08-25T09:00:00Z",
     type: "PAID" as const,
-    coverImage: "https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?w=800&auto=format&fit=crop&q=60",
+    coverImage:
+      "https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?w=800&auto=format&fit=crop&q=60",
     status: "REPORTED" as const,
     createdById: "user-010",
     createdByUsername: "beatriz.rocha",
@@ -274,10 +284,10 @@ export const mockEvents = [
 ];
 
 export const statusColors: Record<string, string> = {
-  PENDING: " text-yellow-800",
-  APPROVED: " text-green-800",
-  REJECTED: " text-red-800",
-  REPORTED: " text-orange-800",
+  PENDING: "dark:text-yellow-400 text-yellow-800",
+  APPROVED: "dark:text-green-400 text-green-800",
+  REJECTED: "dark:text-red-400 text-red-800",
+  REPORTED: "dark:text-orange-400 text-orange-800",
 };
 
 export const statusLabels: Record<string, string> = {

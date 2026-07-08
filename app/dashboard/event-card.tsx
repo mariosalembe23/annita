@@ -73,49 +73,51 @@ export default function EventCard({ event, onSelect, onEdit }: EventCardProps) {
 
   return (
     <>
-      <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-2xl p-5">
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex-1 min-w-0">
-            <h4 className="text-md font-medium text-zinc-900 dark:text-zinc-100 truncate">
-              {event.title}
-            </h4>
-          </div>
-          <span
-            className={`shrink-0 ps-3 py-0.5 rounded-full text-xs font-medium ${
-              statusColors[event.status] || "text-zinc-800 dark:text-zinc-200"
-            }`}
-          >
-            {statusLabels[event.status] || event.status}
-          </span>
-        </div>
-        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400 line-clamp-2">
-          {event.description}
-        </p>
-        <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-white">
-          <span className="px-2 py-0.5 rounded-md bg-design-3">
-            {typeLabels[event.type] || event.type}
-          </span>
-          {Array.isArray(event.modality) ? (
-            event.modality.map((mod) => (
-              <span key={mod} className="px-2 py-0.5 rounded-md bg-design-3">
-                {modalityLabels[mod] || mod}
-              </span>
-            ))
-          ) : (
-            <span className="px-2 py-0.5 rounded-md bg-design-3">
-              {modalityLabels[event.modality as any] || event.modality}
+      <div className="bg-white flex flex-col justify-between dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700/50 rounded-2xl p-5">
+        <header>
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex-1 min-w-0">
+              <h4 className="text-md font-medium text-zinc-900 dark:text-zinc-100 truncate">
+                {event.title}
+              </h4>
+            </div>
+            <span
+              className={`shrink-0 ps-3 py-0.5 rounded-full text-xs font-medium ${
+                statusColors[event.status] || "text-zinc-800 dark:text-zinc-200"
+              }`}
+            >
+              {statusLabels[event.status] || event.status}
             </span>
-          )}
-          <span className="px-2.5 py-0.5 rounded-md bg-design-3">
-            {event.category.name}
-          </span>
-        </div>
-        <div className="pt-4 border-zinc-200 dark:border-zinc-700 flex items-center justify-between border-t mt-4 text-sm text-zinc-800 dark:text-zinc-200">
+          </div>
+          <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400 line-clamp-2">
+            {event.description}
+          </p>
+          <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-white">
+            <span className="px-2 py-0.5 rounded-md bg-design-3">
+              {typeLabels[event.type] || event.type}
+            </span>
+            {Array.isArray(event.modality) ? (
+              event.modality.map((mod) => (
+                <span key={mod} className="px-2 py-0.5 rounded-md bg-design-3">
+                  {modalityLabels[mod] || mod}
+                </span>
+              ))
+            ) : (
+              <span className="px-2 py-0.5 rounded-md bg-design-3">
+                {modalityLabels[event.modality as any] || event.modality}
+              </span>
+            )}
+            <span className="px-2.5 py-0.5 rounded-md bg-design-3">
+              {event.category.name}
+            </span>
+          </div>
+        </header>
+        <footer className="pt-4 border-zinc-200 dark:border-zinc-700/50 flex items-center justify-between border-t mt-4 text-sm text-zinc-800 dark:text-zinc-200">
           <p>por @{event.createdByUsername}</p>
           <div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="size-8 rounded border border-zinc-300 flex items-center justify-center cursor-pointer">
+                <button className="size-8 rounded border dark:border-zinc-700/50 border-zinc-300 flex items-center justify-center cursor-pointer">
                   <RiMore2Fill className="size-5" />
                 </button>
               </DropdownMenuTrigger>
@@ -165,7 +167,7 @@ export default function EventCard({ event, onSelect, onEdit }: EventCardProps) {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-        </div>
+        </footer>
       </div>
 
       <Dialog open={approveOpen} onOpenChange={setApproveOpen}>
