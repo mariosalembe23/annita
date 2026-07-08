@@ -3,9 +3,10 @@ import { Footer } from "@/components/Footer";
 import { Nav } from "@/components/Nav";
 
 export const metadata: Metadata = {
-  title: "Termos e Condições — Annita",
+  title: "Termos e Condições",
   description:
     "Termos e Condições da plataforma Annita. Leia as regras de utilização para publicar e explorar eventos de tecnologia em Angola.",
+  robots: { index: false, follow: false },
 };
 
 export default function TermsPage() {

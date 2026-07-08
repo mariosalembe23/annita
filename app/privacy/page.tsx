@@ -3,9 +3,10 @@ import { Footer } from "@/components/Footer";
 import { Nav } from "@/components/Nav";
 
 export const metadata: Metadata = {
-  title: "Política de Privacidade — Annita",
+  title: "Política de Privacidade",
   description:
     "Política de Privacidade da plataforma Annita. Saiba como recolhemos, processamos e protegemos os seus dados pessoais.",
+  robots: { index: false, follow: false },
 };
 
 export default function PrivacyPage() {

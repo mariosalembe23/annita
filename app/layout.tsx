@@ -6,16 +6,19 @@ import "./globals.css";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const siteUrl = "https://annita.ao";
+const siteUrl = "https://annita.himersus.com";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
     default: "Annita — Eventos de Tecnologia em Angola",
     template: "%s — Annita",
@@ -29,10 +32,14 @@ export const metadata: Metadata = {
     "comunidade tech Angola",
     "eventos tech Angola",
     "programação Angola",
-    "anita eventos",
+    "conferência tecnologia Angola",
+    "meetup Angola",
+    "bootcamp Angola",
     "annita",
   ],
-  metadataBase: new URL(siteUrl),
+  alternates: {
+    canonical: siteUrl,
+  },
   openGraph: {
     type: "website",
     locale: "pt_AO",
@@ -41,19 +48,35 @@ export const metadata: Metadata = {
     description:
       "Descobre e publica os melhores eventos de tecnologia em Angola. Hackathons, workshops, conferências, meetups e mais.",
     url: siteUrl,
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Annita — Eventos de Tecnologia em Angola",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Annita — Eventos de Tecnologia em Angola",
     description:
       "Descobre e publica os melhores eventos de tecnologia em Angola.",
+    images: ["/og-image.png"],
   },
   icons: {
     icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
 };
 
@@ -64,13 +87,22 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="pt"
+      lang="pt-AO"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <head>
         <meta name="application-name" content="Annita" />
-        <meta name="theme-color" content="#ffffff" />
+        <meta
+          name="theme-color"
+          content="#ffffff"
+          media="(prefers-color-scheme: light)"
+        />
+        <meta
+          name="theme-color"
+          content="#242424"
+          media="(prefers-color-scheme: dark)"
+        />
         <meta name="author" content="Annita" />
         <script
           dangerouslySetInnerHTML={{

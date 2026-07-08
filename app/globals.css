@@ -7,11 +7,13 @@
 @font-face {
   font-family: "Rocpar";
   src: url("./fonts/Garne.otf") format("opentype");
+  font-display: swap;
 }
 
 @font-face {
   font-family: "Borna";
   src: url("./fonts/borna-medium-webfont.ttf") format("truetype");
+  font-display: swap;
 }
 
 @theme inline {

@@ -7,10 +7,21 @@ export const metadata: Metadata = {
   title: "Eventos",
   description:
     "Explora todos os eventos de tecnologia em Angola. Hackathons, workshops, conferências, meetups e muito mais.",
+  alternates: {
+    canonical: "https://annita.himersus.com/events",
+  },
   openGraph: {
     title: "Eventos de Tecnologia em Angola — Annita",
     description:
       "Explora todos os eventos de tecnologia em Angola. Encontra o teu próximo evento tech.",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Eventos de Tecnologia em Angola — Annita",
+      },
+    ],
   },
 };
 
