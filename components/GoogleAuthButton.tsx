@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  GoogleLogin,
-  type CredentialResponse,
-} from "@react-oauth/google";
+import { GoogleLogin, type CredentialResponse } from "@react-oauth/google";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { loginWithGoogle } from "@/lib/api/auth";
@@ -46,7 +43,10 @@ export function GoogleAuthButton({
     if (!el) return;
     const update = () =>
       setWidth(
-        Math.min(400, Math.max(200, Math.round(el.getBoundingClientRect().width))),
+        Math.min(
+          400,
+          Math.max(200, Math.round(el.getBoundingClientRect().width)),
+        ),
       );
     update();
     const observer = new ResizeObserver(update);
@@ -95,10 +95,10 @@ export function GoogleAuthButton({
         theme={theme === "dark" ? "filled_black" : "outline"}
         text={text}
         shape="rectangular"
-        
         size="large"
         logo_alignment="center"
         width={width}
+        containerProps={{ className: "rounded-lg" }}
       />
     </div>
   );

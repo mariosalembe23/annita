@@ -7,10 +7,7 @@ import { useRef, useState } from "react";
 import { ToastProvider } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 
-// Client ID público — seguro no cliente. A validação real acontece no backend,
-// que verifica o ID token do Google contra as chaves públicas da Google.
-const GOOGLE_CLIENT_ID =
-  "838952091956-3ssel8nsrf0l2sbgqcdcl2jlmj2i6nan.apps.googleusercontent.com";
+const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? "";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -19,13 +16,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
         defaultOptions: {
           queries: { staleTime: 60 * 1000 },
         },
-      })
+      }),
   );
 
-  // Injeta o script de tema apenas no HTML do servidor (nunca na árvore React
-  // do cliente), aplicando a classe "dark" antes da hidratação para evitar
-  // flash. Renderizar um <script> diretamente num componente dispara um aviso
-  // do React ("scripts are never executed when rendering on the client").
   const themeScriptInserted = useRef(false);
   useServerInsertedHTML(() => {
     if (themeScriptInserted.current) return null;
