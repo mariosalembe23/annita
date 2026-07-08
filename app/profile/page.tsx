@@ -213,7 +213,7 @@ export default function ProfilePage() {
         </section>
 
         {/* Tabs Navigation */}
-        <div className="mt-10 border-b border-zinc-200 dark:border-zinc-700 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none">
+        <div className="mt-10 sticky top-0 z-30 bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-700 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none">
           <div className="flex gap-12 px-7 min-w-max">
             {[
               {
