@@ -4,7 +4,6 @@ import {
   RiCloseLine,
   RiGithubFill,
   RiMoonLine,
-  RiSettings3Line,
   RiSunLine,
   RiUser6Fill,
   RiLogoutCircleRLine,
@@ -143,7 +142,9 @@ export function Nav({ links = defaultLinks }: NavProps) {
           <div className="flex items-center gap-2">
             <>
               {starsLoading ? (
-                <div className="w-16 py-4.5 rounded-lg bg-gray-200 dark:bg-zinc-700 animate-pulse" />
+                <div
+                  className={`w-16 py-4.5 ${isLoggedIn ? "pot:flex hidden" : "pot:flex hidden"} rounded-lg bg-gray-200 dark:bg-zinc-700 animate-pulse`}
+                />
               ) : (
                 <a
                   href={GITHUB_REPO_URL}
@@ -156,22 +157,24 @@ export function Nav({ links = defaultLinks }: NavProps) {
                 </a>
               )}
 
-              <button
-                type="button"
-                title={
-                  theme === "light"
-                    ? "Mudar para tema escuro"
-                    : "Mudar para tema claro"
-                }
-                onClick={toggleTheme}
-                className={`${isLoggedIn ? "pot:flex hidden" : ""} pot:p-2 p-2.5 border-gray-200 flex  dark:border-zinc-700 border rounded-lg text-zinc-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-900 transition-all  items-center justify-center`}
-              >
-                {theme === "light" ? (
-                  <RiMoonLine className="size-6 pot:size-5" />
-                ) : (
-                  <RiSunLine className="size-6 pot:size-5" />
-                )}
-              </button>
+              {!isLoading && (
+                <button
+                  type="button"
+                  title={
+                    theme === "light"
+                      ? "Mudar para tema escuro"
+                      : "Mudar para tema claro"
+                  }
+                  onClick={toggleTheme}
+                  className={`${isLoggedIn ? "pot:flex hidden" : ""} pot:p-2 p-2.5 border-gray-200 flex  dark:border-zinc-700 border rounded-lg text-zinc-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-900 transition-all  items-center justify-center`}
+                >
+                  {theme === "light" ? (
+                    <RiMoonLine className="size-6 pot:size-5" />
+                  ) : (
+                    <RiSunLine className="size-6 pot:size-5" />
+                  )}
+                </button>
+              )}
             </>
 
             {isLoggedIn && <NotificationsBell />}
