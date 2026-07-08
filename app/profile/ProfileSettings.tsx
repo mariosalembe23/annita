@@ -62,7 +62,7 @@ export function ProfileSettings({
               type="text"
               disabled
               value={user.username}
-              className="w-full px-3 py-2 border border-zinc-200 dark:border-zinc-700 rounded-lg bg-zinc-50 dark:bg-zinc-800/60 text-zinc-600 dark:text-zinc-400 outline-none text-sm cursor-not-allowed"
+              className="w-full px-3 py-2 border border-zinc-200 dark:border-zinc-700 rounded-lg bg-zinc-50 dark:bg-zinc-800/60 text-zinc-600 dark:text-zinc-400 outline-none text-base det:text-sm cursor-not-allowed"
             />
           </div>
           <div className="space-y-2 flex flex-col">
@@ -71,7 +71,7 @@ export function ProfileSettings({
               type="email"
               disabled
               value={user.email}
-              className="w-full px-3 py-2 border border-zinc-200 dark:border-zinc-700 rounded-lg bg-zinc-50 dark:bg-zinc-800/60 text-zinc-600 dark:text-zinc-400 outline-none text-sm cursor-not-allowed"
+              className="w-full px-3 py-2 border border-zinc-200 dark:border-zinc-700 rounded-lg bg-zinc-50 dark:bg-zinc-800/60 text-zinc-600 dark:text-zinc-400 outline-none text-base det:text-sm cursor-not-allowed"
             />
           </div>
         </div>

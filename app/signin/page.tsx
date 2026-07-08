@@ -151,7 +151,7 @@ export default function SignInPage() {
               >
                 <RiUser6Line className="size-5 text-zinc-400 shrink-0" />
                 <input
-                  className="w-full outline-none ps-2 text-[15px] bg-transparent text-zinc-900 dark:text-zinc-100"
+                  className="w-full outline-none ps-2 text-base det:text-[15px] bg-transparent text-zinc-900 dark:text-zinc-100"
                   type="text"
                   placeholder="Email ou nome de utilizador"
                   {...register("username", {
@@ -176,7 +176,7 @@ export default function SignInPage() {
               >
                 <RiLockLine className="size-5 text-zinc-400 shrink-0" />
                 <input
-                  className="w-full outline-none ps-2 text-[15px] bg-transparent text-zinc-900 dark:text-zinc-100"
+                  className="w-full outline-none ps-2 text-base det:text-[15px] bg-transparent text-zinc-900 dark:text-zinc-100"
                   type={showPassword ? "text" : "password"}
                   placeholder="Palavra-chave"
                   {...register("password", {

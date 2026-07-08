@@ -236,11 +236,11 @@ export function Nav({ links = defaultLinks }: NavProps) {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                   align="end"
-                  collisionPadding={0}
-                  className="w-screen max-w-none rounded-none border-x-0 p-0 pot:w-80 pot:max-w-80 pot:rounded-lg pot:border-x"
+                  collisionPadding={12}
+                  className="w-80 max-w-80 mt-3 pot:mt-0 p-0 max-pot:w-[90vw]! max-pot:max-w-none!"
                 >
                   <div className="px-3 pt-2.5 pb-2 border-b border-gray-100 dark:border-zinc-700">
-                    <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                    <p className="pot:text-sm text-xl pot:font-medium font-bold text-zinc-900 dark:text-zinc-100">
                       Notificações
                     </p>
                     <div className="flex items-center gap-1 mt-2">

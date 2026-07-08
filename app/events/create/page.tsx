@@ -355,7 +355,7 @@ export default function CreateEventPage() {
                           }`}
                         >
                           <input
-                            className="w-full outline-none text-[15px] bg-transparent text-zinc-900 dark:text-zinc-100"
+                            className="w-full outline-none text-base det:text-[15px] bg-transparent text-zinc-900 dark:text-zinc-100"
                             type="text"
                             placeholder="Ex.: Hackathon Angola 2026"
                             {...register("title", {
@@ -386,7 +386,7 @@ export default function CreateEventPage() {
                           }`}
                         >
                           <textarea
-                            className="w-full outline-none text-[15px] resize-none overflow-y-auto bg-transparent text-zinc-900 dark:text-zinc-100"
+                            className="w-full outline-none text-base det:text-[15px] resize-none overflow-y-auto bg-transparent text-zinc-900 dark:text-zinc-100"
                             rows={3}
                             placeholder="Descreve o teu evento..."
                             style={{ maxHeight: "200px" }}
@@ -425,7 +425,7 @@ export default function CreateEventPage() {
                         >
                           <RiMapPinLine className="size-5 text-zinc-400 shrink-0" />
                           <textarea
-                            className="w-full outline-none ps-2 text-[15px] resize-none overflow-y-auto bg-transparent text-zinc-900 dark:text-zinc-100"
+                            className="w-full outline-none ps-2 text-base det:text-[15px] resize-none overflow-y-auto bg-transparent text-zinc-900 dark:text-zinc-100"
                             rows={1}
                             placeholder="Ex.: Centro de Convenções de Talatona, Luanda"
                             style={{ maxHeight: "120px" }}
@@ -469,7 +469,7 @@ export default function CreateEventPage() {
                         >
                           <RiGlobalLine className="size-5 text-zinc-400 shrink-0" />
                           <input
-                            className="w-full outline-none ps-2 text-[15px] bg-transparent text-zinc-900 dark:text-zinc-100"
+                            className="w-full outline-none ps-2 text-base det:text-[15px] bg-transparent text-zinc-900 dark:text-zinc-100"
                             type="url"
                             placeholder="https://"
                             {...register("link", {

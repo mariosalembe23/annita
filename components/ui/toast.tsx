@@ -3,6 +3,7 @@
 import {
   RiAlarmWarningFill,
   RiCheckboxCircleFill,
+  RiCloseLine,
   RiInformationFill,
 } from "@remixicon/react";
 import { motion } from "framer-motion";
@@ -42,11 +43,18 @@ export function Toast({ type, message, onDismiss }: ToastProps) {
       exit={{ opacity: 0, y: -20, scale: 0.95 }}
       transition={{ duration: 0.25, ease: "easeOut" }}
       layout
-      onClick={onDismiss}
-      className={`flex items-center gap-3 px-4 py-3 rounded-xl border shadow-lg cursor-pointer max-w-md w-full pointer-events-auto ${colorMap[type]}`}
+      className={`flex items-center gap-3 px-4 py-3 rounded-xl border shadow-lg max-w-md w-full pointer-events-auto ${colorMap[type]}`}
     >
       <Icon className={`size-5 shrink-0 ${iconColorMap[type]}`} />
-      <p className="text-sm font-medium leading-tight">{message}</p>
+      <p className="text-sm font-medium leading-tight flex-1">{message}</p>
+      <button
+        type="button"
+        onClick={onDismiss}
+        aria-label="Fechar notificação"
+        className={`shrink-0 rounded-md p-0.5 opacity-70 hover:opacity-100 transition-opacity ${iconColorMap[type]}`}
+      >
+        <RiCloseLine className="size-4" />
+      </button>
     </motion.div>
   );
 }

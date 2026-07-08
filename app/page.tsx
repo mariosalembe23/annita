@@ -96,7 +96,7 @@ export default function Home() {
         <section className="grid pt-20 max-w-7xl mt-16 gap-16 pot:gap-32 items-center mx-auto px-4 det:px-0 grid-cols-1 pot:grid-cols-[50%_50%]">
           <motion.div variants={item} className="max-w-3xl pot:px-0 px-4">
             <Link href={"/newsletter"}>
-              <button className="px-4 py-2 transition-all hover:bg-design-2/40 hover:text-design-1 rounded-full text-sm font-normal bg-design-2/10 dark:bg-design-2/20 gap-2 items-center gap- text-design-3 dark:text-design-1 inline-flex mb-6">
+              <button className="px-4 py-2 transition-all dark:hover:bg-design-2/40 hover:bg-design-2/40 rounded-full text-sm font-normal bg-design-2/10 dark:bg-design-2/20 gap-2 items-center gap- text-design-3 dark:text-design-1 inline-flex mb-6">
                 <RiMailSendFill className="size-4" />
                 Subscreva a nossa newsletter
               </button>
@@ -251,7 +251,7 @@ export default function Home() {
               <div className="flex w-full small:w-72 bg-white dark:bg-white/5 transition-all focus-within:ring-4 focus-within:ring-blue-100 dark:focus-within:ring-blue-500/20 focus-within:border-blue-400 items-center justify-between px-3 py-2 rounded-lg border border-gray-200 dark:border-zinc-600">
                 <RiSearchLine className="size-5 text-zinc-400 shrink-0" />
                 <input
-                  className="w-full outline-none ps-2 text-sm bg-transparent"
+                  className="w-full outline-none ps-2 text-base det:text-sm bg-transparent"
                   type="text"
                   placeholder="Pesquisar"
                   value={search}

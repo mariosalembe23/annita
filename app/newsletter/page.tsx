@@ -307,7 +307,7 @@ export default function NewsletterPage() {
                             >
                               <RiUser6Line className="size-5 text-zinc-400 shrink-0" />
                               <input
-                                className="w-full outline-none ps-2 text-[15px]"
+                                className="w-full outline-none ps-2 text-base det:text-[15px]"
                                 type="text"
                                 placeholder="O teu nome"
                                 {...register("name", {
@@ -340,7 +340,7 @@ export default function NewsletterPage() {
                             >
                               <RiMailLine className="size-5 text-zinc-400 shrink-0" />
                               <input
-                                className="w-full outline-none ps-2 text-[15px]"
+                                className="w-full outline-none ps-2 text-base det:text-[15px]"
                                 type="email"
                                 placeholder="user@example.com"
                                 {...register("email", {

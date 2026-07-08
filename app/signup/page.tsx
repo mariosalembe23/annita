@@ -268,7 +268,7 @@ export default function SignUpPage() {
               >
                 <RiUser6Line className="size-5 text-zinc-400 shrink-0" />
                 <input
-                  className="w-full outline-none ps-2 text-[15px] bg-transparent text-zinc-900 dark:text-zinc-100"
+                  className="w-full outline-none ps-2 text-base det:text-[15px] bg-transparent text-zinc-900 dark:text-zinc-100"
                   type="text"
                   placeholder="Nome de Utilizador"
                   {...register("username", {
@@ -318,7 +318,7 @@ export default function SignUpPage() {
               >
                 <RiMailLine className="size-5 text-zinc-400 shrink-0" />
                 <input
-                  className="w-full outline-none ps-2 text-[15px] bg-transparent text-zinc-900 dark:text-zinc-100"
+                  className="w-full outline-none ps-2 text-base det:text-[15px] bg-transparent text-zinc-900 dark:text-zinc-100"
                   type="email"
                   placeholder="Email"
                   {...register("email", {
@@ -347,7 +347,7 @@ export default function SignUpPage() {
               >
                 <RiLockLine className="size-5 text-zinc-400 shrink-0" />
                 <input
-                  className="w-full outline-none ps-2 text-[15px] bg-transparent text-zinc-900 dark:text-zinc-100"
+                  className="w-full outline-none ps-2 text-base det:text-[15px] bg-transparent text-zinc-900 dark:text-zinc-100"
                   type={showPassword ? "text" : "password"}
                   placeholder="Palavra-chave"
                   {...register("password", {
@@ -406,7 +406,7 @@ export default function SignUpPage() {
               >
                 <RiLockLine className="size-5 text-zinc-400 shrink-0" />
                 <input
-                  className="w-full outline-none ps-2 text-[15px] bg-transparent text-zinc-900 dark:text-zinc-100"
+                  className="w-full outline-none ps-2 text-base det:text-[15px] bg-transparent text-zinc-900 dark:text-zinc-100"
                   type={showConfirmPassword ? "text" : "password"}
                   placeholder="Confirmar palavra-chave"
                   {...register("confirmPassword", {

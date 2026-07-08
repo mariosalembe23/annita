@@ -506,7 +506,7 @@ export function EventCard({
                 Descrição / Detalhes
               </label>
               <textarea
-                className="w-full min-h-24 p-3 border border-gray-200 dark:border-zinc-700 rounded-lg text-sm outline-none focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-500/20 focus:border-blue-400"
+                className="w-full min-h-24 p-3 border border-gray-200 dark:border-zinc-700 rounded-lg text-base det:text-sm outline-none focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-500/20 focus:border-blue-400"
                 placeholder="Por favor, forneça mais informações sobre a sua denúncia..."
                 value={reportDescription}
                 onChange={(e) => setReportDescription(e.target.value)}
