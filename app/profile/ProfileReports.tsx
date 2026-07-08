@@ -2,13 +2,9 @@
 
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  getMyReports,
-  getEventDetails,
-  deleteReport,
-} from "@/lib/api/events";
+import { getMyReports, getEventDetails, deleteReport } from "@/lib/api/events";
 import { EventDetailModal } from "@/components/EventDetailModal";
-import { RiFlagLine, RiLoader2Line } from "@remixicon/react";
+import { RiLoader2Line } from "@remixicon/react";
 import { formatDate } from "@/data/events";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -94,12 +90,7 @@ export function ProfileReports({ token }: ProfileReportsProps) {
           ))}
         </div>
       ) : reports.length === 0 ? (
-        <div className="text-center py-16 border border-dashed border-zinc-200 dark:border-zinc-700 rounded-2xl bg-zinc-50 dark:bg-zinc-800/20">
-          <RiFlagLine className="size-16 text-zinc-300 dark:text-zinc-600 mb-3 mx-auto" />
-          <p className="text-zinc-500 dark:text-zinc-400 text-base">
-            Ainda não efetuou nenhuma denúncia de evento.
-          </p>
-        </div>
+        <div className="text-center py-16 "></div>
       ) : (
         <div className="grid grid-cols-1  gap-2">
           {reports.map((report) => {
