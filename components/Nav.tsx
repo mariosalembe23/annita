@@ -20,7 +20,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { cn, removeCookie } from "@/lib/utils";
-import { useUser } from "@/hooks/use-user";
+import { useUser, notifyAuthChange } from "@/hooks/use-user";
 import { useTheme } from "@/hooks/use-theme";
 import {
   getNotifications,
@@ -139,6 +139,9 @@ export function Nav({ links = defaultLinks }: NavProps) {
   function handleLogout() {
     setDropdownOpen(false);
     removeCookie("token");
+    notifyAuthChange();
+    queryClient.removeQueries({ queryKey: ["user"] });
+    queryClient.removeQueries({ queryKey: ["notifications"] });
     router.push("/");
   }
 
@@ -190,12 +193,13 @@ export function Nav({ links = defaultLinks }: NavProps) {
                   href={GITHUB_REPO_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-base pot:flex hidden border-gray-200 dark:border-zinc-700 border rounded-lg px-3 py-1.5 font-normal text-zinc-900 dark:text-zinc-100 hover:bg-gray-50 dark:hover:bg-zinc-900 transition-all  items-center gap-2"
+                  className={`text-base ${isLoggedIn ? "pot:flex hidden" : "flex"} border-gray-200 dark:border-zinc-700 border rounded-lg px-3 pot:py-1.5 py-2.5 font-normal text-zinc-900 dark:text-zinc-100 hover:bg-gray-50 dark:hover:bg-zinc-900 transition-all  items-center gap-2`}
                 >
                   {githubStars != null && formatStars(githubStars)}
-                  <RiGithubFill className="size-5 text-gray-800 dark:text-zinc-200" />
+                  <RiGithubFill className="pot:size-5 size-6 text-gray-800 dark:text-zinc-200" />
                 </a>
               )}
+
               <button
                 type="button"
                 title={
@@ -204,12 +208,12 @@ export function Nav({ links = defaultLinks }: NavProps) {
                     : "Mudar para tema claro"
                 }
                 onClick={toggleTheme}
-                className="p-2 border-gray-200 pot:flex hidden dark:border-zinc-700 border rounded-lg text-zinc-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-900 transition-all  items-center justify-center"
+                className={`${isLoggedIn ? "pot:flex hidden" : ""} pot:p-2 p-2.5 border-gray-200 flex  dark:border-zinc-700 border rounded-lg text-zinc-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-900 transition-all  items-center justify-center`}
               >
                 {theme === "light" ? (
-                  <RiMoonLine className="size-5" />
+                  <RiMoonLine className="size-6 pot:size-5" />
                 ) : (
-                  <RiSunLine className="size-5" />
+                  <RiSunLine className="size-6 pot:size-5" />
                 )}
               </button>
             </>
@@ -220,9 +224,9 @@ export function Nav({ links = defaultLinks }: NavProps) {
                   <button
                     type="button"
                     title="Notificações"
-                    className="relative p-2.5 pot:p-2 border-gray-200 dark:border-zinc-700 border rounded-lg text-zinc-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-900 transition-all flex items-center justify-center"
+                    className="relative p-2 pot:p-2 border-gray-200 dark:border-zinc-700 border rounded-lg text-zinc-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-900 transition-all flex items-center justify-center"
                   >
-                    <RiMegaphoneLine className="size-6 pot:size-5" />
+                    <RiMegaphoneLine className="size-7 pot:size-5" />
                     {unreadCount > 0 && (
                       <span className="absolute -top-1 -right-1 pot:-top-1.5 pot:-right-1.5 min-w-4.5 h-4.5 px-1 rounded-full bg-red-600 text-white text-[11px] font-medium flex items-center justify-center">
                         {unreadCount > 9 ? "9+" : unreadCount}
@@ -230,7 +234,11 @@ export function Nav({ links = defaultLinks }: NavProps) {
                     )}
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-80 p-0">
+                <DropdownMenuContent
+                  align="end"
+                  collisionPadding={0}
+                  className="w-screen max-w-none rounded-none border-x-0 p-0 pot:w-80 pot:max-w-80 pot:rounded-lg pot:border-x"
+                >
                   <div className="px-3 pt-2.5 pb-2 border-b border-gray-100 dark:border-zinc-700">
                     <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
                       Notificações
@@ -368,18 +376,11 @@ export function Nav({ links = defaultLinks }: NavProps) {
                             Gestão Geral
                           </Link>
                         )}
-                        <Link
-                          href={"/settings"}
-                          onClick={() => setDropdownOpen(false)}
-                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors"
-                        >
-                          <RiSettings3Line className="size-4" />
-                          Configurações
-                        </Link>
+
                         <hr className="my-1 border-gray-100 dark:border-zinc-700" />
                         <button
                           onClick={handleLogout}
-                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors"
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm dark:text-red-300 text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors"
                         >
                           <RiLogoutCircleRLine className="size-4" />
                           Terminar Sessão
@@ -404,8 +405,8 @@ export function Nav({ links = defaultLinks }: NavProps) {
               aria-label="Abrir menu"
               onClick={() => setMobileMenuOpen(true)}
               className={cn(
-                "text-base p-2.5 border-gray-200 dark:border-zinc-700 border rounded-lg text-zinc-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-900 transition-all flex items-center justify-center",
-                isLoggedIn ? "pot:hidden" : "pot:hidden",
+                "text-base p-2.5  border-gray-200 dark:border-zinc-700 border rounded-lg text-zinc-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-900 transition-all flex items-center justify-center",
+                isLoggedIn ? "pot:hidden" : "pot:hidden -ms-1.5",
               )}
             >
               <RiMenu4Fill className="size-6" />

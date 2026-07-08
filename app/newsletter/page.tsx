@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  RiMailLine,
-  RiMailSendFill,
-  RiUser6Line,
-} from "@remixicon/react";
+import { RiMailLine, RiMailSendFill, RiUser6Line } from "@remixicon/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
@@ -164,30 +160,33 @@ export default function NewsletterPage() {
                     ],
                   }}
                 />
-              <div className="flex max-w-[90%] mx-auto border rounded-2xl border-zinc-200 dark:border-zinc-700 px-5 py-14 flex-col items-center text-center gap-4 mt-20">
-                <div className="pot:mt-3 mt-7">
-                  <Image
-                    src={"/img/happy.png"}
-                    alt="icon"
-                    width={100}
-                    height={100}
-                    className="w-20 mb-4"
-                  />
+                <div className="flex pot:max-w-[90%] mx-auto pot:border rounded-2xl border-zinc-200 dark:border-zinc-700 px-5 py-14 flex-col items-center text-center gap-4 mt-20">
+                  <div className="pot:mt-3 mt-7">
+                    <Image
+                      src={"/img/happy.png"}
+                      alt="icon"
+                      width={100}
+                      height={100}
+                      className="w-20 mb-4 dark:invert"
+                    />
+                  </div>
+                  <h1 className="text-3xl font-medium">
+                    Inscrição confirmada!
+                  </h1>
+                  <p className="text-zinc-600 dark:text-zinc-400 text-[15px] max-w-sm">
+                    Obrigado por subscreveres a nossa newsletter. Vais passar a
+                    receber as novidades dos eventos tech em Angola no teu
+                    email.
+                  </p>
+                  <Link href={"/"}>
+                    <button className="mt-2 text-base transition-all hover:opacity-75 text-white bg-design-2 border-design-2 border rounded-lg px-4 py-2 font-normal">
+                      Voltar ao início
+                    </button>
+                  </Link>
                 </div>
-                <h1 className="text-3xl font-medium">Inscrição confirmada!</h1>
-                <p className="text-zinc-600 dark:text-zinc-400 text-[15px] max-w-sm">
-                  Obrigado por subscreveres a nossa newsletter. Vais passar a
-                  receber as novidades dos eventos tech em Angola no teu email.
-                </p>
-                <Link href={"/"}>
-                  <button className="mt-2 text-base transition-all hover:opacity-75 text-white bg-design-2 border-design-2 border rounded-lg px-4 py-2 font-normal">
-                    Voltar ao início
-                  </button>
-                </Link>
-              </div>
               </>
             ) : (
-              <>
+              <div className="pot:pxx-0 px-5">
                 <header className="mb-6">
                   <Link href={"/"} className="flex mb-8 items-center gap-2">
                     <Image
@@ -398,7 +397,7 @@ export default function NewsletterPage() {
                     </div>
                   </motion.div>
                 </AnimatePresence>
-              </>
+              </div>
             )}
           </div>
         </section>
