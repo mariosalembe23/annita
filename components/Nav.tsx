@@ -166,12 +166,12 @@ export function Nav({ links = defaultLinks }: NavProps) {
                       : "Mudar para tema claro"
                   }
                   onClick={toggleTheme}
-                  className={`${isLoggedIn ? "pot:flex hidden" : ""} pot:p-2 p-2.5 border-gray-200 flex  dark:border-zinc-700 border rounded-lg text-zinc-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-900 transition-all  items-center justify-center`}
+                  className="hidden pot:flex pot:p-2 border-gray-200 dark:border-zinc-700 border rounded-lg text-zinc-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-900 transition-all items-center justify-center"
                 >
                   {theme === "light" ? (
-                    <RiMoonLine className="size-6 pot:size-5" />
+                    <RiMoonLine className="size-5" />
                   ) : (
-                    <RiSunLine className="size-6 pot:size-5" />
+                    <RiSunLine className="size-5" />
                   )}
                 </button>
               )}
@@ -373,6 +373,26 @@ export function Nav({ links = defaultLinks }: NavProps) {
                       Registar-se
                     </button>
                   </Link>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      toggleTheme();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="w-full text-[15px] transition-all hover:bg-gray-50 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 font-normal flex items-center justify-center gap-2 cursor-pointer bg-transparent"
+                  >
+                    {theme === "light" ? (
+                      <>
+                        <RiMoonLine className="size-5" />
+                        Tema Escuro
+                      </>
+                    ) : (
+                      <>
+                        <RiSunLine className="size-5" />
+                        Tema Claro
+                      </>
+                    )}
+                  </button>
                 </div>
               )}
 

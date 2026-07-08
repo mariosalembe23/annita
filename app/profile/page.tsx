@@ -8,6 +8,7 @@ import {
   RiMoonLine,
   RiSunLine,
   RiHome6Line,
+  RiSearchLine,
 } from "@remixicon/react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
@@ -15,7 +16,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { getMyEvents } from "@/lib/api/events";
+import { getMyEvents, getCategories, type EventModality, type EventType } from "@/lib/api/events";
 import { removeCookie } from "@/lib/utils";
 import { useUser, notifyAuthChange } from "@/hooks/use-user";
 import { useTheme } from "@/hooks/use-theme";
@@ -23,6 +24,7 @@ import { useToast } from "@/hooks/use-toast";
 import { NotificationsBell } from "@/components/NotificationsBell";
 import { ProfileEvents } from "./ProfileEvents";
 import { ProfileReports } from "./ProfileReports";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ProfileSettings } from "./ProfileSettings";
 import { formatDate } from "@/data/events";
 
@@ -37,20 +39,43 @@ export default function ProfilePage() {
     "events",
   );
 
+  // Filter states
+  const [search, setSearch] = useState("");
+  const [modality, setModality] = useState("");
+  const [type, setType] = useState("");
+  const [categoryId, setCategoryId] = useState("");
+  const [page, setPage] = useState(1);
+
   useEffect(() => {
     if (!isLoading && !isLoggedIn) {
       router.push("/signin");
     }
   }, [isLoading, isLoggedIn, router]);
 
-  // Fetch current user events
+  // Fetch categories
+  const { data: categoriesResponse } = useQuery({
+    queryKey: ["categories"],
+    queryFn: () => getCategories(undefined, 1, 1000),
+  });
+  const categories = categoriesResponse?.data ?? [];
+
+  // Fetch current user events with filters
   const { data: myEventsData, isPending: myEventsPending } = useQuery({
-    queryKey: ["my-events", token],
-    queryFn: () => getMyEvents(token ?? ""),
+    queryKey: ["my-events", search, modality, type, categoryId, page, token],
+    queryFn: () =>
+      getMyEvents(token ?? "", {
+        search: search || undefined,
+        modality: (modality || undefined) as EventModality,
+        type: (type || undefined) as EventType,
+        categoryId: categoryId || undefined,
+        page,
+        per_page: 8,
+      }),
     enabled: !!token,
   });
 
   const myEvents = myEventsData?.data ?? [];
+  const meta = myEventsData?.meta;
 
   const handleSignout = () => {
     removeCookie("token");
@@ -233,7 +258,103 @@ export default function ProfilePage() {
         {/* Tab Contents */}
         <div className="py-8 pot:mx-7">
           {activeTab === "events" && (
-            <ProfileEvents isLoading={myEventsPending} events={myEvents} />
+            <div className="space-y-6">
+              {/* Profile Event Filters */}
+              <div className="flex flex-col pot:flex-row pot:items-center gap-4 justify-between bg-zinc-50 dark:bg-zinc-800/40 p-4 rounded-2xl border border-zinc-100 dark:border-zinc-800">
+                <div className="flex items-center flex-wrap gap-3 w-full pot:w-auto">
+                  <Select
+                    value={categoryId || "all"}
+                    onValueChange={(v) => {
+                      setCategoryId(v === "all" ? "" : v);
+                      setPage(1);
+                    }}
+                  >
+                    <SelectTrigger className="w-full small:w-40 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100">
+                      <SelectValue placeholder="Categoria" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Todas as categorias</SelectItem>
+                      {categories.map((cat) => (
+                        <SelectItem key={cat.id} value={cat.id}>
+                          {cat.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
+                  <Select
+                    value={modality || "all"}
+                    onValueChange={(v) => {
+                      setModality(v === "all" ? "" : v);
+                      setPage(1);
+                    }}
+                  >
+                    <SelectTrigger className="w-full small:w-36 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100">
+                      <SelectValue placeholder="Modalidade" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Todas</SelectItem>
+                      <SelectItem value="PRESENTIAL">Presencial</SelectItem>
+                      <SelectItem value="REMOTE">Remoto</SelectItem>
+                      <SelectItem value="HYBRID">Híbrido</SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  <Select
+                    value={type || "all"}
+                    onValueChange={(v) => {
+                      setType(v === "all" ? "" : v);
+                      setPage(1);
+                    }}
+                  >
+                    <SelectTrigger className="w-full small:w-28 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100">
+                      <SelectValue placeholder="Tipo" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Todos</SelectItem>
+                      <SelectItem value="FREE">Gratuito</SelectItem>
+                      <SelectItem value="PAID">Pago</SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  <div className="flex w-full small:w-72 bg-white dark:bg-zinc-900 transition-all focus-within:ring-4 focus-within:ring-blue-100 dark:focus-within:ring-blue-500/20 focus-within:border-blue-400 items-center justify-between px-3 py-2 rounded-lg border border-gray-200 dark:border-zinc-700">
+                    <RiSearchLine className="size-5 text-zinc-400 shrink-0" />
+                    <input
+                      className="w-full outline-none ps-2 text-base det:text-sm bg-transparent text-zinc-900 dark:text-zinc-100"
+                      type="text"
+                      placeholder="Pesquisar"
+                      value={search}
+                      onChange={(e) => {
+                        setSearch(e.target.value);
+                        setPage(1);
+                      }}
+                    />
+                    {(search || modality || type || categoryId) && (
+                      <button
+                        onClick={() => {
+                          setSearch("");
+                          setModality("");
+                          setType("");
+                          setCategoryId("");
+                          setPage(1);
+                        }}
+                        className="text-xs text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 transition-colors shrink-0 cursor-pointer"
+                      >
+                        Limpar
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <ProfileEvents
+                isLoading={myEventsPending}
+                events={myEvents}
+                meta={meta}
+                page={page}
+                onPageChange={setPage}
+              />
+            </div>
           )}
 
           {activeTab === "reports" && <ProfileReports token={token ?? ""} />}

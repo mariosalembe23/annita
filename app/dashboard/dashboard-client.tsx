@@ -90,7 +90,7 @@ export default function DashboardClient({ initialTab }: DashboardClientProps) {
                     : "Mudar para tema claro"
                 }
                 onClick={toggleTheme}
-                className="p-2 border-gray-200 dark:border-zinc-700 border rounded-lg text-zinc-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 transition-all flex items-center justify-center cursor-pointer bg-white dark:bg-zinc-900"
+                className="hidden pot:flex p-2 border-gray-200 dark:border-zinc-700 border rounded-lg text-zinc-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 transition-all items-center justify-center cursor-pointer bg-white dark:bg-zinc-900"
               >
                 {theme === "light" ? (
                   <RiMoonLine className="size-5" />
@@ -103,7 +103,7 @@ export default function DashboardClient({ initialTab }: DashboardClientProps) {
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="px-5 py-2 gap-2 border bg-white dark:bg-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all border-gray-200 dark:border-zinc-700 rounded-lg flex items-center cursor-pointer">
+                  <button className="px-5 py-3 pot:py-2 gap-2 border bg-white dark:bg-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all border-gray-200 dark:border-zinc-700 rounded-lg flex items-center cursor-pointer">
                     <Image
                       src={"/img/avatar.png"}
                       alt={"Avatar"}
@@ -134,6 +134,22 @@ export default function DashboardClient({ initialTab }: DashboardClientProps) {
                       <RiHomeLine className="size-4" />
                       <span>Página Inicial</span>
                     </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={toggleTheme}
+                    className="flex items-center py-2.5 gap-2 cursor-pointer w-full pot:hidden"
+                  >
+                    {theme === "light" ? (
+                      <>
+                        <RiMoonLine className="size-4" />
+                        <span>Tema Escuro</span>
+                      </>
+                    ) : (
+                      <>
+                        <RiSunLine className="size-4" />
+                        <span>Tema Claro</span>
+                      </>
+                    )}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem

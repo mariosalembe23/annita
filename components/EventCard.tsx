@@ -59,14 +59,17 @@ interface EventCardProps {
   event: ApiEvent;
   className?: string;
   type?: "usual" | "presentation";
+  showStatus?: boolean;
 }
 
 export function EventCard({
   event,
   className,
   type = "usual",
+  showStatus = false,
 }: EventCardProps) {
   const [detailOpen, setDetailOpen] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dotsRef = useRef<HTMLButtonElement | null>(null);
 
@@ -365,45 +368,100 @@ export function EventCard({
             </div>
           </div>
           <footer className="flex items-center justify-between w-full">
-            {type === "usual" && (
-              <div className="flex items-center gap-3">
-                <button
-                  type="button"
+            {showStatus ? (
+              <div className="relative">
+                <div
+                  onMouseEnter={() => setShowTooltip(true)}
+                  onMouseLeave={() => setShowTooltip(false)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowTooltip((prev) => !prev);
+                  }}
                   className={cn(
-                    "flex transition-all items-center gap-1.5 cursor-pointer",
-                    localVote === "UPVOTE"
-                      ? "text-design-2"
-                      : "text-zinc-500 dark:text-zinc-400 hover:text-green-600",
+                    "px-3 py-1.5 rounded-lg text-sm font-medium cursor-help transition-all duration-200 select-none flex items-center gap-1.5",
+                    event.status === "APPROVED" &&
+                      "bg-green-100 dark:bg-green-950/30 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-800/40",
+                    event.status === "PENDING" &&
+                      "bg-amber-100 dark:bg-amber-950/30 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800/40",
+                    event.status === "REJECTED" &&
+                      "bg-red-100 dark:bg-red-950/30 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800/40",
+                    event.status === "REPORTED" &&
+                      "bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700",
                   )}
-                  onClick={(e) => handleVote(e, "UPVOTE")}
                 >
-                  {localVote === "UPVOTE" ? (
-                    <RiThumbUpFill className="size-5 text-design-2 shrink-0" />
-                  ) : (
-                    <RiThumbUpLine className="size-5 shrink-0" />
-                  )}
-                  <span className="text-base font-medium">{localUpvotes}</span>
-                </button>
-                <button
-                  type="button"
-                  className={cn(
-                    "flex transition-all items-center gap-1.5 cursor-pointer",
-                    localVote === "DOWNVOTE"
-                      ? "text-red-400"
-                      : "text-zinc-500 dark:text-zinc-400 hover:text-red-600",
-                  )}
-                  onClick={(e) => handleVote(e, "DOWNVOTE")}
-                >
-                  {localVote === "DOWNVOTE" ? (
-                    <RiThumbDownFill className="size-5 mt-1 text-red-400 shrink-0" />
-                  ) : (
-                    <RiThumbDownLine className="size-5 mt-1 shrink-0" />
-                  )}
-                  <span className="text-base font-medium">
-                    {localDownvotes}
-                  </span>
-                </button>
+                  {event.status === "APPROVED" && "Aprovado"}
+                  {event.status === "PENDING" && "Pendente"}
+                  {event.status === "REJECTED" && "Rejeitado"}
+                  {event.status === "REPORTED" && "Reportado"}
+                </div>
+
+                {showTooltip && (
+                  <div
+                    className="absolute bottom-full left-0 mb-2 w-64 p-3 bg-zinc-900 text-zinc-100 dark:bg-zinc-950 text-xs rounded-xl shadow-xl border border-zinc-800 dark:border-zinc-800 z-50 animate-in fade-in slide-in-from-bottom-1 duration-200"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <p className="font-semibold mb-1 text-white">
+                      {event.status === "APPROVED" && "Evento Aprovado"}
+                      {event.status === "PENDING" && "Evento Pendente"}
+                      {event.status === "REJECTED" && "Evento Rejeitado"}
+                      {event.status === "REPORTED" && "Evento Reportado"}
+                    </p>
+                    <p className="text-zinc-300 dark:text-zinc-400 font-normal leading-relaxed">
+                      {event.status === "APPROVED" &&
+                        "Este evento foi aprovado pela nossa equipa e já está visível a todos na plataforma."}
+                      {event.status === "PENDING" &&
+                        "Este evento está a ser analisado pela equipa. Ficará público assim que for aprovado."}
+                      {event.status === "REJECTED" &&
+                        "Este evento foi rejeitado por não cumprir as nossas diretrizes da comunidade."}
+                      {event.status === "REPORTED" &&
+                        "Este evento foi sinalizado e está a ser avaliado pela equipa de moderação."}
+                    </p>
+                  </div>
+                )}
               </div>
+            ) : (
+              type === "usual" && (
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    className={cn(
+                      "flex transition-all items-center gap-1.5 cursor-pointer",
+                      localVote === "UPVOTE"
+                        ? "text-design-2"
+                        : "text-zinc-500 dark:text-zinc-400 hover:text-green-600",
+                    )}
+                    onClick={(e) => handleVote(e, "UPVOTE")}
+                  >
+                    {localVote === "UPVOTE" ? (
+                      <RiThumbUpFill className="size-5 text-design-2 shrink-0" />
+                    ) : (
+                      <RiThumbUpLine className="size-5 shrink-0" />
+                    )}
+                    <span className="text-base font-medium">
+                      {localUpvotes}
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    className={cn(
+                      "flex transition-all items-center gap-1.5 cursor-pointer",
+                      localVote === "DOWNVOTE"
+                        ? "text-red-400"
+                        : "text-zinc-500 dark:text-zinc-400 hover:text-red-600",
+                    )}
+                    onClick={(e) => handleVote(e, "DOWNVOTE")}
+                  >
+                    {localVote === "DOWNVOTE" ? (
+                      <RiThumbDownFill className="size-5 mt-1 text-red-400 shrink-0" />
+                    ) : (
+                      <RiThumbDownLine className="size-5 mt-1 shrink-0" />
+                    )}
+                    <span className="text-base font-medium">
+                      {localDownvotes}
+                    </span>
+                  </button>
+                </div>
+              )
             )}
             <div>
               <Link href={event.link || "#"} target="_blank">
@@ -460,7 +518,7 @@ export function EventCard({
             <DialogTitle className="text-2xl">Denunciar Evento</DialogTitle>
             <DialogDescription>
               Ajude-nos a manter a comunidade segura. Por que razão deseja
-              denunciar "{event.title}"?
+              denunciar &ldquo;{event.title}&rdquo;?
             </DialogDescription>
           </DialogHeader>
 
@@ -576,8 +634,8 @@ export function EventCard({
           <DialogHeader className="flex p-2 flex-col items-start">
             <DialogTitle>Eliminar Evento</DialogTitle>
             <DialogDescription>
-              Tem a certeza de que deseja eliminar o evento "{event.title}"?
-              Esta ação não pode ser desfeita.
+              Tem a certeza de que deseja eliminar o evento &ldquo;{event.title}
+              &rdquo;? Esta ação não pode ser desfeita.
             </DialogDescription>
           </DialogHeader>
 

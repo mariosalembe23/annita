@@ -97,8 +97,17 @@ export interface CreateEventPayload {
   location?: string;
 }
 
-export async function getMyEvents(token: string) {
+export async function getMyEvents(token: string, filters: EventsFilters = {}) {
+  const params = new URLSearchParams();
+  if (filters.search) params.set("search", filters.search);
+  if (filters.categoryId) params.set("categoryId", filters.categoryId);
+  if (filters.modality) params.set("modality", filters.modality);
+  if (filters.type) params.set("type", filters.type);
+  if (filters.page) params.set("page", String(filters.page));
+  if (filters.per_page) params.set("per_page", String(filters.per_page));
+
   const { data } = await api.get<EventsResponse>("/events/my", {
+    params,
     headers: { Authorization: `Bearer ${token}` },
   });
   return data;
