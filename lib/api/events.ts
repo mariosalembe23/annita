@@ -154,6 +154,13 @@ export async function getMyReports(token: string, page = 1, perPage = 10) {
   return data;
 }
 
+export async function deleteReport(id: string, token: string) {
+  const { data } = await api.delete(`/reports/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return data;
+}
+
 export type UpdateEventPayload = CreateEventPayload;
 
 export async function approveEvent(id: string, token: string) {

@@ -222,8 +222,9 @@ export function EventCard({
 
   const [reportDialogOpen, setReportDialogOpen] = useState(false);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
-  const [reportReason, setReportReason] =
-    useState<string>("FAKE_OR_MISLEADING");
+  const [reportReason, setReportReason] = useState<string>(
+    "Informação Falsa ou Enganosa",
+  );
   const [reportDescription, setReportDescription] = useState<string>("");
 
   const reportMutation = useMutation({
@@ -231,7 +232,7 @@ export function EventCard({
       reportEvent(
         event.id,
         {
-          reason: reportReason,
+          reason: `${reportReason}: ${reportDescription}`,
           description: reportDescription,
         },
         token || undefined,
@@ -239,7 +240,7 @@ export function EventCard({
     onSuccess: () => {
       toast("success", "Denúncia enviada com sucesso!");
       setConfirmDialogOpen(false);
-      setReportReason("FAKE_OR_MISLEADING");
+      setReportReason("Informação Falsa ou Enganosa");
       setReportDescription("");
     },
     onError: (error: any) => {
@@ -453,7 +454,7 @@ export function EventCard({
                 alt="icon"
                 width={100}
                 height={100}
-                className="w-20 mb-4"
+                className="w-20 mb-4 dark:invert"
               />
             </div>
             <DialogTitle className="text-2xl">Denunciar Evento</DialogTitle>
@@ -476,26 +477,28 @@ export function EventCard({
                   <SelectValue placeholder="Selecione uma razão" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="FAKE_OR_MISLEADING">
+                  <SelectItem value="Informação Falsa ou Enganosa">
                     Informação Falsa ou Enganosa
                   </SelectItem>
-                  <SelectItem value="FRAUDULENT">
+                  <SelectItem value="Evento Fraudulento (Burla / Golpe)">
                     Evento Fraudulento (Burla / Golpe)
                   </SelectItem>
-                  <SelectItem value="HARASSMENT">
+                  <SelectItem value="Assédio, Abuso ou Bullying">
                     Assédio, Abuso ou Bullying
                   </SelectItem>
-                  <SelectItem value="SPAM">Spam / Conteúdo Repetido</SelectItem>
-                  <SelectItem value="INCORRECT_CATEGORY">
+                  <SelectItem value="Spam / Conteúdo Repetido">
+                    Spam / Conteúdo Repetido
+                  </SelectItem>
+                  <SelectItem value="Categoria Incorreta">
                     Categoria Incorreta
                   </SelectItem>
-                  <SelectItem value="INTELLECTUAL_PROPERTY">
+                  <SelectItem value="Violação de Direitos de Autor">
                     Violação de Direitos de Autor
                   </SelectItem>
-                  <SelectItem value="INAPPROPRIATE_CONTENT">
+                  <SelectItem value="Conteúdo Inapropriado ou Ilegal">
                     Conteúdo Inapropriado ou Ilegal
                   </SelectItem>
-                  <SelectItem value="OTHER">
+                  <SelectItem value="Outra Razão (especificar abaixo)">
                     Outra Razão (especificar abaixo)
                   </SelectItem>
                 </SelectContent>
@@ -515,7 +518,7 @@ export function EventCard({
               />
             </div>
 
-            <DialogFooter className="mt-6 border-zinc-200 dark:border-zinc-700">
+            <DialogFooter className="mt-6 bg-transparent border-zinc-200 dark:border-zinc-700">
               <DialogClose asChild>
                 <Button type="button" variant="outline">
                   Cancelar

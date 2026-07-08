@@ -4,10 +4,8 @@ import { use } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { EventCard } from "@/components/EventCard";
 import { getEventDetails } from "@/lib/api/events";
-import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import Link from "next/link";
-import { RiArrowLeftLine } from "@remixicon/react";
 import { useUser } from "@/hooks/use-user";
 
 interface EventPageProps {
@@ -29,7 +27,7 @@ export default function EventPage({ params }: EventPageProps) {
   });
 
   return (
-    <div className="overflow-x-hidden min-h-screen flex flex-col justify-between bg-zinc-50 dark:bg-zinc-800/60/50">
+    <div className="overflow-x-hidden min-h-screen flex flex-col justify-between bg-zinc-50 dark:bg-zinc-900">
       <main className="flex-1 pt-32 pb-24 flex flex-col items-center justify-center px-4 w-full max-w-7xl mx-auto">
         {isPending ? (
           <div className="flex flex-col items-center gap-6 w-full">
@@ -37,7 +35,7 @@ export default function EventPage({ params }: EventPageProps) {
             <div className="h-10 w-44 bg-gray-200 dark:bg-zinc-700/60 animate-pulse rounded-lg" />
           </div>
         ) : error || !event ? (
-          <div className="text-center bg-white dark:bg-zinc-900 p-8 rounded-3xl border border-zinc-200 dark:border-zinc-700 shadow-sm max-w-md w-full">
+          <div className="text-center bg-white dark:bg-zinc-900 p-8 rounded-3xl border border-zinc-200 dark:border-zinc-700 shadow-sm dark:shadow-black/40 max-w-md w-full">
             <h2 className="text-2xl font-medium text-zinc-800 dark:text-zinc-200">
               Evento Não Encontrado
             </h2>

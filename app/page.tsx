@@ -279,7 +279,7 @@ export default function Home() {
           </motion.header>
 
           {isPending ? (
-            <div className="mt-10 grid grid-cols-1 small:grid-cols-2 pot:grid-cols-3 det:grid-cols-4 gap-x-6 gap-y-4">
+            <div className="mt-10 grid grid-cols-1 small:grid-cols-2 pot:grid-cols-3 det:grid-cols-4 gap-x-2 gap-y-4">
               {Array.from({ length: 8 }).map((_, i) => (
                 <div
                   key={i}

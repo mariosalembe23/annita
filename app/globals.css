@@ -147,3 +147,22 @@ body {
 button {
   cursor: pointer !important;
 }
+
+/* Impede que o autofill/autocomplete do browser pinte o fundo azul/branco
+   do sistema, mantendo o fundo real do input e a cor de texto do tema. */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  -webkit-text-fill-color: currentColor;
+  caret-color: currentColor;
+  transition:
+    background-color 600000s 0s,
+    color 600000s 0s;
+}

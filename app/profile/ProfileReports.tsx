@@ -1,11 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { getMyReports, getEventDetails } from "@/lib/api/events";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  getMyReports,
+  getEventDetails,
+  deleteReport,
+} from "@/lib/api/events";
 import { EventDetailModal } from "@/components/EventDetailModal";
 import { RiFlagLine, RiLoader2Line } from "@remixicon/react";
 import { formatDate } from "@/data/events";
+import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 interface ProfileReportsProps {
   token: string;
@@ -14,13 +28,34 @@ interface ProfileReportsProps {
 export function ProfileReports({ token }: ProfileReportsProps) {
   const [page, setPage] = useState(1);
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
+  const [reportToDelete, setReportToDelete] = useState<string | null>(null);
   const perPage = 6;
+
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   // Query reports
   const { data: reportsData, isPending } = useQuery({
     queryKey: ["my-reports", token, page],
     queryFn: () => getMyReports(token, page, perPage),
     enabled: !!token,
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => deleteReport(id, token),
+    onSuccess: () => {
+      toast("success", "Denúncia removida com sucesso!");
+      setReportToDelete(null);
+      queryClient.invalidateQueries({ queryKey: ["my-reports"] });
+    },
+    onError: (error: any) => {
+      toast(
+        "error",
+        error?.response?.data?.message ||
+          error?.message ||
+          "Erro ao remover a denúncia",
+      );
+    },
   });
 
   // Query event details when a card "Ver Detalhes" button is clicked
@@ -59,19 +94,19 @@ export function ProfileReports({ token }: ProfileReportsProps) {
           ))}
         </div>
       ) : reports.length === 0 ? (
-        <div className="text-center py-16 border border-dashed border-zinc-200 dark:border-zinc-700 rounded-2xl bg-zinc-50 dark:bg-zinc-800/60/20">
+        <div className="text-center py-16 border border-dashed border-zinc-200 dark:border-zinc-700 rounded-2xl bg-zinc-50 dark:bg-zinc-800/20">
           <RiFlagLine className="size-16 text-zinc-300 dark:text-zinc-600 mb-3 mx-auto" />
           <p className="text-zinc-500 dark:text-zinc-400 text-base">
             Ainda não efetuou nenhuma denúncia de evento.
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1  gap-6">
+        <div className="grid grid-cols-1  gap-2">
           {reports.map((report) => {
             return (
               <div
                 key={report.id}
-                className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 border-l-4 border-l-red-500 p-5 shadow-xs flex items-center justify-between transition-shadow"
+                className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 dark:border-l-red-500 border-l-4 border-l-red-500 p-5 shadow-xs flex items-center justify-between transition-shadow"
               >
                 <div className="space-y-1">
                   <div>
@@ -81,7 +116,9 @@ export function ProfileReports({ token }: ProfileReportsProps) {
                   </div>
 
                   {report.reason && (
-                    <p className="text-sm text-zinc-600 dark:text-zinc-400">{report.reason}</p>
+                    <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                      {report.reason}
+                    </p>
                   )}
                   <span className="flex items-center gap-1 text-xs text-zinc-400">
                     Criado em {formatDate(report.createdAt)}
@@ -95,7 +132,10 @@ export function ProfileReports({ token }: ProfileReportsProps) {
                   >
                     Detalhes
                   </button>
-                  <button className="text-base transition-all hover:opacity-75 bg-red-500 text-white border-red-500 border rounded-lg px-3 py-1 font-normal  flex items-center gap-2 ">
+                  <button
+                    onClick={() => setReportToDelete(report.id)}
+                    className="text-base transition-all hover:opacity-75 bg-red-500 text-white border-red-500 border rounded-lg px-3 py-1 font-normal  flex items-center gap-2 "
+                  >
                     Remover
                   </button>
                 </div>
@@ -150,6 +190,45 @@ export function ProfileReports({ token }: ProfileReportsProps) {
           event={adaptedEvent}
         />
       )}
+
+      {/* Delete Report Confirmation Dialog */}
+      <Dialog
+        open={!!reportToDelete}
+        onOpenChange={(open) => {
+          if (!open) setReportToDelete(null);
+        }}
+      >
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader className="flex p-2 flex-col items-start">
+            <DialogTitle>Remover Denúncia</DialogTitle>
+            <DialogDescription>
+              Tem a certeza de que deseja remover esta denúncia? Esta ação não
+              pode ser desfeita.
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter className="bg-white dark:bg-zinc-900 justify-between! border-zinc-200 dark:border-zinc-700 flex sm:justify-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setReportToDelete(null)}
+              disabled={deleteMutation.isPending}
+            >
+              Cancelar
+            </Button>
+            <Button
+              type="button"
+              className="bg-red-600 hover:bg-red-700 text-white"
+              onClick={() =>
+                reportToDelete && deleteMutation.mutate(reportToDelete)
+              }
+              disabled={deleteMutation.isPending}
+            >
+              {deleteMutation.isPending ? "A remover..." : "Sim, remover"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

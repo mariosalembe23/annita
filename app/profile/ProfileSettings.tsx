@@ -124,12 +124,10 @@ export function ProfileSettings({
           Eliminar Conta
         </h3>
         <div className="space-y-4 max-w-xl">
-          <div className="flex items-center justify-between p-4 rounded-xl border border-red-200 bg-red-50/30">
+          <div className="flex items-center justify-between p-4 rounded-xl border border-red-200 dark:border-red-900/40 bg-red-50/30 dark:bg-red-950/20">
             <div className="space-y-0.5">
-              <p className="text-base font-medium text-red-800">
-                Eliminar a minha conta
-              </p>
-              <p className="text-sm max-w-[85%] text-red-600/80">
+            
+              <p className="text-sm max-w-[85%] text-red-600/80 dark:text-red-400/80">
                 Ao eliminar a sua conta, todos os seus dados e eventos
                 publicados serão permanentemente apagados. Esta ação é
                 irreversível.
@@ -149,7 +147,7 @@ export function ProfileSettings({
       <div className="pt-4 border-t border-zinc-200 dark:border-zinc-700 flex items-center justify-between gap-4">
         <Button
           variant="outline"
-          className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/40 border-red-200 hover:border-red-300 gap-2 font-normal"
+          className="dark:text-red-300 text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/40 border-red-200 hover:border-red-300 gap-2 font-normal"
           onClick={onSignout}
         >
           <RiLogoutCircleRLine className="size-4" />

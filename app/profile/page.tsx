@@ -5,10 +5,11 @@ import {
   RiCalendarEventLine,
   RiFlagLine,
   RiSettings4Line,
-  RiNotificationLine,
   RiMoonLine,
+  RiSunLine,
+  RiHome6Line,
 } from "@remixicon/react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -16,8 +17,10 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getMyEvents } from "@/lib/api/events";
 import { removeCookie } from "@/lib/utils";
-import { useUser } from "@/hooks/use-user";
+import { useUser, notifyAuthChange } from "@/hooks/use-user";
+import { useTheme } from "@/hooks/use-theme";
 import { useToast } from "@/hooks/use-toast";
+import { NotificationsBell } from "@/components/NotificationsBell";
 import { ProfileEvents } from "./ProfileEvents";
 import { ProfileReports } from "./ProfileReports";
 import { ProfileSettings } from "./ProfileSettings";
@@ -26,6 +29,8 @@ import { formatDate } from "@/data/events";
 export default function ProfilePage() {
   const { user, token, isLoggedIn, isLoading } = useUser();
   const { toast } = useToast();
+  const { theme, toggleTheme } = useTheme();
+  const queryClient = useQueryClient();
   const router = useRouter();
 
   const [activeTab, setActiveTab] = useState<"events" | "reports" | "settings">(
@@ -49,8 +54,25 @@ export default function ProfilePage() {
 
   const handleSignout = () => {
     removeCookie("token");
+    notifyAuthChange();
+    queryClient.removeQueries({ queryKey: ["user"] });
+    queryClient.removeQueries({ queryKey: ["notifications"] });
     toast("success", "Sessão terminada.");
     router.push("/");
+  };
+
+  const handleShare = async () => {
+    const url = window.location.href;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: `Perfil de ${user?.username}`, url });
+        return;
+      }
+      await navigator.clipboard.writeText(url);
+      toast("success", "Link do perfil copiado!");
+    } catch {
+      /* utilizador cancelou a partilha — sem ação */
+    }
   };
 
   const handleSaveSettings = () => {
@@ -84,20 +106,34 @@ export default function ProfilePage() {
                 className="w-5 mt-1"
                 height={100}
               />
-              <p className="text-3xl text-design-3">annita</p>
+              <p className="text-3xl dark:text-white text-design-3">annita</p>
             </Link>
           </div>
-          <div className="flex items-center gap-6">
-            <button className="relative">
-              <RiNotificationLine />
-              <div className="absolute -top-0.5 right-1 size-2.5 rounded-full bg-red-500" />
+          <div className="flex items-center gap-2 pot:gap-3">
+            <NotificationsBell />
+            <button
+              type="button"
+              title={
+                theme === "light"
+                  ? "Mudar para tema escuro"
+                  : "Mudar para tema claro"
+              }
+              onClick={toggleTheme}
+              className="p-2 pot:p-2 border-gray-200 dark:border-zinc-700 border rounded-lg text-zinc-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-900 transition-all flex items-center justify-center"
+            >
+              {theme === "light" ? (
+                <RiMoonLine className="size-7 pot:size-5" />
+              ) : (
+                <RiSunLine className="size-7 pot:size-5" />
+              )}
             </button>
-            <button className="relative">
-              <RiMoonLine />
-            </button>
-            <button className="text-sm transition-all hover:opacity-75 bg-white dark:bg-zinc-900 text-black dark:text-zinc-100 border-gray-200 dark:border-zinc-700 border rounded-lg px-3 py-1.5 font-normal flex items-center gap-1.5">
-              <RiShareForwardLine className="size-5" />
-              Partilhar
+            <button
+              type="button"
+              onClick={() => router.push("/")}
+              className="text-sm transition-all hover:bg-gray-50 dark:hover:bg-zinc-900 bg-white dark:bg-zinc-900 text-black dark:text-zinc-100 border-gray-200 dark:border-zinc-700 border rounded-lg p-2 pot:px-3 pot:py-2 font-normal flex items-center gap-1.5"
+            >
+              <RiHome6Line className="size-6 pot:size-5" />
+              <span className="hidden pot:inline">Página Inicial</span>
             </button>
           </div>
         </div>
@@ -117,12 +153,12 @@ export default function ProfilePage() {
           </div>
           <div className="-mt-22 mx-7 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
             <div className="flex items-end gap-4">
-              <div className="size-24 overflow-hidden border-4 border-zinc-100 flex items-center justify-center rounded-full bg-white dark:bg-zinc-900 ">
+              <div className="size-24 overflow-hidden border-4 dark:border-zinc-800 border-zinc-100 flex items-center justify-center rounded-full bg-white dark:bg-zinc-900 ">
                 <Image
                   src={"/img/avatar.png"}
                   alt={"Avatar"}
                   width={100}
-                  className="size-18 -mb-5"
+                  className="size-18 -mb-5 dark:invert"
                   height={100}
                 />
               </div>
@@ -130,13 +166,23 @@ export default function ProfilePage() {
                 <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
                   {user.username}
                 </h2>
-                <p className="text-sm text-zinc-500 dark:text-zinc-400">{user.email}</p>
+                <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                  {user.email}
+                </p>
               </div>
             </div>
-            <div className="flex flex-wrap pb-5 items-center gap-4 mb-2 text-base text-zinc-600 dark:text-zinc-400">
+            <div className="flex flex-wrap pb-5 items-center gap-4  mb-0 text-base text-zinc-600 dark:text-zinc-400">
               <span className="flex items-center gap-1">
                 Registado desde {formatDate(user.createdAt)}
               </span>
+              <button
+                type="button"
+                onClick={handleShare}
+                className="text-sm transition-all hover:bg-gray-50 dark:hover:bg-zinc-900 bg-white dark:bg-zinc-900 text-black dark:text-zinc-100 border-gray-200 dark:border-zinc-700 border rounded-lg p-2 pot:px-3 pot:py-2 font-normal flex items-center gap-1.5"
+              >
+                <RiShareForwardLine className="size-6 pot:size-5" />
+                <span className="hidden pot:inline">Partilhar</span>
+              </button>
             </div>
           </div>
         </section>
@@ -160,15 +206,15 @@ export default function ProfilePage() {
                   onClick={() => setActiveTab(tab.id as any)}
                   className={`relative py-4 text-[15px] font-medium flex items-center gap-2 cursor-pointer transition-colors ${
                     isActive
-                      ? "text-design-2"
-                      : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-800"
+                      ? "dark:text-design-1 text-design-2"
+                      : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200"
                   }`}
                 >
                   {tab.label}
                   {isActive && (
                     <motion.div
                       layoutId="activeTabUnderline"
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-design-2"
+                      className="absolute bottom-0 left-0 right-0 h-0.5 dark:bg-design-1 bg-design-2"
                       transition={{
                         type: "spring",
                         stiffness: 380,

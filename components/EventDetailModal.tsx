@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import {
   RiCloseLine,
-  RiMapPinLine,
   RiThumbUpLine,
   RiThumbUpFill,
   RiThumbDownLine,
@@ -334,13 +333,13 @@ export function EventDetailModal({
                       className={cn(
                         "flex transition-all items-center gap-1.5 cursor-pointer",
                         localVote === "UPVOTE"
-                          ? "text-green-600"
-                          : "text-zinc-500 dark:text-zinc-400 hover:text-green-600",
+                          ? "text-design-2"
+                          : "text-zinc-500 dark:text-zinc-400 hover:text-design-2",
                       )}
                       onClick={(e) => handleVote(e, "UPVOTE")}
                     >
                       {localVote === "UPVOTE" ? (
-                        <RiThumbUpFill className="size-5 text-green-600 shrink-0" />
+                        <RiThumbUpFill className="size-5 text-design-2 shrink-0" />
                       ) : (
                         <RiThumbUpLine className="size-5 shrink-0" />
                       )}
@@ -353,13 +352,13 @@ export function EventDetailModal({
                       className={cn(
                         "flex transition-all items-center gap-1.5 cursor-pointer",
                         localVote === "DOWNVOTE"
-                          ? "text-red-600"
-                          : "text-zinc-500 dark:text-zinc-400 hover:text-red-600",
+                          ? "text-red-300"
+                          : "text-zinc-500 dark:text-zinc-400 hover:text-red-300",
                       )}
                       onClick={(e) => handleVote(e, "DOWNVOTE")}
                     >
                       {localVote === "DOWNVOTE" ? (
-                        <RiThumbDownFill className="size-5 text-red-600 shrink-0" />
+                        <RiThumbDownFill className="size-5 text-red-300 shrink-0" />
                       ) : (
                         <RiThumbDownLine className="size-5 shrink-0" />
                       )}
