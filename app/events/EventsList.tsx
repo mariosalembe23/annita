@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { EventCard } from "@/components/EventCard";
-import { getCategories, getEvents } from "@/lib/api/events";
+import { getCategories, getEvents, EventModality, EventType } from "@/lib/api/events";
 import { useUser } from "@/hooks/use-user";
 import Link from "next/link";
 import { useState } from "react";
@@ -51,8 +51,8 @@ export function EventsList() {
       getEvents(
         {
           search: search || undefined,
-          modality: (modality || undefined) as any,
-          type: (type || undefined) as any,
+          modality: (modality || undefined) as EventModality,
+          type: (type || undefined) as EventType,
           categoryId: categoryId || undefined,
           page,
           per_page: 12,
@@ -72,12 +72,12 @@ export function EventsList() {
   const meta = data?.meta;
 
   return (
-    <section className="max-w-7xl mx-auto w-full">
+    <section className="max-w-7xl mx-auto w-full px-5 pot:px-0">
       <motion.header
         variants={container}
         initial="hidden"
         animate="show"
-        className="flex items-center justify-between"
+        className="flex flex-col pot:flex-row pot:items-center gap-6 justify-between"
       >
         <motion.div variants={item}>
           <h1 className="text-5xl font-medium">Eventos</h1>
@@ -90,7 +90,7 @@ export function EventsList() {
             </p>
           )}
         </motion.div>
-        <motion.div variants={item} className="flex items-center gap-3">
+        <motion.div variants={item} className="flex items-center flex-wrap gap-3 w-full pot:w-auto">
           <Select
             value={categoryId || "all"}
             onValueChange={(v) => {
@@ -143,7 +143,7 @@ export function EventsList() {
               <SelectItem value="PAID">Pago</SelectItem>
             </SelectContent>
           </Select>
-          <div className="flex w-72 bg-white dark:bg-white/5 transition-all focus-within:ring-4 focus-within:ring-blue-100 dark:focus-within:ring-blue-500/20 focus-within:border-blue-400 items-center justify-between px-3 py-2 rounded-lg border border-gray-200 dark:border-zinc-600">
+          <div className="flex w-full small:w-72 bg-white dark:bg-white/5 transition-all focus-within:ring-4 focus-within:ring-blue-100 dark:focus-within:ring-blue-500/20 focus-within:border-blue-400 items-center justify-between px-3 py-2 rounded-lg border border-gray-200 dark:border-zinc-600">
             <RiSearchLine className="size-5 text-zinc-400 shrink-0" />
             <input
               className="w-full outline-none ps-2 text-base det:text-sm bg-transparent"
@@ -174,7 +174,7 @@ export function EventsList() {
       </motion.header>
 
       {isPending ? (
-        <div className="mt-10 grid grid-cols-4 gap-x-2 gap-y-6">
+        <div className="mt-10 grid grid-cols-1 small:grid-cols-2 pot:grid-cols-3 det:grid-cols-4 gap-x-2 gap-y-6">
           {Array.from({ length: 8 }).map((_, i) => (
             <div
               key={i}
@@ -200,7 +200,7 @@ export function EventsList() {
           variants={container}
           initial="hidden"
           animate="show"
-          className="mt-10 grid grid-cols-4 gap-x-2 gap-y-4"
+          className="mt-10 grid grid-cols-1 small:grid-cols-2 pot:grid-cols-3 det:grid-cols-4 gap-x-2 gap-y-4"
         >
           {apiEvents.map((event) => (
             <motion.div key={event.id} variants={item}>

@@ -18,6 +18,7 @@ import {
 import { EventCard } from "@/components/EventCard";
 import { Footer } from "@/components/Footer";
 import { Nav } from "@/components/Nav";
+import { CookieConsent } from "@/components/CookieConsent";
 import { getCategories, getEvents } from "@/lib/api/events";
 import { getMetrics } from "@/lib/api/metrics";
 import { useUser } from "@/hooks/use-user";
@@ -350,6 +351,7 @@ export default function Home() {
       </motion.main>
 
       <Footer />
+      <CookieConsent />
     </div>
   );
 }

@@ -10,6 +10,7 @@ import {
   RiCheckLine,
   RiErrorWarningLine,
 } from "@remixicon/react";
+import { isAxiosError } from "axios";
 import { useMutation } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import Image from "next/image";
@@ -27,6 +28,7 @@ interface SignUpForm {
   email: string;
   password: string;
   confirmPassword: string;
+  acceptTerms: boolean;
 }
 
 export default function SignUpPage() {
@@ -203,10 +205,12 @@ export default function SignUpPage() {
         },
         onError: (error) => {
           handingRef.current = false;
-          const message =
-            (error as any)?.response?.data?.message ||
-            (error as Error)?.message ||
-            "Erro ao criar conta";
+          let message = "Erro ao criar conta";
+          if (isAxiosError(error)) {
+            message = error.response?.data?.message || error.message || message;
+          } else if (error instanceof Error) {
+            message = error.message;
+          }
           toast("error", message);
         },
       },
@@ -431,6 +435,46 @@ export default function SignUpPage() {
               {errors.confirmPassword && (
                 <p className="text-red-500 dark:text-red-400 text-sm mt-3">
                   {errors.confirmPassword.message}
+                </p>
+              )}
+            </div>
+
+            <div className="flex flex-col gap-1.5 mt-2 mb-1">
+              <div className="flex items-start gap-2.5">
+                <input
+                  id="acceptTerms"
+                  type="checkbox"
+                  className="size-4 mt-1 rounded border-gray-300 dark:border-zinc-700 text-design-2 focus:ring-design-2 cursor-pointer dark:bg-zinc-800"
+                  {...register("acceptTerms", {
+                    required: "Deves aceitar os Termos e a Política de Privacidade",
+                  })}
+                />
+                <label
+                  htmlFor="acceptTerms"
+                  className="text-[13px] text-zinc-600 dark:text-zinc-400 leading-normal select-none"
+                >
+                  Li e aceito os{" "}
+                  <Link
+                    href="/terms"
+                    target="_blank"
+                    className="text-design-2 dark:text-design-1 hover:underline font-medium"
+                  >
+                    Termos e Condições
+                  </Link>{" "}
+                  e a{" "}
+                  <Link
+                    href="/privacy"
+                    target="_blank"
+                    className="text-design-2 dark:text-design-1 hover:underline font-medium"
+                  >
+                    Política de Privacidade
+                  </Link>
+                  .
+                </label>
+              </div>
+              {errors.acceptTerms && (
+                <p className="text-red-500 dark:text-red-400 text-xs mt-1">
+                  {errors.acceptTerms.message}
                 </p>
               )}
             </div>
