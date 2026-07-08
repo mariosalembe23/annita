@@ -180,36 +180,40 @@ export function Nav({ links = defaultLinks }: NavProps) {
               </Link>
             ))}
           </div>
+
           <div className="flex items-center gap-2">
-            {starsLoading ? (
-              <div className="w-16 py-4.5 rounded-lg bg-gray-200 dark:bg-zinc-700 animate-pulse" />
-            ) : (
-              <a
-                href={GITHUB_REPO_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-base border-gray-200 dark:border-zinc-700 border rounded-lg px-3 py-1.5 font-normal text-zinc-900 dark:text-zinc-100 hover:bg-gray-50 dark:hover:bg-zinc-900 transition-all flex items-center gap-2"
-              >
-                {githubStars != null && formatStars(githubStars)}
-                <RiGithubFill className="size-5 text-gray-800 dark:text-zinc-200" />
-              </a>
-            )}
-            <button
-              type="button"
-              title={
-                theme === "light"
-                  ? "Mudar para tema escuro"
-                  : "Mudar para tema claro"
-              }
-              onClick={toggleTheme}
-              className="p-2 border-gray-200 dark:border-zinc-700 border rounded-lg text-zinc-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-900 transition-all flex items-center justify-center"
-            >
-              {theme === "light" ? (
-                <RiMoonLine className="size-5" />
+            <>
+              {starsLoading ? (
+                <div className="w-16 py-4.5 rounded-lg bg-gray-200 dark:bg-zinc-700 animate-pulse" />
               ) : (
-                <RiSunLine className="size-5" />
+                <a
+                  href={GITHUB_REPO_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-base pot:flex hidden border-gray-200 dark:border-zinc-700 border rounded-lg px-3 py-1.5 font-normal text-zinc-900 dark:text-zinc-100 hover:bg-gray-50 dark:hover:bg-zinc-900 transition-all  items-center gap-2"
+                >
+                  {githubStars != null && formatStars(githubStars)}
+                  <RiGithubFill className="size-5 text-gray-800 dark:text-zinc-200" />
+                </a>
               )}
-            </button>
+              <button
+                type="button"
+                title={
+                  theme === "light"
+                    ? "Mudar para tema escuro"
+                    : "Mudar para tema claro"
+                }
+                onClick={toggleTheme}
+                className="p-2 border-gray-200 pot:flex hidden dark:border-zinc-700 border rounded-lg text-zinc-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-900 transition-all  items-center justify-center"
+              >
+                {theme === "light" ? (
+                  <RiMoonLine className="size-5" />
+                ) : (
+                  <RiSunLine className="size-5" />
+                )}
+              </button>
+            </>
+
             {isLoggedIn && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -303,18 +307,16 @@ export function Nav({ links = defaultLinks }: NavProps) {
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setDropdownOpen(!dropdownOpen)}
-                  className="px-3 py-1.5 gap-2 border hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-all border-gray-200 dark:border-zinc-700 rounded-lg flex items-center"
+                  className="p-1.5 border gap-2 border-gray-200 dark:border-zinc-700 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-all flex items-center justify-center"
                 >
                   <Image
                     src={"/img/avatar.png"}
                     alt={"Avatar"}
                     width={100}
-                    className="w-6 h-6 dark:invert"
+                    className="w-6 h-6 ms-1 dark:invert"
                     height={100}
                   />
-                  <span className="text-zinc-900 dark:text-zinc-100 text-sm">
-                    {user.username}
-                  </span>
+                  <p className="pot:inline-flex hidden">{user.username}</p>
                 </button>
 
                 <AnimatePresence>
@@ -335,6 +337,26 @@ export function Nav({ links = defaultLinks }: NavProps) {
                           <RiUser6Line className="size-4" />
                           Perfil
                         </Link>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            toggleTheme();
+                            setDropdownOpen(false);
+                          }}
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors"
+                        >
+                          {theme === "light" ? (
+                            <>
+                              <RiMoonLine className="size-4" />
+                              Tema Escuro
+                            </>
+                          ) : (
+                            <>
+                              <RiSunLine className="size-4" />
+                              Tema Claro
+                            </>
+                          )}
+                        </button>
                         {(user.role === "ADMIN" ||
                           user.role === "MODERATOR") && (
                           <Link
@@ -381,7 +403,10 @@ export function Nav({ links = defaultLinks }: NavProps) {
               type="button"
               aria-label="Abrir menu"
               onClick={() => setMobileMenuOpen(true)}
-              className="text-base pot:hidden p-2 border-gray-200 dark:border-zinc-700 border rounded-lg text-zinc-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-900 transition-all flex items-center justify-center"
+              className={cn(
+                "text-base p-2 border-gray-200 dark:border-zinc-700 border rounded-lg text-zinc-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-900 transition-all flex items-center justify-center",
+                isLoggedIn ? "pot:hidden" : "pot:hidden",
+              )}
             >
               <RiMenu4Fill className="size-5" />
             </button>
@@ -480,6 +505,40 @@ export function Nav({ links = defaultLinks }: NavProps) {
                       Registar-se
                     </button>
                   </Link>
+                </div>
+              )}
+
+              {isLoggedIn && user && (
+                <div className="mt-auto p-4 border-t border-gray-100 dark:border-zinc-800 flex flex-col gap-2">
+                  <Link
+                    href={"/profile"}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="w-full flex items-center gap-3 px-3 py-2 border border-gray-200 dark:border-zinc-700 rounded-lg hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors"
+                  >
+                    <Image
+                      src={"/img/avatar.png"}
+                      alt={"Avatar"}
+                      width={32}
+                      height={32}
+                      className="w-6 h-6 dark:invert rounded-full object-cover"
+                    />
+                    <span className="text-zinc-900 dark:text-zinc-100 text-sm font-medium truncate">
+                      {user.username}
+                    </span>
+                  </Link>
+                  {starsLoading ? (
+                    <div className="w-full py-4.5 rounded-lg bg-gray-200 dark:bg-zinc-700 animate-pulse" />
+                  ) : (
+                    <a
+                      href={GITHUB_REPO_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full text-[15px] border-gray-200 dark:border-zinc-700 border rounded-lg px-3 py-2 font-normal text-zinc-900 dark:text-zinc-100 hover:bg-gray-50 dark:hover:bg-zinc-900 transition-all flex items-center justify-center gap-2"
+                    >
+                      {githubStars != null && formatStars(githubStars)}
+                      <RiGithubFill className="size-5 text-gray-800 dark:text-zinc-200" />
+                    </a>
+                  )}
                 </div>
               )}
             </motion.aside>

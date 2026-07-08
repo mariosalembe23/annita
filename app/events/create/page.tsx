@@ -294,26 +294,15 @@ export default function CreateEventPage() {
   return (
     <div className="overflow-x-hidden h-dvh bg-[#f5f5f5] dark:bg-[#18181b]">
       <main className="h-screen grid grid-cols-1">
-        <section className="h-full overflow-y-auto py-20 relative w-full">
+        <section className="h-full overflow-y-auto py-20 small:py-20 relative w-full">
           <button
             onClick={() => window.history.back()}
             className="absolute size-9 rounded-full bg-gray-100 dark:bg-zinc-800 flex items-center justify-center top-6 right-6 text-zinc-600 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300 transition-all"
           >
             <X className="size-5" />
           </button>
-          <div className="max-w-lg mx-auto px-4">
+          <div className="max-w-lg mx-auto px-5">
             <header className="mb-6">
-              <div className="pot:hidden inline-flex">
-                <Link href={"/"} className="flex items-center gap-2">
-                  <Image
-                    src={"/img-logo/simple-logo.svg"}
-                    alt={"Logo"}
-                    width={100}
-                    className="w-7 mt-1"
-                    height={100}
-                  />
-                </Link>
-              </div>
               <Link href={"/"} className="flex mb-8 items-center gap-2">
                 <Image
                   src={"/img-logo/simple-logo.svg"}
@@ -323,7 +312,9 @@ export default function CreateEventPage() {
                   height={100}
                 />
               </Link>
-              <h1 className="text-3xl mt-4 font-medium text-zinc-900 dark:text-zinc-100">Criar evento</h1>
+              <h1 className="text-3xl mt-4 font-medium text-zinc-900 dark:text-zinc-100">
+                Criar evento
+              </h1>
               <p className="text-zinc-500 dark:text-zinc-400 text-[15px] mt-1">
                 Publica o teu evento e reacha a comunidade tech em Angola.
               </p>
@@ -513,7 +504,9 @@ export default function CreateEventPage() {
                           >
                             <span
                               className={
-                                categoryId ? "text-zinc-900 dark:text-zinc-100" : "text-zinc-400"
+                                categoryId
+                                  ? "text-zinc-900 dark:text-zinc-100"
+                                  : "text-zinc-400"
                               }
                             >
                               {categoryId
@@ -614,7 +607,7 @@ export default function CreateEventPage() {
                         <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2 block">
                           Modalidade
                         </label>
-                        <div className="flex items-center gap-3">
+                        <div className="grid grid-cols-1 small:grid-cols-3 gap-3">
                           {modalities.map((m) => (
                             <button
                               key={m.value}
@@ -624,14 +617,14 @@ export default function CreateEventPage() {
                                   shouldValidate: true,
                                 })
                               }
-                              className={`flex items-center justify-center gap-2 px-3 py-1.5 rounded-lg border text-[15px] transition-all ${
+                              className={`flex items-center justify-center gap-2 px-3 py-2 rounded-lg border text-[15px] transition-all w-full ${
                                 modality === m.value
                                   ? "border-design-2 text-white bg-design-2 font-medium"
                                   : "border-gray-200 dark:border-zinc-700 bg-white dark:bg-white/5 text-zinc-600 dark:text-zinc-300 hover:border-gray-300 dark:hover:border-zinc-600"
                               }`}
                             >
-                              <m.icon className="size-4" />
-                              {m.label}
+                              <m.icon className="size-4 shrink-0" />
+                              <span className="truncate">{m.label}</span>
                             </button>
                           ))}
                         </div>
@@ -696,7 +689,7 @@ export default function CreateEventPage() {
                         <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2 block">
                           Tipo
                         </label>
-                        <div className="flex items-center gap-3">
+                        <div className="grid grid-cols-1 small:grid-cols-2 gap-3">
                           {types.map((t) => (
                             <button
                               key={t.value}
@@ -706,14 +699,14 @@ export default function CreateEventPage() {
                                   shouldValidate: true,
                                 })
                               }
-                              className={`flex items-center justify-center gap-2 px-3 py-1.5 rounded-lg border text-[15px] transition-all ${
+                              className={`flex items-center justify-center gap-2 px-3 py-2 rounded-lg border text-[15px] transition-all w-full ${
                                 type === t.value
                                   ? "border-design-2 bg-design-2 text-white font-medium"
                                   : "border-gray-200 dark:border-zinc-700 bg-white dark:bg-white/5 text-zinc-600 dark:text-zinc-300 hover:border-gray-300 dark:hover:border-zinc-600"
                               }`}
                             >
-                              <t.icon className="size-4" />
-                              {t.label}
+                              <t.icon className="size-4 shrink-0" />
+                              <span className="truncate">{t.label}</span>
                             </button>
                           ))}
                         </div>
@@ -730,7 +723,7 @@ export default function CreateEventPage() {
                     <button
                       type="button"
                       onClick={() => goToStep(step - 1)}
-                      className={`text-base transition-all bg-white dark:bg-white/5 hover:bg-gray-50 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-gray-200 dark:border-zinc-700 rounded-lg px-4 py-2 font-normal ${
+                      className={`text-sm small:text-base transition-all bg-white dark:bg-white/5 hover:bg-gray-50 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 small:px-4 py-2 font-normal shrink-0 ${
                         step === 0 ? "invisible" : ""
                       }`}
                     >
@@ -741,7 +734,7 @@ export default function CreateEventPage() {
                       <button
                         type="button"
                         onClick={handleNext}
-                        className="text-base transition-all hover:opacity-75 text-white bg-design-2 rounded-lg px-6 py-2 font-normal"
+                        className="text-sm small:text-base transition-all hover:opacity-75 text-white bg-design-2 rounded-lg px-4 small:px-6 py-2 font-normal shrink-0"
                       >
                         Próximo →
                       </button>
@@ -749,7 +742,7 @@ export default function CreateEventPage() {
                       <button
                         type="button"
                         onClick={() => setShowPublishModal(true)}
-                        className="text-base transition-all hover:opacity-75 text-white bg-design-2 rounded-lg px-6 py-2 font-normal"
+                        className="text-sm small:text-base transition-all hover:opacity-75 text-white bg-design-2 rounded-lg px-4 small:px-6 py-2 font-normal shrink-0"
                       >
                         Publicar evento →
                       </button>
