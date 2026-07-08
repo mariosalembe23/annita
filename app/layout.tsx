@@ -79,8 +79,8 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col">
-          <Providers>{children}</Providers>
-        </body>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }

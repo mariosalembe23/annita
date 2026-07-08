@@ -33,3 +33,21 @@ export async function getUsers(token: string) {
   );
   return data;
 }
+
+export interface UpdateUserPayload {
+  username: string;
+  email: string;
+  password?: string;
+  receiveNotifications: boolean;
+}
+
+export async function updateUser(
+  id: string,
+  payload: UpdateUserPayload,
+  token: string,
+) {
+  const { data } = await api.put<UserData>(`/users/${id}`, payload, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return data;
+}

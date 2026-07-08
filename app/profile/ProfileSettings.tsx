@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { RiLogoutCircleRLine } from "@remixicon/react";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,8 +13,12 @@ import {
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
+import Link from "next/link";
+import { updateUser } from "@/lib/api/users";
+import { useToast } from "@/hooks/use-toast";
 
 interface UserProfileData {
+  id: string;
   username: string;
   email: string;
   receiveNotifications: boolean;
@@ -21,6 +26,7 @@ interface UserProfileData {
 
 interface ProfileSettingsProps {
   user: UserProfileData;
+  token: string;
   onSignout: () => void;
   onSave: (settings: {
     receiveNotifications: boolean;
@@ -31,10 +37,13 @@ interface ProfileSettingsProps {
 
 export function ProfileSettings({
   user,
+  token,
   onSignout,
   onSave,
   onDeleteAccount,
 }: ProfileSettingsProps) {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [receiveNotifications, setReceiveNotifications] = useState(
     user.receiveNotifications,
@@ -42,6 +51,43 @@ export function ProfileSettings({
   const [subscribeNewsletter, setSubscribeNewsletter] = useState(
     user.receiveNotifications,
   );
+
+  const notificationsMutation = useMutation({
+    mutationFn: (value: boolean) =>
+      updateUser(
+        user.id,
+        {
+          username: user.username,
+          email: user.email,
+          receiveNotifications: value,
+        },
+        token,
+      ),
+    onSuccess: (_data, value) => {
+      toast(
+        "success",
+        value
+          ? "Passará a receber notificações por e-mail."
+          : "Deixará de receber notificações por e-mail.",
+      );
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+    },
+    onError: (error: any, value) => {
+      // Reverter para o estado anterior em caso de falha
+      setReceiveNotifications(!value);
+      toast(
+        "error",
+        error?.response?.data?.message ||
+          error?.message ||
+          "Erro ao atualizar as preferências",
+      );
+    },
+  });
+
+  const handleToggleNotifications = (value: boolean) => {
+    setReceiveNotifications(value);
+    notificationsMutation.mutate(value);
+  };
 
   const handleSave = () => {
     onSave({ receiveNotifications, subscribeNewsletter });
@@ -66,7 +112,9 @@ export function ProfileSettings({
             />
           </div>
           <div className="space-y-2 flex flex-col">
-            <label className="text-sm font-medium text-zinc-500 dark:text-zinc-400">E-mail</label>
+            <label className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
+              E-mail
+            </label>
             <input
               type="email"
               disabled
@@ -85,7 +133,7 @@ export function ProfileSettings({
           <div className="flex items-center justify-between p-4 rounded-xl border border-zinc-200 dark:border-zinc-700">
             <div className="space-y-0.5">
               <p className="text-base font-medium text-zinc-800 dark:text-zinc-200 flex items-center gap-1.5">
-                Receber Notificações por E-mail
+                Receber notificações por e-mail
               </p>
               <p className="text-sm text-zinc-500 dark:text-zinc-400">
                 Fique a par de novos eventos publicados na plataforma.
@@ -94,27 +142,30 @@ export function ProfileSettings({
             <input
               type="checkbox"
               checked={receiveNotifications}
-              onChange={(e) => setReceiveNotifications(e.target.checked)}
-              className="size-5 rounded border-zinc-300 text-design-2 focus:ring-design-2 cursor-pointer"
+              disabled={notificationsMutation.isPending}
+              onChange={(e) => handleToggleNotifications(e.target.checked)}
+              className="size-5 rounded border-zinc-300 text-design-2 focus:ring-design-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             />
           </div>
 
           <div className="flex items-center justify-between p-4 rounded-xl border border-zinc-200 dark:border-zinc-700">
             <div className="space-y-0.5">
               <p className="text-base font-medium text-zinc-800 dark:text-zinc-200 flex items-center gap-1.5">
-                Assinar Newsletter Semanal
+                Assinar newsletter semanal
               </p>
               <p className="text-sm max-w-[80%] text-zinc-500 dark:text-zinc-400">
                 Receba resumos semanais de eventos, notícias e novidades da
                 tecnologia em Angola.
               </p>
             </div>
-            <input
-              type="checkbox"
-              checked={subscribeNewsletter}
-              onChange={(e) => setSubscribeNewsletter(e.target.checked)}
-              className="size-5 rounded border-zinc-300 text-design-2 focus:ring-design-2 cursor-pointer"
-            />
+            <Link href={"/newsletter"}>
+              <Button
+                type="button"
+                className="bg-design-2 hover:bg-design-2/40 text-white"
+              >
+                Assinar Newsletter
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
@@ -126,7 +177,6 @@ export function ProfileSettings({
         <div className="space-y-4 max-w-xl">
           <div className="flex items-center justify-between p-4 rounded-xl border border-red-200 dark:border-red-900/40 bg-red-50/30 dark:bg-red-950/20">
             <div className="space-y-0.5">
-            
               <p className="text-sm max-w-[85%] text-red-600/80 dark:text-red-400/80">
                 Ao eliminar a sua conta, todos os seus dados e eventos
                 publicados serão permanentemente apagados. Esta ação é
@@ -147,7 +197,7 @@ export function ProfileSettings({
       <div className="pt-4 border-t border-zinc-200 dark:border-zinc-700 flex items-center justify-between gap-4">
         <Button
           variant="outline"
-          className="dark:text-red-300 text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/40 border-red-200 hover:border-red-300 gap-2 font-normal"
+          className="dark:text-red-400 text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/40 border-red-200 hover:border-red-300 gap-2 font-normal"
           onClick={onSignout}
         >
           <RiLogoutCircleRLine className="size-4" />

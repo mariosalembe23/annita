@@ -239,6 +239,7 @@ export default function ProfilePage() {
           {activeTab === "settings" && (
             <ProfileSettings
               user={user}
+              token={token ?? ""}
               onSignout={handleSignout}
               onSave={handleSaveSettings}
               onDeleteAccount={handleDeleteAccount}
