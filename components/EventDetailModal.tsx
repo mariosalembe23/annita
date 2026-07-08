@@ -252,6 +252,15 @@ export function EventDetailModal({
                     <RiCloseLine className="size-6" />
                   </button>
                 </div>
+                {event.coverImage && (
+                  <button
+                    style={{
+                      backgroundImage: `url('${event.coverImage}')`,
+                    }}
+                    onClick={() => setSelectedImageIndex(0)}
+                    className="w-full mb-5 bg-zinc-300 bg-cover bg-center rounded-2xl h-32"
+                  ></button>
+                )}
 
                 <h2 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100 leading-tight">
                   {event.title}
@@ -315,24 +324,6 @@ export function EventDetailModal({
                         </p>
                       </div>
                     )}
-                  </div>
-                  <div className="flex items-center">
-                    {images.map((img, i) => (
-                      <button
-                        key={i}
-                        type="button"
-                        className="rounded-full overflow-hidden border-2 border-white dark:border-zinc-900 hover:opacity-85 transition-opacity shrink-0"
-                        style={{ marginLeft: i === 0 ? 0 : -10 }}
-                        onClick={() => setSelectedImageIndex(i)}
-                      >
-                        <div
-                          style={{
-                            backgroundImage: `url("${img.src}")`,
-                          }}
-                          className="size-10 bg-cover bg-center rounded-full"
-                        />
-                      </button>
-                    ))}
                   </div>
                 </div>
 

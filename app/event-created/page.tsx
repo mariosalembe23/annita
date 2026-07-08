@@ -78,7 +78,7 @@ export default function EventCreated() {
           ],
         }}
       />
-      <div className="max-w-md bg-white dark:bg-zinc-900 w-full p-7 border rounded-2xl border-zinc-200 dark:border-zinc-800">
+      <div className="max-w-md bg-white dark:bg-zinc-900 w-full p-7 dark:border-none border rounded-2xl border-zinc-200 dark:border-zinc-800">
         <header>
           <div className="flex items-center justify-end">
             <Link href="/">
@@ -96,7 +96,7 @@ export default function EventCreated() {
               className="w-24 mb-4 dark:invert"
             />
           </div>
-          <h2 className="text-2xl mt-8 font-medium text-zinc-900 dark:text-zinc-100">
+          <h2 className="text-3xl mt-8 font-medium text-zinc-900 dark:text-zinc-100">
             Evento criado
           </h2>
           {hasApproved ? (

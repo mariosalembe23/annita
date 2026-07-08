@@ -330,10 +330,11 @@ export function EventCard({
                     className="size-10 rounded-full object-cover border-2 border-white dark:border-zinc-900 bg-gray-100 dark:bg-zinc-800"
                   />
                 ) : (
-                  <div className="size-10 rounded-full bg-gray-100 dark:bg-zinc-800 border-2 border-white dark:border-zinc-900" />
+                  <div />
                 )}
               </div>
             </div>
+
             <h3 className="text-xl mt-1 line-clamp-3">{event.title}</h3>
             <p className="text-sm text-gray-600 dark:text-zinc-400 mb-2 line-clamp-2 mt-2">
               {event.description}
