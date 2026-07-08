@@ -1,5 +1,6 @@
 "use client";
 
+import { isAxiosError } from "axios";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { RiLogoutCircleRLine } from "@remixicon/react";
@@ -51,9 +52,6 @@ export function ProfileSettings({
   const [receiveNotifications, setReceiveNotifications] = useState(
     user.receiveNotifications,
   );
-  const [subscribeNewsletter, setSubscribeNewsletter] = useState(
-    user.receiveNotifications,
-  );
 
   const notificationsMutation = useMutation({
     mutationFn: (value: boolean) =>
@@ -75,15 +73,16 @@ export function ProfileSettings({
       );
       queryClient.invalidateQueries({ queryKey: ["user"] });
     },
-    onError: (error: any, value) => {
+    onError: (error, value) => {
       // Reverter para o estado anterior em caso de falha
       setReceiveNotifications(!value);
-      toast(
-        "error",
-        error?.response?.data?.message ||
-          error?.message ||
-          "Erro ao atualizar as preferências",
-      );
+      let message = "Erro ao atualizar as preferências";
+      if (isAxiosError(error)) {
+        message = error.response?.data?.message || error.message || message;
+      } else if (error instanceof Error) {
+        message = error.message;
+      }
+      toast("error", message);
     },
   });
 
@@ -99,13 +98,14 @@ export function ProfileSettings({
       setDeleteConfirmText("");
       onDeleteAccount();
     },
-    onError: (error: any) => {
-      toast(
-        "error",
-        error?.response?.data?.message ||
-          error?.message ||
-          "Erro ao eliminar a conta",
-      );
+    onError: (error) => {
+      let message = "Erro ao eliminar a conta";
+      if (isAxiosError(error)) {
+        message = error.response?.data?.message || error.message || message;
+      } else if (error instanceof Error) {
+        message = error.message;
+      }
+      toast("error", message);
     },
   });
 
@@ -117,17 +117,13 @@ export function ProfileSettings({
     if (!open) setDeleteConfirmText("");
   };
 
-  const handleSave = () => {
-    onSave({ receiveNotifications, subscribeNewsletter });
-  };
-
   return (
     <div className="space-y-6">
       <div>
         <h3 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100 border-zinc-200 dark:border-zinc-700 mb-2 pb-2">
           Informações da Conta
         </h3>
-        <div className="grid grid-cols-1 max-w-xl md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 max-w-xl small:grid-cols-2 gap-4">
           <div className="space-y-2 flex flex-col">
             <label className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
               Nome de Utilizador
@@ -158,7 +154,7 @@ export function ProfileSettings({
           Preferências
         </h3>
         <div className="space-y-4 max-w-xl">
-          <div className="flex items-center justify-between p-4 rounded-xl border border-zinc-200 dark:border-zinc-700">
+          <div className="flex flex-col small:flex-row small:items-center gap-4 justify-between p-4 rounded-xl border border-zinc-200 dark:border-zinc-700">
             <div className="space-y-0.5">
               <p className="text-base font-medium text-zinc-800 dark:text-zinc-200 flex items-center gap-1.5">
                 Receber notificações por e-mail
@@ -176,7 +172,7 @@ export function ProfileSettings({
             />
           </div>
 
-          <div className="flex items-center justify-between p-4 rounded-xl border border-zinc-200 dark:border-zinc-700">
+          <div className="flex flex-col small:flex-row small:items-center gap-4 justify-between p-4 rounded-xl border border-zinc-200 dark:border-zinc-700">
             <div className="space-y-0.5">
               <p className="text-base font-medium text-zinc-800 dark:text-zinc-200 flex items-center gap-1.5">
                 Assinar newsletter semanal
@@ -186,7 +182,7 @@ export function ProfileSettings({
                 tecnologia em Angola.
               </p>
             </div>
-            <Link href={"/newsletter"}>
+            <Link href={"/newsletter"} className="w-fit shrink-0">
               <Button
                 type="button"
                 className="bg-design-2 hover:bg-design-2/40 text-white"
@@ -203,7 +199,7 @@ export function ProfileSettings({
           Eliminar Conta
         </h3>
         <div className="space-y-4 max-w-xl">
-          <div className="flex items-center justify-between p-4 rounded-xl border border-red-200 dark:border-red-900/40 bg-red-50/30 dark:bg-red-950/20">
+          <div className="flex flex-col small:flex-row small:items-center gap-4 justify-between p-4 rounded-xl border border-red-200 dark:border-red-900/40 bg-red-50/30 dark:bg-red-950/20">
             <div className="space-y-0.5">
               <p className="text-sm max-w-[85%] text-red-600/80 dark:text-red-400/80">
                 Ao eliminar a sua conta, todos os seus dados e eventos
@@ -213,7 +209,7 @@ export function ProfileSettings({
             </div>
             <Button
               type="button"
-              className="bg-red-600 hover:bg-red-700 text-white font-normal px-4 py-2 shrink-0"
+              className="bg-red-600 hover:bg-red-700 text-white font-normal px-4 py-2 shrink-0 w-fit"
               onClick={() => setDeleteConfirmOpen(true)}
             >
               Eliminar

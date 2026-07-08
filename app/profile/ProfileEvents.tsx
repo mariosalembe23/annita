@@ -12,7 +12,7 @@ interface ProfileEventsProps {
 export function ProfileEvents({ isLoading, events }: ProfileEventsProps) {
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 small:grid-cols-2 pot:grid-cols-3 det:grid-cols-4 gap-x-2 gap-y-4">
         {Array.from({ length: 4 }).map((_, i) => (
           <div key={i} className="h-96 bg-gray-100 dark:bg-zinc-800 animate-pulse rounded-3xl" />
         ))}
@@ -37,7 +37,7 @@ export function ProfileEvents({ isLoading, events }: ProfileEventsProps) {
   }
 
   return (
-    <div className="grid grid-cols-4 gap-x-2 gap-y-4">
+    <div className="grid grid-cols-1 small:grid-cols-2 pot:grid-cols-3 det:grid-cols-4 gap-x-2 gap-y-4">
       {events.map((ev) => (
         <EventCard key={ev.id} className="max-w-full!" event={ev} />
       ))}

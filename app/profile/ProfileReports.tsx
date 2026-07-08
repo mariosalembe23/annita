@@ -1,5 +1,6 @@
 "use client";
 
+import { isAxiosError } from "axios";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getMyReports, getEventDetails, deleteReport } from "@/lib/api/events";
@@ -44,13 +45,14 @@ export function ProfileReports({ token }: ProfileReportsProps) {
       setReportToDelete(null);
       queryClient.invalidateQueries({ queryKey: ["my-reports"] });
     },
-    onError: (error: any) => {
-      toast(
-        "error",
-        error?.response?.data?.message ||
-          error?.message ||
-          "Erro ao remover a denúncia",
-      );
+    onError: (error) => {
+      let message = "Erro ao remover a denúncia";
+      if (isAxiosError(error)) {
+        message = error.response?.data?.message || error.message || message;
+      } else if (error instanceof Error) {
+        message = error.message;
+      }
+      toast("error", message);
     },
   });
 
@@ -81,11 +83,11 @@ export function ProfileReports({ token }: ProfileReportsProps) {
       </div>
 
       {isPending ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 small:grid-cols-2 pot:grid-cols-3 gap-3">
           {Array.from({ length: 3 }).map((_, i) => (
             <div
               key={i}
-              className="h-48 bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700 animate-pulse rounded-2xl"
+              className="h-32 bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700 animate-pulse "
             />
           ))}
         </div>
@@ -97,7 +99,7 @@ export function ProfileReports({ token }: ProfileReportsProps) {
             return (
               <div
                 key={report.id}
-                className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 dark:border-l-red-500 border-l-4 border-l-red-500 p-5 shadow-xs flex items-center justify-between transition-shadow"
+                className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 dark:border-l-red-500 border-l-4 border-l-red-500 p-5 shadow-xs flex flex-col small:flex-row gap-4 items-start small:items-center justify-between transition-shadow"
               >
                 <div className="space-y-1">
                   <div>
@@ -115,7 +117,7 @@ export function ProfileReports({ token }: ProfileReportsProps) {
                     Criado em {formatDate(report.createdAt)}
                   </span>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 w-full small:w-auto justify-end shrink-0">
                   <button
                     onClick={() => setSelectedEventId(report.eventId || null)}
                     disabled={!report.eventId}

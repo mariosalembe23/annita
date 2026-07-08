@@ -95,7 +95,7 @@ export default function ProfilePage() {
 
   return (
     <div className="w-full min-h-screen bg-white dark:bg-zinc-900 pb-16">
-      <header className="max-w-[90%] mx-auto px-4">
+      <header className="pot:max-w-[90%] mx-auto px-5 pot:px-4">
         <div className="flex py-4 items-center justify-between">
           <div>
             <Link href={"/"} className="flex items-center gap-2 mb-1">
@@ -132,7 +132,7 @@ export default function ProfilePage() {
               onClick={() => router.push("/")}
               className="text-sm transition-all hover:bg-gray-50 dark:hover:bg-zinc-900 bg-white dark:bg-zinc-900 text-black dark:text-zinc-100 border-gray-200 dark:border-zinc-700 border rounded-lg p-2 pot:px-3 pot:py-2 font-normal flex items-center gap-1.5"
             >
-              <RiHome6Line className="size-6 pot:size-5" />
+              <RiHome6Line className="size-7 pot:size-5" />
               <span className="hidden pot:inline">Página Inicial</span>
             </button>
           </div>
@@ -171,7 +171,7 @@ export default function ProfilePage() {
                 </p>
               </div>
             </div>
-            <div className="flex flex-wrap pb-5 items-center gap-4  mb-0 text-base text-zinc-600 dark:text-zinc-400">
+            <div className="flex pot:justify-start justify-between flex-wrap pb-5 items-center gap-4  mb-0 text-base text-zinc-600 dark:text-zinc-400">
               <span className="flex items-center gap-1">
                 Registado desde {formatDate(user.createdAt)}
               </span>
@@ -188,8 +188,8 @@ export default function ProfilePage() {
         </section>
 
         {/* Tabs Navigation */}
-        <div className="mt-10 border-b border-zinc-200 dark:border-zinc-700">
-          <div className="flex gap-12 mx-7">
+        <div className="mt-10 border-b border-zinc-200 dark:border-zinc-700 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none">
+          <div className="flex gap-12 px-7 min-w-max">
             {[
               {
                 id: "events",
@@ -203,7 +203,9 @@ export default function ProfilePage() {
               return (
                 <button
                   key={tab.id}
-                  onClick={() => setActiveTab(tab.id as any)}
+                  onClick={() =>
+                    setActiveTab(tab.id as "events" | "reports" | "settings")
+                  }
                   className={`relative py-4 text-[15px] font-medium flex items-center gap-2 cursor-pointer transition-colors ${
                     isActive
                       ? "dark:text-design-1 text-design-2"
@@ -229,7 +231,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Tab Contents */}
-        <div className="py-8 mx-7">
+        <div className="py-8 pot:mx-7">
           {activeTab === "events" && (
             <ProfileEvents isLoading={myEventsPending} events={myEvents} />
           )}
