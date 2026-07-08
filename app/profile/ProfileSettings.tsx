@@ -1,9 +1,15 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
 import { isAxiosError } from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { RiLogoutCircleRLine } from "@remixicon/react";
+import {
+  RiLogoutCircleRLine,
+  RiCheckLine,
+  RiErrorWarningLine,
+  RiLoader2Line,
+} from "@remixicon/react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -15,6 +21,7 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import Link from "next/link";
+import { checkUsername } from "@/lib/api/auth";
 import { updateUser, deleteUser } from "@/lib/api/users";
 import { useToast } from "@/hooks/use-toast";
 
@@ -52,6 +59,82 @@ export function ProfileSettings({
   const [receiveNotifications, setReceiveNotifications] = useState(
     user.receiveNotifications,
   );
+  const [username, setUsername] = useState(user.username);
+  const [isCheckingUsername, setIsCheckingUsername] = useState(false);
+  const [isUsernameAvailable, setIsUsernameAvailable] = useState<boolean | null>(null);
+  const [usernameValidationError, setUsernameValidationError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setUsername(user.username);
+  }, [user.username]);
+
+  useEffect(() => {
+    if (!username) {
+      setIsUsernameAvailable(null);
+      setIsCheckingUsername(false);
+      setUsernameValidationError(null);
+      return;
+    }
+
+    if (username === user.username) {
+      setIsUsernameAvailable(null);
+      setIsCheckingUsername(false);
+      setUsernameValidationError(null);
+      return;
+    }
+
+    // Basic client-side checks to avoid calling API with invalid usernames
+    if (username.length < 3) {
+      setUsernameValidationError("Deve ter no mínimo 3 caracteres");
+      setIsUsernameAvailable(null);
+      setIsCheckingUsername(false);
+      return;
+    }
+
+    if (username.length > 15) {
+      setUsernameValidationError("Deve ter no máximo 15 caracteres");
+      setIsUsernameAvailable(null);
+      setIsCheckingUsername(false);
+      return;
+    }
+
+    if (!/^[a-z0-9_]+$/.test(username)) {
+      setUsernameValidationError("Apenas letras minúsculas, números e sublinhados (_) são permitidos");
+      setIsUsernameAvailable(null);
+      setIsCheckingUsername(false);
+      return;
+    }
+
+    setUsernameValidationError(null);
+    setIsUsernameAvailable(null);
+
+    let active = true;
+
+    const delayDebounceFn = setTimeout(async () => {
+      setIsCheckingUsername(true);
+      try {
+        const res = await checkUsername(username);
+        if (!active) return;
+
+        if (!res.available) {
+          setIsUsernameAvailable(false);
+        } else {
+          setIsUsernameAvailable(true);
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        if (active) {
+          setIsCheckingUsername(false);
+        }
+      }
+    }, 500);
+
+    return () => {
+      active = false;
+      clearTimeout(delayDebounceFn);
+    };
+  }, [username, user.username]);
 
   const notificationsMutation = useMutation({
     mutationFn: (value: boolean) =>
@@ -77,6 +160,32 @@ export function ProfileSettings({
       // Reverter para o estado anterior em caso de falha
       setReceiveNotifications(!value);
       let message = "Erro ao atualizar as preferências";
+      if (isAxiosError(error)) {
+        message = error.response?.data?.message || error.message || message;
+      } else if (error instanceof Error) {
+        message = error.message;
+      }
+      toast("error", message);
+    },
+  });
+
+  const updateProfileMutation = useMutation({
+    mutationFn: (newUsername: string) =>
+      updateUser(
+        user.id,
+        {
+          username: newUsername,
+          email: user.email,
+          receiveNotifications: receiveNotifications,
+        },
+        token,
+      ),
+    onSuccess: () => {
+      toast("success", "Nome de utilizador atualizado com sucesso!");
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+    },
+    onError: (error) => {
+      let message = "Erro ao atualizar o nome de utilizador";
       if (isAxiosError(error)) {
         message = error.response?.data?.message || error.message || message;
       } else if (error instanceof Error) {
@@ -128,12 +237,44 @@ export function ProfileSettings({
             <label className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
               Nome de Utilizador
             </label>
-            <input
-              type="text"
-              disabled
-              value={user.username}
-              className="w-full px-3 py-2 border border-zinc-200 dark:border-zinc-700 rounded-lg bg-zinc-50 dark:bg-zinc-800/60 text-zinc-600 dark:text-zinc-400 outline-none text-base det:text-sm cursor-not-allowed"
-            />
+            <div className="relative flex items-center">
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value.toLowerCase().trim())}
+                placeholder="Nome de utilizador"
+                disabled={updateProfileMutation.isPending}
+                className={`w-full pr-10 px-3 py-2 border rounded-lg bg-white dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 outline-none text-base det:text-sm transition-all focus:ring-4 ${
+                  usernameValidationError
+                    ? "border-red-400 focus:ring-red-100 dark:focus:ring-red-500/20"
+                    : isUsernameAvailable === false && username !== user.username
+                    ? "border-red-400 focus:ring-red-100 dark:focus:ring-red-500/20"
+                    : isUsernameAvailable === true && username !== user.username
+                    ? "border-emerald-400 focus:ring-emerald-100 dark:focus:ring-emerald-500/20"
+                    : "border-zinc-200 dark:border-zinc-700 focus:ring-blue-100 dark:focus:ring-blue-500/20 focus:border-blue-400"
+                }`}
+              />
+              <div className="absolute right-3 flex items-center">
+                {isCheckingUsername && (
+                  <RiLoader2Line className="size-5 animate-spin text-zinc-400" />
+                )}
+                {!isCheckingUsername && isUsernameAvailable === true && username !== user.username && (
+                  <RiCheckLine className="size-5 text-emerald-500" />
+                )}
+                {!isCheckingUsername && isUsernameAvailable === false && username !== user.username && (
+                  <RiErrorWarningLine className="size-5 text-red-500" />
+                )}
+              </div>
+            </div>
+            {usernameValidationError && (
+              <p className="text-xs text-red-500 mt-1">{usernameValidationError}</p>
+            )}
+            {!usernameValidationError && isUsernameAvailable === false && username !== user.username && (
+              <p className="text-xs text-red-500 mt-1">Este nome de utilizador já existe</p>
+            )}
+            {!usernameValidationError && isUsernameAvailable === true && username !== user.username && (
+              <p className="text-xs text-emerald-500 mt-1">Nome de utilizador disponível</p>
+            )}
           </div>
           <div className="space-y-2 flex flex-col">
             <label className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
@@ -147,6 +288,32 @@ export function ProfileSettings({
             />
           </div>
         </div>
+        {username !== user.username && (
+          <div className="mt-4 flex gap-3 max-w-xl">
+            <Button
+              type="button"
+              disabled={
+                updateProfileMutation.isPending ||
+                isCheckingUsername ||
+                isUsernameAvailable !== true ||
+                !!usernameValidationError
+              }
+              onClick={() => updateProfileMutation.mutate(username)}
+              className="bg-design-2 hover:bg-design-2/90 text-white font-normal animate-fade-in"
+            >
+              {updateProfileMutation.isPending ? "A guardar..." : "Guardar Nome de Utilizador"}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              disabled={updateProfileMutation.isPending}
+              onClick={() => setUsername(user.username)}
+              className="font-normal border-zinc-200 dark:border-zinc-700"
+            >
+              Cancelar
+            </Button>
+          </div>
+        )}
       </div>
 
       <div className="mt-10">
