@@ -76,3 +76,19 @@ export async function getUser(id: string, token: string) {
   });
   return data;
 }
+
+export interface GoogleAuthResponse {
+  token: string;
+}
+
+/**
+ * Exchange a Google ID token for an application JWT.
+ * The backend validates the Google ID token server-side and returns its own JWT.
+ */
+export async function loginWithGoogle(idToken: string) {
+  const { data } = await api.post<GoogleAuthResponse>("/auth/google", {
+    idToken,
+  });
+  return data;
+}
+

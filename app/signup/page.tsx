@@ -251,7 +251,7 @@ export default function SignUpPage() {
                 width={25}
                 height={25}
               />
-              Continuar com Google
+              Entrar com Google
             </button>
 
             <div className="flex items-center gap-3 my-2">
@@ -446,7 +446,8 @@ export default function SignUpPage() {
                   type="checkbox"
                   className="size-4 mt-1 rounded border-gray-300 dark:border-zinc-700 text-design-2 focus:ring-design-2 cursor-pointer dark:bg-zinc-800"
                   {...register("acceptTerms", {
-                    required: "Deves aceitar os Termos e a Política de Privacidade",
+                    required:
+                      "Deves aceitar os Termos e a Política de Privacidade",
                   })}
                 />
                 <label

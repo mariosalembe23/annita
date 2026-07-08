@@ -60,9 +60,7 @@ export default function SignInPage() {
       onSuccess: (response) => {
         handingRef.current = false;
         const token =
-          typeof response === "string"
-            ? response
-            : (response as any)?.token;
+          typeof response === "string" ? response : (response as any)?.token;
         if (!token) {
           handingRef.current = false;
           return;
@@ -137,7 +135,9 @@ export default function SignInPage() {
 
             <div className="flex items-center gap-3 my-2">
               <div className="h-px flex-1 bg-gray-200 dark:bg-zinc-700" />
-              <span className="text-sm text-zinc-400 dark:text-zinc-500">ou</span>
+              <span className="text-sm text-zinc-400 dark:text-zinc-500">
+                ou
+              </span>
               <div className="h-px flex-1 bg-gray-200 dark:bg-zinc-700" />
             </div>
 
@@ -213,7 +213,10 @@ export default function SignInPage() {
 
           <p className="text-center text-[15px] text-zinc-500 dark:text-zinc-400 mt-8">
             Não tens conta?{" "}
-            <Link href="/signup" className="text-design-2 dark:text-design-1 hover:underline">
+            <Link
+              href="/signup"
+              className="text-design-2 dark:text-design-1 hover:underline"
+            >
               Criar conta
             </Link>
           </p>

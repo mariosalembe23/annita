@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Providers } from "@/components/Providers";
 import "./globals.css";
@@ -17,8 +17,17 @@ const geistMono = Geist_Mono({
 
 const siteUrl = "https://annita.himersus.com";
 
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#242424" },
+  ],
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
+  applicationName: "Annita",
+  authors: [{ name: "Annita" }],
   title: {
     default: "Annita — Eventos de Tecnologia em Angola",
     template: "%s — Annita",
@@ -91,25 +100,6 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <head>
-        <meta name="application-name" content="Annita" />
-        <meta
-          name="theme-color"
-          content="#ffffff"
-          media="(prefers-color-scheme: light)"
-        />
-        <meta
-          name="theme-color"
-          content="#242424"
-          media="(prefers-color-scheme: dark)"
-        />
-        <meta name="author" content="Annita" />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `try{if(localStorage.getItem("theme")==="dark")document.documentElement.classList.add("dark")}catch(e){}`,
-          }}
-        />
-      </head>
       <body className="min-h-full flex flex-col">
         <Providers>{children}</Providers>
       </body>
