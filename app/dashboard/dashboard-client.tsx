@@ -71,10 +71,10 @@ export default function DashboardClient({ initialTab }: DashboardClientProps) {
   }
 
   return (
-    <div className="w-full h-dvh bg-[#f5f5f5] dark:bg-[#242424] grid grid-cols-[4%_96%]">
+    <div className="w-full h-dvh bg-[#f5f5f5] dark:bg-[#242424] grid grid-cols-1 pot:grid-cols-[70px_1fr]">
       <Sidebar activeTab={activeTab} onTabChange={handleTabChange} />
-      <main className="h-dvh overflow-y-auto">
-        <section id="dashboard" className="p-10">
+      <main className="h-dvh overflow-y-auto pb-20 pot:pb-0">
+        <section id="dashboard" className="p-4 small:p-6 pot:p-10">
           <header className="flex items-center justify-between">
             <div className="w-full">
               <h1 className="text-lg font-medium text-zinc-600 dark:text-zinc-500">

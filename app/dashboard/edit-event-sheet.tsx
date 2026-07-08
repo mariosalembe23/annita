@@ -73,6 +73,7 @@ export default function EditEventSheet({
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
+  /* eslint-disable react-hooks/set-state-in-effect, react-hooks/exhaustive-deps */
   useEffect(() => {
     if (event) {
       setTitle(event.title);
@@ -96,6 +97,7 @@ export default function EditEventSheet({
       setPreviewUrl(null);
     }
   }, [event]);
+  /* eslint-enable react-hooks/set-state-in-effect, react-hooks/exhaustive-deps */
 
   const updateMutation = useMutation({
     mutationFn: async (payload: {
@@ -235,7 +237,7 @@ export default function EditEventSheet({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 small:grid-cols-2 gap-4">
             <div className="space-y-2 flex flex-col">
               <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
                 Categoria
@@ -274,7 +276,7 @@ export default function EditEventSheet({
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 small:grid-cols-2 gap-4">
             <div className="space-y-2 flex flex-col">
               <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
                 Modalidade

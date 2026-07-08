@@ -133,7 +133,7 @@ export default function UsuariosContent() {
               setPage(1);
             }}
           >
-            <SelectTrigger className="w-45 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100">
+            <SelectTrigger className="w-full small:w-45 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100">
               <SelectValue placeholder="Função" />
             </SelectTrigger>
             <SelectContent>
@@ -152,7 +152,7 @@ export default function UsuariosContent() {
               setPage(1);
             }}
           >
-            <SelectTrigger className="w-45 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100">
+            <SelectTrigger className="w-full small:w-45 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100">
               <SelectValue placeholder="Estado" />
             </SelectTrigger>
             <SelectContent>

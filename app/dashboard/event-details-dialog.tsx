@@ -124,7 +124,7 @@ export default function EventDetailsDialog({
             </DialogHeader>
 
             <div className="flex-1 overflow-y-auto space-y-4 px-1">
-              <div className="grid mt-4 grid-cols-4 gap-x-8 gap-y-6 text-sm">
+              <div className="grid mt-4 grid-cols-1 small:grid-cols-2 pot:grid-cols-4 gap-x-8 gap-y-6 text-sm">
                 <div className="py-2 border-b border-zinc-200 dark:border-zinc-700">
                   <span className="text-zinc-600 dark:text-zinc-400 text-sm">Status</span>
                   <p

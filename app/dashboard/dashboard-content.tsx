@@ -65,13 +65,13 @@ export default function DashboardContent({
           </button>
         </header>
 
-        <div className="mt-6 flex flex-wrap items-center gap-3">
+        <div className="mt-6 flex flex-col small:flex-row flex-wrap items-stretch small:items-center gap-3">
           <Input
             placeholder="Pesquisar eventos..."
-            className="max-w-xs bg-white dark:bg-zinc-900"
+            className="w-full small:max-w-xs bg-white dark:bg-zinc-900"
           />
           <Select>
-            <SelectTrigger className="w-36 bg-white dark:bg-zinc-900">
+            <SelectTrigger className="w-full small:w-36 bg-white dark:bg-zinc-900">
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
@@ -82,7 +82,7 @@ export default function DashboardContent({
             </SelectContent>
           </Select>
           <Select>
-            <SelectTrigger className="w-28 bg-white dark:bg-zinc-900">
+            <SelectTrigger className="w-full small:w-28 bg-white dark:bg-zinc-900">
               <SelectValue placeholder="Tipo" />
             </SelectTrigger>
             <SelectContent>
@@ -91,7 +91,7 @@ export default function DashboardContent({
             </SelectContent>
           </Select>
           <Select>
-            <SelectTrigger className="w-36 bg-white dark:bg-zinc-900">
+            <SelectTrigger className="w-full small:w-36 bg-white dark:bg-zinc-900">
               <SelectValue placeholder="Modalidade" />
             </SelectTrigger>
             <SelectContent>
@@ -101,7 +101,7 @@ export default function DashboardContent({
             </SelectContent>
           </Select>
           <Select>
-            <SelectTrigger className="w-36 bg-white dark:bg-zinc-900">
+            <SelectTrigger className="w-full small:w-36 bg-white dark:bg-zinc-900">
               <SelectValue placeholder="Categoria" />
             </SelectTrigger>
             <SelectContent>
@@ -117,7 +117,7 @@ export default function DashboardContent({
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
-                className="w-fit justify-start text-left font-normal"
+                className="w-full small:w-fit justify-start text-left font-normal bg-white dark:bg-zinc-900"
               >
                 <CalendarIcon className="mr-2 size-4" />
                 {startDate ? format(startDate, "dd/MM/yyyy") : "Data início"}
@@ -131,12 +131,12 @@ export default function DashboardContent({
               />
             </PopoverContent>
           </Popover>
-          <span className="text-zinc-400">—</span>
+          <span className="hidden small:inline text-zinc-400">—</span>
           <Popover>
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
-                className="w-fit justify-start text-left font-normal"
+                className="w-full small:w-fit justify-start text-left font-normal bg-white dark:bg-zinc-900"
               >
                 <CalendarIcon className="mr-2 size-4" />
                 {endDate ? format(endDate, "dd/MM/yyyy") : "Data fim"}
@@ -152,7 +152,7 @@ export default function DashboardContent({
           </Popover>
         </div>
 
-        <div className="mt-6 grid grid-cols-5 gap-2">
+        <div className="mt-6 grid grid-cols-1 small:grid-cols-2 pot:grid-cols-3 det:grid-cols-4 lal:grid-cols-5 gap-4">
           {isPending
             ? Array.from({ length: 4 }).map((_, i) => (
                 <div
