@@ -1,10 +1,16 @@
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import { useServerInsertedHTML } from "next/navigation";
 import { useRef, useState } from "react";
 import { ToastProvider } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
+
+// Client ID público — seguro no cliente. A validação real acontece no backend,
+// que verifica o ID token do Google contra as chaves públicas da Google.
+const GOOGLE_CLIENT_ID =
+  "838952091956-3ssel8nsrf0l2sbgqcdcl2jlmj2i6nan.apps.googleusercontent.com";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -34,11 +40,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
   });
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ToastProvider>
-        {children}
-        <Toaster />
-      </ToastProvider>
-    </QueryClientProvider>
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID} locale="pt">
+      <QueryClientProvider client={queryClient}>
+        <ToastProvider>
+          {children}
+          <Toaster />
+        </ToastProvider>
+      </QueryClientProvider>
+    </GoogleOAuthProvider>
   );
 }

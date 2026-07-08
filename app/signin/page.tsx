@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { EmailVerificationModal } from "@/components/EmailVerificationModal";
+import { GoogleAuthButton } from "@/components/GoogleAuthButton";
 import { login as loginUser } from "@/lib/api/auth";
 import { decodeToken, setCookie } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -120,18 +121,7 @@ export default function SignInPage() {
             className="flex flex-col gap-4"
             onSubmit={handleSubmit(onSubmit)}
           >
-            <button
-              type="button"
-              className="w-full flex items-center justify-center gap-3 px-3 py-2.5 rounded-lg border border-gray-200 dark:border-zinc-700 text-base font-normal text-zinc-900 dark:text-zinc-100 bg-white dark:bg-white/5 hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors"
-            >
-              <Image
-                src={"/img/google.png"}
-                alt={"Google icon"}
-                width={25}
-                height={25}
-              />
-              Entrar com Google
-            </button>
+            <GoogleAuthButton text="signin_with" />
 
             <div className="flex items-center gap-3 my-2">
               <div className="h-px flex-1 bg-gray-200 dark:bg-zinc-700" />
