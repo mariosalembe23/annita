@@ -19,6 +19,7 @@ import { EventCard } from "@/components/EventCard";
 import { Footer } from "@/components/Footer";
 import { Nav } from "@/components/Nav";
 import { getCategories, getEvents } from "@/lib/api/events";
+import { getMetrics } from "@/lib/api/metrics";
 import { useUser } from "@/hooks/use-user";
 import Link from "next/link";
 import { useState } from "react";
@@ -41,6 +42,13 @@ const item = {
   },
 };
 
+function formatMetricValue(value: number) {
+  if (value >= 1000) {
+    return `${(value / 1000).toFixed(1).replace(/\.0$/, "")}K`;
+  }
+  return String(value);
+}
+
 export default function Home() {
   const { token } = useUser();
   const [search, setSearch] = useState("");
@@ -59,10 +67,15 @@ export default function Home() {
           type: (type || undefined) as any,
           categoryId: categoryId || undefined,
           page,
-          per_page: 12,
+          per_page: 8,
         },
         token ?? undefined,
       ),
+  });
+
+  const { data: metricsData, isPending: metricsPending } = useQuery({
+    queryKey: ["metrics"],
+    queryFn: getMetrics,
   });
 
   const { data: categoriesResponse } = useQuery({
@@ -80,7 +93,7 @@ export default function Home() {
       <Nav />
 
       <motion.header variants={container} initial="hidden" animate="show">
-        <section className="grid pt-24 max-w-7xl mt-16 gap-16 pot:gap-32 items-center mx-auto px-4 det:px-0 grid-cols-1 pot:grid-cols-[50%_50%]">
+        <section className="grid pt-20 max-w-7xl mt-16 gap-16 pot:gap-32 items-center mx-auto px-4 det:px-0 grid-cols-1 pot:grid-cols-[50%_50%]">
           <motion.div variants={item} className="max-w-3xl pot:px-0 px-4">
             <Link href={"/newsletter"}>
               <button className="px-4 py-2 transition-all hover:bg-design-2/40 hover:text-design-1 rounded-full text-sm font-normal bg-design-2/10 dark:bg-design-2/20 gap-2 items-center gap- text-design-3 dark:text-design-1 inline-flex mb-6">
@@ -123,25 +136,39 @@ export default function Home() {
                 <p className="flex items-center text-gray-500 dark:text-zinc-500 gap-0.5 mt-10">
                   Inscritos
                 </p>
-                <p className="text-2xl text-black dark:text-zinc-100 gap-0.5">
-                  2K
-                </p>
+                {metricsPending ? (
+                  <div className="h-8 w-12 bg-gray-200 dark:bg-zinc-800 rounded animate-pulse mt-1" />
+                ) : (
+                  <p className="text-2xl text-black dark:text-zinc-100 gap-0.5">
+                    {formatMetricValue(
+                      metricsData?.totalNewsletterSubscribers ?? 0,
+                    )}
+                  </p>
+                )}
               </div>
               <div className="flex flex-col gap-1">
                 <p className="flex items-center text-gray-500 dark:text-zinc-500 gap-0.5 mt-10">
                   Eventos
                 </p>
-                <p className="text-2xl text-black dark:text-zinc-100 gap-0.5">
-                  50
-                </p>
+                {metricsPending ? (
+                  <div className="h-8 w-12 bg-gray-200 dark:bg-zinc-800 rounded animate-pulse mt-1" />
+                ) : (
+                  <p className="text-2xl text-black dark:text-zinc-100 gap-0.5">
+                    {formatMetricValue(metricsData?.totalEvents ?? 0)}
+                  </p>
+                )}
               </div>
               <div className="flex flex-col gap-1">
                 <p className="flex items-center text-gray-500 dark:text-zinc-500 gap-0.5 mt-10">
                   Contribuidores
                 </p>
-                <p className="text-2xl text-black dark:text-zinc-100 gap-0.5">
-                  12
-                </p>
+                {metricsPending ? (
+                  <div className="h-8 w-12 bg-gray-200 dark:bg-zinc-800 rounded animate-pulse mt-1" />
+                ) : (
+                  <p className="text-2xl text-black dark:text-zinc-100 gap-0.5">
+                    {formatMetricValue(metricsData?.activeContributors ?? 0)}
+                  </p>
+                )}
               </div>
             </motion.footer>
           </motion.div>

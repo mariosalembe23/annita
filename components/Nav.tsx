@@ -220,11 +220,11 @@ export function Nav({ links = defaultLinks }: NavProps) {
                   <button
                     type="button"
                     title="Notificações"
-                    className="relative p-2 border-gray-200 dark:border-zinc-700 border rounded-lg text-zinc-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-900 transition-all flex items-center justify-center"
+                    className="relative p-2.5 pot:p-2 border-gray-200 dark:border-zinc-700 border rounded-lg text-zinc-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-900 transition-all flex items-center justify-center"
                   >
-                    <RiMegaphoneLine className="size-5" />
+                    <RiMegaphoneLine className="size-6 pot:size-5" />
                     {unreadCount > 0 && (
-                      <span className="absolute -top-1.5 -right-1.5 min-w-4.5 h-4.5 px-1 rounded-full bg-red-600 text-white text-[11px] font-medium flex items-center justify-center">
+                      <span className="absolute -top-1 -right-1 pot:-top-1.5 pot:-right-1.5 min-w-4.5 h-4.5 px-1 rounded-full bg-red-600 text-white text-[11px] font-medium flex items-center justify-center">
                         {unreadCount > 9 ? "9+" : unreadCount}
                       </span>
                     )}
@@ -307,13 +307,13 @@ export function Nav({ links = defaultLinks }: NavProps) {
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setDropdownOpen(!dropdownOpen)}
-                  className="p-1.5 border gap-2 border-gray-200 dark:border-zinc-700 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-all flex items-center justify-center"
+                  className="p-2 pot:p-1.5 border gap-2 border-gray-200 dark:border-zinc-700 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-all flex items-center justify-center"
                 >
                   <Image
                     src={"/img/avatar.png"}
                     alt={"Avatar"}
                     width={100}
-                    className="w-6 h-6 ms-1 dark:invert"
+                    className="w-7 h-7 pot:w-6 pot:h-6 pot:ms-1 dark:invert"
                     height={100}
                   />
                   <p className="pot:inline-flex hidden">{user.username}</p>
@@ -404,11 +404,11 @@ export function Nav({ links = defaultLinks }: NavProps) {
               aria-label="Abrir menu"
               onClick={() => setMobileMenuOpen(true)}
               className={cn(
-                "text-base p-2 border-gray-200 dark:border-zinc-700 border rounded-lg text-zinc-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-900 transition-all flex items-center justify-center",
+                "text-base p-2.5 border-gray-200 dark:border-zinc-700 border rounded-lg text-zinc-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-900 transition-all flex items-center justify-center",
                 isLoggedIn ? "pot:hidden" : "pot:hidden",
               )}
             >
-              <RiMenu4Fill className="size-5" />
+              <RiMenu4Fill className="size-6" />
             </button>
           </div>
         </div>
