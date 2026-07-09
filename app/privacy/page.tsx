@@ -150,10 +150,10 @@ export default function PrivacyPage() {
             tratamento dos seus dados, entre em contacto connosco através do
             e-mail:{" "}
             <a
-              href="mailto:ola@annita.co"
+              href="mailto:geral.annita@gmail.com"
               className="text-design-2 dark:text-design-1 hover:underline"
             >
-              ola@annita.co
+              geral.annita@gmail.com
             </a>
             .
           </p>

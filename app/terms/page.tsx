@@ -136,10 +136,10 @@ export default function TermsPage() {
             Para esclarecer qualquer dúvida sobre estes Termos, envie um e-mail
             para:{" "}
             <a
-              href="mailto:ola@annita.co"
+              href="mailto:geral.annita@gmail.com"
               className="text-design-2 dark:text-design-1 hover:underline"
             >
-              ola@annita.co
+              geral.annita@gmail.com
             </a>
             .
           </p>
