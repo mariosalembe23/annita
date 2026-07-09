@@ -31,6 +31,7 @@ export default function EventsPage() {
       <Nav
         links={[
           { name: "Início", href: "/" },
+          { name: "Criar Parceria", href: "/company" },
           {
             name: "Contribuir",
             href: "https://github.com/mariosalembe23/annita",

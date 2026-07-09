@@ -24,7 +24,11 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { NotificationPreferenceModal } from "@/components/NotificationPreferenceModal";
-import { register as registerUser, checkUsername, verifyNif } from "@/lib/api/auth";
+import {
+  register as registerUser,
+  checkUsername,
+  verifyNif,
+} from "@/lib/api/auth";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/hooks/use-user";
 import { useRouter } from "next/navigation";
@@ -141,21 +145,25 @@ export default function CompanySignUpPage() {
       if (res.success && res.data?.name) {
         setNifVerified(true);
         setValue("companyName", res.data.name);
-        
+
         // Auto-generate username
         const generatedUser = generateUsernameFromName(res.data.name);
         setValue("username", generatedUser);
-        
+
         toast("success", "NIF verificado com sucesso!");
       } else {
-        setNifError(res.message || "O NIF não foi encontrado ou não está registado.");
+        setNifError(
+          res.message || "O NIF não foi encontrado ou não está registado.",
+        );
       }
     } catch (err: any) {
       console.error(err);
       if (err?.status === 500) {
         setNifError("O NIF não foi encontrado ou não está registado.");
       } else {
-        setNifError("Erro ao conectar com a API de verificação. Tente novamente.");
+        setNifError(
+          "Erro ao conectar com a API de verificação. Tente novamente.",
+        );
       }
     } finally {
       setIsVerifyingNif(false);
@@ -164,7 +172,9 @@ export default function CompanySignUpPage() {
 
   // Username availability check
   const [isCheckingUsername, setIsCheckingUsername] = useState(false);
-  const [isUsernameAvailable, setIsUsernameAvailable] = useState<boolean | null>(null);
+  const [isUsernameAvailable, setIsUsernameAvailable] = useState<
+    boolean | null
+  >(null);
 
   useEffect(() => {
     if (!username) {
@@ -392,14 +402,11 @@ export default function CompanySignUpPage() {
           </div>
 
           {/* Stepper Progress Bar */}
-          <div className="flex flex-col gap-2 mb-6 w-full">
-            <div className="flex items-center justify-between text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
-              <span>Passo {step} de {STEPS.length}</span>
-              <span>{STEPS[step - 1].label}</span>
-            </div>
-            <div className="h-1.5 bg-gray-200 dark:bg-zinc-800 rounded-full overflow-hidden">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="flex-1 h-1.5 bg-gray-200 dark:bg-zinc-700 rounded-full overflow-hidden">
               <motion.div
                 className="h-full bg-linear-to-r from-design-1 to-design-2 rounded-full"
+                initial={{ width: `${(1 / STEPS.length) * 100}%` }}
                 animate={{ width: `${(step / STEPS.length) * 100}%` }}
                 transition={{ duration: 0.5, ease: "easeOut" }}
               />
@@ -410,7 +417,7 @@ export default function CompanySignUpPage() {
             className="flex flex-col gap-4 mt-6"
             onSubmit={handleSubmit(onSubmit)}
           >
-            <div className="relative min-h-[300px]">
+            <div className="relative min-h-75">
               <AnimatePresence initial={false} custom={direction} mode="wait">
                 {step === 1 && (
                   <motion.div
@@ -426,7 +433,6 @@ export default function CompanySignUpPage() {
                     <h2 className="text-lg font-medium text-zinc-800 dark:text-white mb-2">
                       Identificação da Empresa
                     </h2>
-                    
                     {/* NIF */}
                     <div>
                       <label className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-2">
@@ -450,7 +456,8 @@ export default function CompanySignUpPage() {
                               required: "O NIF é obrigatório",
                               pattern: {
                                 value: COMPANY_NIF_REGEX,
-                                message: "NIF inválido. Deve ter 10 dígitos e começar por 5.",
+                                message:
+                                  "NIF inválido. Deve ter 10 dígitos e começar por 5.",
                               },
                             })}
                           />
@@ -458,7 +465,10 @@ export default function CompanySignUpPage() {
                         <button
                           type="button"
                           onClick={handleVerifyNif}
-                          disabled={isVerifyingNif || !COMPANY_NIF_REGEX.test(companyNif)}
+                          disabled={
+                            isVerifyingNif ||
+                            !COMPANY_NIF_REGEX.test(companyNif)
+                          }
                           className="px-4 py-2.5 bg-design-2 hover:bg-design-2/90 text-white rounded-lg font-medium text-sm transition-colors duration-200 flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
                         >
                           {isVerifyingNif ? (
@@ -470,7 +480,8 @@ export default function CompanySignUpPage() {
                       </div>
                       {nifError && (
                         <p className="text-red-500 dark:text-red-400 text-sm mt-2 flex items-center gap-1">
-                          <RiErrorWarningLine className="size-4 shrink-0" /> {nifError}
+                          <RiErrorWarningLine className="size-4 shrink-0" />{" "}
+                          {nifError}
                         </p>
                       )}
                     </div>
@@ -529,7 +540,8 @@ export default function CompanySignUpPage() {
                             required: "O telefone da empresa é obrigatório",
                             pattern: {
                               value: /^9\d{8}$/,
-                              message: "Telefone inválido. Deve ter 9 dígitos e começar por 9.",
+                              message:
+                                "Telefone inválido. Deve ter 9 dígitos e começar por 9.",
                             },
                           })}
                         />
@@ -593,7 +605,8 @@ export default function CompanySignUpPage() {
                           placeholder="Ex: https://minhaempresa.com"
                           {...register("companyWebsite", {
                             pattern: {
-                              value: /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w .-]*)*\/?$/,
+                              value:
+                                /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w .-]*)*\/?$/,
                               message: "Formato de URL inválido",
                             },
                           })}
@@ -643,7 +656,8 @@ export default function CompanySignUpPage() {
                           {...register("email", {
                             required: "O email é obrigatório",
                             pattern: {
-                              value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                              value:
+                                /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
                               message: "Formato de email inválido",
                             },
                           })}
@@ -685,7 +699,8 @@ export default function CompanySignUpPage() {
                             },
                             pattern: {
                               value: /^[a-z0-9_]+$/,
-                              message: "Apenas letras minúsculas, números e _ são permitidos",
+                              message:
+                                "Apenas letras minúsculas, números e _ são permitidos",
                             },
                             onChange: (e) => {
                               e.target.value = e.target.value.toLowerCase();
@@ -695,12 +710,14 @@ export default function CompanySignUpPage() {
                         {isCheckingUsername && (
                           <RiLoader2Line className="size-5 text-zinc-400 animate-spin shrink-0 ms-2" />
                         )}
-                        {!isCheckingUsername && isUsernameAvailable === true && (
-                          <RiCheckLine className="size-5 text-green-500 dark:text-green-400 shrink-0 ms-2" />
-                        )}
-                        {!isCheckingUsername && isUsernameAvailable === false && (
-                          <RiErrorWarningLine className="size-5 text-red-500 dark:text-red-400 shrink-0 ms-2" />
-                        )}
+                        {!isCheckingUsername &&
+                          isUsernameAvailable === true && (
+                            <RiCheckLine className="size-5 text-green-500 dark:text-green-400 shrink-0 ms-2" />
+                          )}
+                        {!isCheckingUsername &&
+                          isUsernameAvailable === false && (
+                            <RiErrorWarningLine className="size-5 text-red-500 dark:text-red-400 shrink-0 ms-2" />
+                          )}
                       </div>
                       {errors.username && (
                         <p className="text-red-500 dark:text-red-400 text-sm mt-2">
@@ -765,7 +782,9 @@ export default function CompanySignUpPage() {
                               />
                             ))}
                           </div>
-                          <p className={`text-xs font-medium ${strengthTextColor}`}>
+                          <p
+                            className={`text-xs font-medium ${strengthTextColor}`}
+                          >
                             {strengthLabel}
                           </p>
                         </div>
@@ -798,7 +817,9 @@ export default function CompanySignUpPage() {
                         />
                         <button
                           type="button"
-                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                          onClick={() =>
+                            setShowConfirmPassword(!showConfirmPassword)
+                          }
                           className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors"
                         >
                           {showConfirmPassword ? (
@@ -823,7 +844,8 @@ export default function CompanySignUpPage() {
                           type="checkbox"
                           className="size-4 mt-1 rounded border-gray-300 dark:border-zinc-700 text-design-2 focus:ring-design-2 cursor-pointer dark:bg-zinc-800"
                           {...register("acceptTerms", {
-                            required: "Deves aceitar os Termos e a Política de Privacidade",
+                            required:
+                              "Deves aceitar os Termos e a Política de Privacidade",
                           })}
                         />
                         <label
@@ -872,7 +894,7 @@ export default function CompanySignUpPage() {
                   Voltar
                 </button>
               )}
-              
+
               {step < 3 ? (
                 <button
                   type="button"

@@ -26,7 +26,7 @@ const GITHUB_REPO_URL = "https://github.com/mariosalembe23/annita";
 
 const defaultLinks = [
   { name: "Eventos", href: "/events" },
-  { name: "Contacto", href: "/contact" },
+  { name: "Criar Parceria", href: "/company" },
   { name: "Contribuir", href: GITHUB_REPO_URL },
   { name: "Newsletter", href: "/newsletter" },
 ];

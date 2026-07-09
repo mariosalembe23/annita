@@ -9,7 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 
 const navigation = [
   { name: "Eventos", href: "/events" },
-  { name: "Contacto", href: "/contact" },
+  { name: "Criar Parceria", href: "/company" },
   { name: "Contribuir", href: "https://github.com/mariosalembe23/annita" },
 ];
 
