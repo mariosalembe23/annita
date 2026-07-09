@@ -4,12 +4,17 @@ export interface UserData {
   id: string;
   username: string;
   email: string;
-  role: "CONTRIBUTOR" | "MODERATOR" | "ADMIN";
+  role: "CONTRIBUTOR" | "MODERATOR" | "ADMIN" | "COMPANY";
   receiveNotifications: boolean;
   createdAt: string;
   updatedAt: string;
   active: boolean;
   emailVerified: boolean;
+  companyName?: string;
+  companyNif?: string;
+  companyPhone?: string;
+  companyAddress?: string;
+  companyWebsite?: string;
 }
 
 export interface UsersMeta {
@@ -36,7 +41,8 @@ export async function getUsers(token: string, filters: UsersFilters = {}) {
   const params = new URLSearchParams();
   if (filters.search) params.set("search", filters.search);
   if (filters.role) params.set("role", filters.role);
-  if (filters.isActive !== undefined) params.set("isActive", String(filters.isActive));
+  if (filters.isActive !== undefined)
+    params.set("isActive", String(filters.isActive));
   if (filters.page) params.set("page", String(filters.page));
   if (filters.perPage) params.set("per_page", String(filters.perPage));
 

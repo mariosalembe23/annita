@@ -493,6 +493,15 @@ export default function SignUpPage() {
               Iniciar sessão
             </Link>
           </p>
+          <p className="text-center text-sm text-zinc-500 dark:text-zinc-400 mt-2">
+            Representa uma empresa?{" "}
+            <Link
+              href="/company"
+              className="text-design-2 dark:text-design-1 hover:underline font-medium"
+            >
+              Registe-se como Empresa
+            </Link>
+          </p>
         </div>
       </main>
 

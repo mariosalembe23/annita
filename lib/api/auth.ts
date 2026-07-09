@@ -5,6 +5,12 @@ export interface RegisterPayload {
   email: string;
   password: string;
   receiveNotifications: boolean;
+  role?: "CONTRIBUTOR" | "MODERATOR" | "ADMIN" | "COMPANY";
+  companyName?: string;
+  companyNif?: string;
+  companyPhone?: string;
+  companyAddress?: string;
+  companyWebsite?: string;
 }
 
 export interface RegisterResponse {
@@ -62,12 +68,17 @@ export interface UserData {
   id: string;
   username: string;
   email: string;
-  role: "CONTRIBUTOR" | "MODERATOR" | "ADMIN";
+  role: "CONTRIBUTOR" | "MODERATOR" | "ADMIN" | "COMPANY";
   receiveNotifications: boolean;
   createdAt: string;
   updatedAt: string;
   active: boolean;
   emailVerified: boolean;
+  companyName?: string;
+  companyNif?: string;
+  companyPhone?: string;
+  companyAddress?: string;
+  companyWebsite?: string;
 }
 
 export async function getUser(id: string, token: string) {
@@ -91,4 +102,25 @@ export async function loginWithGoogle(idToken: string) {
   });
   return data;
 }
+
+export interface NifVerificationResponse {
+  success: boolean;
+  message: string;
+  data: {
+    name: string;
+  } | null;
+  errors: any;
+}
+
+export async function verifyNif(nif: string) {
+  const response = await fetch(`https://escudo-api.citconsulting.ao/api/v1/public/identity-verification/nif/${nif}`);
+  if (!response.ok) {
+    const err = new Error("Erro na consulta do NIF") as any;
+    err.status = response.status;
+    throw err;
+  }
+  const data = (await response.json()) as NifVerificationResponse;
+  return data;
+}
+
 
