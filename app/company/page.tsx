@@ -402,11 +402,17 @@ export default function CompanySignUpPage() {
           </div>
 
           {/* Stepper Progress Bar */}
-          <div className="flex items-center gap-3 mb-6">
-            <div className="flex-1 h-1.5 bg-gray-200 dark:bg-zinc-700 rounded-full overflow-hidden">
+          <div className="flex flex-col gap-2 mb-6 w-full">
+            <div className="flex items-center justify-between text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+              <span>
+                Passo {step} de {STEPS.length}
+              </span>
+              <span>{STEPS[step - 1].label}</span>
+            </div>
+            <div className="h-1.5 bg-gray-200 dark:bg-zinc-800 rounded-full overflow-hidden">
               <motion.div
                 className="h-full bg-linear-to-r from-design-1 to-design-2 rounded-full"
-                initial={{ width: `${(1 / STEPS.length) * 100}%` }}
+                initial={{ width: "33.33%" }}
                 animate={{ width: `${(step / STEPS.length) * 100}%` }}
                 transition={{ duration: 0.5, ease: "easeOut" }}
               />
@@ -417,7 +423,7 @@ export default function CompanySignUpPage() {
             className="flex flex-col gap-4 mt-6"
             onSubmit={handleSubmit(onSubmit)}
           >
-            <div className="relative min-h-75">
+            <div className="relative ">
               <AnimatePresence initial={false} custom={direction} mode="wait">
                 {step === 1 && (
                   <motion.div
