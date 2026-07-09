@@ -52,7 +52,7 @@ const STEPS = [
   { id: 3, label: "Acesso" },
 ];
 
-const COMPANY_NIF_REGEX = /^5\d{9}$/; // 10 digits starting with 5
+const COMPANY_NIF_REGEX = /^\d{9,12}$/; // 9 to 12 digits
 
 function generateUsernameFromName(name: string): string {
   if (!name) return "";
