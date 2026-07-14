@@ -29,12 +29,14 @@ export interface CheckUsernameResponse {
 }
 
 export async function checkUsername(username: string) {
-  const { data } = await api.get<CheckUsernameResponse>("/auth/check-username", {
-    params: { username },
-  });
+  const { data } = await api.get<CheckUsernameResponse>(
+    "/auth/check-username",
+    {
+      params: { username },
+    },
+  );
   return data;
 }
-
 
 export interface LoginPayload {
   username: string;
@@ -109,18 +111,34 @@ export interface NifVerificationResponse {
   data: {
     name: string;
   } | null;
-  errors: any;
+  errors: unknown;
 }
 
 export async function verifyNif(nif: string) {
-  const response = await fetch(`https://escudo-api.citconsulting.ao/api/v1/public/identity-verification/nif/${nif}`);
-  if (!response.ok) {
-    const err = new Error("Erro na consulta do NIF") as any;
-    err.status = response.status;
-    throw err;
+  const isBi = /^\d{9}[A-Za-z]{2}\d{3}$/.test(nif);
+  const baseUrl = "http://consulta.edgarsingui.ao/consultar/";
+  const url = isBi ? `${baseUrl}${nif}` : `${baseUrl}${nif}/nif`;
+
+  const response = await fetch(url);
+
+  if (response.status === 404 || response.status === 400 || response.ok) {
+    try {
+      const rawData = await response.json();
+      return {
+        success: !rawData.error,
+        message:
+          rawData.message || (rawData.error ? "Dados não encontrados." : ""),
+        data: rawData.name ? { name: rawData.name } : null,
+        errors: rawData.error ? rawData.message : null,
+      } as NifVerificationResponse;
+    } catch {
+      // fallback if response body is not json
+    }
   }
-  const data = (await response.json()) as NifVerificationResponse;
-  return data;
+
+  const err = new Error("Erro na consulta do documento") as Error & {
+    status?: number;
+  };
+  err.status = response.status;
+  throw err;
 }
-
-

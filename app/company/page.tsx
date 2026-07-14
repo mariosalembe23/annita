@@ -52,7 +52,7 @@ const STEPS = [
   { id: 3, label: "Acesso" },
 ];
 
-const COMPANY_NIF_REGEX = /^\d{9,12}$/; // 9 to 12 digits
+const COMPANY_NIF_REGEX = /^(\d{9,12}|\d{9}[A-Za-z]{2}\d{3})$/; // 9 to 12 digits or 14-char BI
 
 function generateUsernameFromName(name: string): string {
   if (!name) return "";
@@ -132,7 +132,7 @@ export default function CompanySignUpPage() {
   // Handle NIF Verification
   async function handleVerifyNif() {
     if (!COMPANY_NIF_REGEX.test(companyNif)) {
-      setNifError("NIF inválido. Deve ter 10 dígitos e começar por 5.");
+      setNifError("NIF ou BI inválido. O NIF deve ter 10 dígitos e o BI deve ter 14 caracteres.");
       return;
     }
 
@@ -442,7 +442,7 @@ export default function CompanySignUpPage() {
                     {/* NIF */}
                     <div>
                       <label className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-2">
-                        NIF da Empresa
+                        NIF ou BI da Empresa
                       </label>
                       <div className="flex gap-2">
                         <div
@@ -456,14 +456,14 @@ export default function CompanySignUpPage() {
                           <input
                             className="w-full outline-none ps-2 text-base det:text-[15px] bg-transparent text-zinc-900 dark:text-zinc-100"
                             type="text"
-                            maxLength={10}
-                            placeholder="Ex: 5000481947"
+                            maxLength={14}
+                            placeholder="Ex: 5000481947 ou 002367037LA033"
                             {...register("companyNif", {
-                              required: "O NIF é obrigatório",
+                              required: "O NIF ou BI é obrigatório",
                               pattern: {
                                 value: COMPANY_NIF_REGEX,
                                 message:
-                                  "NIF inválido. Deve ter 10 dígitos e começar por 5.",
+                                  "NIF ou BI inválido. O NIF deve ter 10 dígitos e o BI deve ter 14 caracteres.",
                               },
                             })}
                           />
