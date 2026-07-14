@@ -71,9 +71,7 @@ export default function CompanySignUpPage() {
   const { isLoggedIn } = useUser();
   const router = useRouter();
 
-  useEffect(() => {
-    if (isLoggedIn) router.push("/");
-  }, [isLoggedIn, router]);
+
 
   useEffect(() => {
     document.title = "Registo de Empresa — Annita";
@@ -349,7 +347,11 @@ export default function CompanySignUpPage() {
         onSuccess: () => {
           handingRef.current = false;
           toast("success", "Conta de empresa criada com sucesso!");
-          router.push("/signin");
+          if (isLoggedIn) {
+            router.push("/");
+          } else {
+            router.push("/signin");
+          }
         },
         onError: (error) => {
           handingRef.current = false;
@@ -928,24 +930,28 @@ export default function CompanySignUpPage() {
             </div>
           </form>
 
-          <p className="text-center text-[15px] text-zinc-500 dark:text-zinc-400 mt-8">
-            Já tens conta?{" "}
-            <Link
-              href="/signin"
-              className="text-design-2 dark:text-design-1 hover:underline"
-            >
-              Iniciar sessão
-            </Link>
-          </p>
-          <p className="text-center text-sm text-zinc-500 dark:text-zinc-400 mt-2">
-            É um utilizador individual?{" "}
-            <Link
-              href="/signup"
-              className="text-design-2 dark:text-design-1 hover:underline font-medium"
-            >
-              Crie uma conta pessoal
-            </Link>
-          </p>
+          {!isLoggedIn && (
+            <>
+              <p className="text-center text-[15px] text-zinc-500 dark:text-zinc-400 mt-8">
+                Já tens conta?{" "}
+                <Link
+                  href="/signin"
+                  className="text-design-2 dark:text-design-1 hover:underline"
+                >
+                  Iniciar sessão
+                </Link>
+              </p>
+              <p className="text-center text-sm text-zinc-500 dark:text-zinc-400 mt-2">
+                É um utilizador individual?{" "}
+                <Link
+                  href="/signup"
+                  className="text-design-2 dark:text-design-1 hover:underline font-medium"
+                >
+                  Crie uma conta pessoal
+                </Link>
+              </p>
+            </>
+          )}
         </div>
       </main>
 
