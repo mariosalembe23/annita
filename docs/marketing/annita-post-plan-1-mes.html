@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="pt-AO">
+<head>
+  <meta charset="UTF-8" />
+  <title>Annita — Post Plan 1 Mês · Designer Brief</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 16mm 14mm 18mm 14mm;
+    }
+
+    :root {
+      --cyan: #59C7FA;
+      --blue: #2E77F7;
+      --navy: #172FAB;
+      --ink: #0F172A;
+      --muted: #475569;
+      --line: #E2E8F0;
+      --bg: #F8FAFC;
+      --card: #FFFFFF;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      color: var(--ink);
+      font-size: 10.5pt;
+      line-height: 1.45;
+      background: white;
+    }
+
+    h1, h2, h3, h4 { margin: 0 0 8px; line-height: 1.25; }
+
+    .cover {
+      page-break-after: always;
+      min-height: 250mm;
+      padding: 28mm 8mm 20mm;
+      background: linear-gradient(160deg, #0B1B4A 0%, #172FAB 45%, #2E77F7 100%);
+      color: white;
+      border-radius: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cover::before {
+      content: "";
+      position: absolute;
+      inset: -20% -10%;
+      background:
+        radial-gradient(circle at 80% 20%, rgba(89, 199, 250, 0.35), transparent 40%),
+        radial-gradient(circle at 10% 80%, rgba(46, 119, 247, 0.4), transparent 45%);
+      pointer-events: none;
+    }
+
+    .cover-inner { position: relative; z-index: 1; }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 9pt;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    .cover h1 {
+      font-size: 34pt;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      max-width: 90%;
+      margin-bottom: 14px;
+    }
+
+    .cover .lead {
+      font-size: 13pt;
+      max-width: 88%;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 36px;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 18px;
+      max-width: 92%;
+      margin-top: 28px;
+    }
+
+    .meta-item {
+      border-top: 1px solid rgba(255, 255, 255, 0.25);
+      padding-top: 10px;
+    }
+
+    .meta-item label {
+      display: block;
+      font-size: 8pt;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.65);
+      margin-bottom: 3px;
+    }
+
+    .meta-item span {
+      font-size: 11pt;
+      font-weight: 600;
+    }
+
+    .cover-footer {
+      margin-top: 48px;
+      font-size: 9.5pt;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .section { margin-bottom: 18px; }
+
+    .section-title {
+      color: var(--navy);
+      font-size: 16pt;
+      font-weight: 800;
+      border-bottom: 2px solid var(--blue);
+      padding-bottom: 6px;
+      margin-bottom: 12px;
+    }
+
+    .subtitle {
+      color: var(--navy);
+      font-size: 12.5pt;
+      font-weight: 750;
+      margin: 16px 0 8px;
+    }
+
+    p { margin: 0 0 8px; color: var(--ink); }
+
+    .muted { color: var(--muted); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 8px 0 14px;
+      font-size: 9.5pt;
+    }
+
+    th, td {
+      border: 1px solid var(--line);
+      padding: 7px 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #EEF4FF;
+      color: var(--navy);
+      font-weight: 700;
+    }
+
+    .note {
+      background: #EEF4FF;
+      border-left: 4px solid var(--blue);
+      padding: 10px 12px;
+      margin: 10px 0 14px;
+      border-radius: 0 6px 6px 0;
+    }
+
+    .note strong { color: var(--navy); }
+
+    .post {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin: 0 0 12px;
+      page-break-inside: avoid;
+      background: var(--card);
+    }
+
+    .post-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: baseline;
+      margin-bottom: 8px;
+    }
+
+    .post-id {
+      font-weight: 800;
+      color: var(--navy);
+      font-size: 11.5pt;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #E8F1FF;
+      color: var(--blue);
+      font-size: 8pt;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .field {
+      margin: 4px 0;
+      font-size: 9.8pt;
+    }
+
+    .field b {
+      color: var(--navy);
+      min-width: 72px;
+      display: inline-block;
+    }
+
+    .copy-box {
+      background: var(--bg);
+      border: 1px dashed #CBD5E1;
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-top: 8px;
+      white-space: pre-wrap;
+      font-size: 9.5pt;
+      color: #1E293B;
+    }
+
+    .week-banner {
+      background: linear-gradient(90deg, var(--navy), var(--blue));
+      color: white;
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin: 18px 0 12px;
+      page-break-after: avoid;
+    }
+
+    .week-banner h2 {
+      font-size: 13pt;
+      margin: 0;
+    }
+
+    .week-banner p {
+      margin: 3px 0 0;
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 9.5pt;
+    }
+
+    ul { margin: 6px 0 10px 18px; padding: 0; }
+    li { margin-bottom: 4px; }
+
+    .checklist li { list-style: none; margin-left: -6px; }
+    .checklist li::before { content: "☐ "; color: var(--blue); font-weight: 700; }
+
+    .footer-note {
+      margin-top: 20px;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+      font-size: 8.5pt;
+      color: var(--muted);
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .pill-list span {
+      display: inline-block;
+      background: #EEF4FF;
+      color: var(--navy);
+      border-radius: 999px;
+      padding: 3px 9px;
+      margin: 2px 4px 2px 0;
+      font-size: 8.5pt;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- COVER -->
+  <section class="cover">
+    <div class="cover-inner">
+      <div class="eyebrow">Himersus · Annita · Marketing</div>
+      <h1>Post Plan — 1 mês</h1>
+      <p class="lead">
+        Brief para designer: série de conteúdos LinkedIn para <strong>incentivar o uso</strong>
+        da plataforma Annita — explorar eventos e publicar eventos.
+      </p>
+
+      <div class="meta-grid">
+        <div class="meta-item">
+          <label>Produto</label>
+          <span>Annita</span>
+        </div>
+        <div class="meta-item">
+          <label>Marca-mãe</label>
+          <span>Himersus</span>
+        </div>
+        <div class="meta-item">
+          <label>URL</label>
+          <span>annita.himersus.com</span>
+        </div>
+        <div class="meta-item">
+          <label>Canal</label>
+          <span>LinkedIn (+ Stories opcional)</span>
+        </div>
+        <div class="meta-item">
+          <label>Duração</label>
+          <span>4 semanas · 12 posts feed</span>
+        </div>
+        <div class="meta-item">
+          <label>Objectivo</label>
+          <span>Aumentar uso da plataforma</span>
+        </div>
+        <div class="meta-item">
+          <label>Tom</label>
+          <span>PT-AO · informal (“tu”) · energético</span>
+        </div>
+        <div class="meta-item">
+          <label>Contexto</label>
+          <span>Plataforma já activa (sem lançamento)</span>
+        </div>
+      </div>
+
+      <p class="cover-footer">
+        Documento interno · Pronto para handoff ao designer · Versão 1.0
+      </p>
+    </div>
+  </section>
+
+  <!-- CONTEXT -->
+  <section class="section">
+    <h2 class="section-title">1. Contexto &amp; objectivo</h2>
+    <div class="note">
+      <strong>Importante:</strong> A Annita <em>já está no ar</em> e já tem conteúdo publicado.
+      Este plano <strong>não</strong> é de lançamento/awareness (“algo novo”, “já está no ar”).
+      O foco é <strong>incentivar uso contínuo</strong>: voltar à plataforma, explorar eventos e publicar.
+    </div>
+
+    <div class="two-col">
+      <div>
+        <h3 class="subtitle">Objectivos</h3>
+        <ul>
+          <li>Aumentar visitas a annita.himersus.com</li>
+          <li>Aumentar exploração de eventos</li>
+          <li>Aumentar publicações de eventos</li>
+          <li>Criar hábito semanal (“esta semana na Annita”)</li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="subtitle">Públicos</h3>
+        <ul>
+          <li><strong>Participantes:</strong> descobrir e participar</li>
+          <li><strong>Organizadores:</strong> publicar eventos</li>
+          <li><strong>Empresas/comunidades:</strong> parceria e gestão</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 class="subtitle">Mensagens-chave (não diluir)</h3>
+    <ol>
+      <li>Annita = hub dos eventos de tecnologia em Angola</li>
+      <li>Acções: <strong>Publica · Descobre · Participa</strong></li>
+      <li>Sempre incluir: <strong>annita.himersus.com</strong></li>
+      <li>CTAs preferidos: Explorar eventos · Publicar evento · Acede já · Ver esta semana</li>
+    </ol>
+  </section>
+
+  <!-- VISUAL SYSTEM -->
+  <section class="section">
+    <h2 class="section-title">2. Sistema visual</h2>
+    <table>
+      <tr><th>Elemento</th><th>Especificação</th></tr>
+      <tr><td>Cores</td><td><code>#59C7FA</code> (cyan) · <code>#2E77F7</code> (CTA) · <code>#172FAB</code> (navy) · branco</td></tr>
+      <tr><td>Fundo</td><td>Azul profundo + light trails (manter linguagem visual actual)</td></tr>
+      <tr><td>Logos</td><td>Annita (topo/centro) + Himersus (canto superior direito)</td></tr>
+      <tr><td>Tipografia</td><td>Sans bold para headline · corpo curto e legível</td></tr>
+      <tr><td>CTA</td><td>Pill/botão com <strong>annita.himersus.com</strong></td></tr>
+      <tr><td>Formato</td><td><strong>1080×1350</strong> (obrigatório) · 1200×627 (opcional LinkedIn link)</td></tr>
+      <tr><td>Regra</td><td>1 mensagem · 1 CTA · sem texto a mais</td></tr>
+    </table>
+    <p class="pill-list">
+      <span>Explorar eventos</span>
+      <span>Publicar evento</span>
+      <span>Acede já</span>
+      <span>Ver esta semana</span>
+      <span>Criar conta</span>
+    </p>
+  </section>
+
+  <!-- CALENDAR OVERVIEW -->
+  <section class="section">
+    <h2 class="section-title">3. Estrutura do mês</h2>
+    <table>
+      <tr><th>Semana</th><th>Tema</th><th>Funil</th></tr>
+      <tr><td>S1</td><td>Porquê voltar à Annita</td><td>Reengajar utilizadores</td></tr>
+      <tr><td>S2</td><td>Descobrir eventos</td><td>Uso como participante</td></tr>
+      <tr><td>S3</td><td>Publicar eventos</td><td>Uso como organizador</td></tr>
+      <tr><td>S4</td><td>Hábito &amp; comunidade</td><td>Retenção semanal</td></tr>
+    </table>
+
+    <table>
+      <tr><th>Semana</th><th>Segunda</th><th>Quarta</th><th>Sexta</th><th>Extra</th></tr>
+      <tr><td><strong>1</strong></td><td>P01 Reengajar</td><td>P02 Tudo num só lugar</td><td>P03 Dual CTA</td><td>Stories S1</td></tr>
+      <tr><td><strong>2</strong></td><td>P04 Descobrir</td><td>P05 Esta semana</td><td>P06 Fica a par</td><td>Stories S2</td></tr>
+      <tr><td><strong>3</strong></td><td>P07 Publicar</td><td>P08 Empresas</td><td>P09 3 passos</td><td>Stories S3</td></tr>
+      <tr><td><strong>4</strong></td><td>P10 Comunidade</td><td>P11 Esta semana #2</td><td>P12 Fecho mês</td><td>Stories S4</td></tr>
+    </table>
+    <p class="muted">Total: 12 posts feed + 4 packs de Stories · Ritmo Seg / Qua / Sex</p>
+  </section>
+
+  <!-- WEEK 1 -->
+  <div class="week-banner">
+    <h2>Semana 1 — Reengajar (não é lançamento)</h2>
+    <p>Lembrar valor · trazer de volta · sem “algo novo / já está no ar”</p>
+  </div>
+
+  <article class="post">
+    <div class="post-head">
+      <div class="post-id">Post 01 · Segunda · Reengajar</div>
+      <span class="badge">Uso da plataforma</span>
+    </div>
+    <div class="field"><b>Headline:</b> Ainda não exploraste a Annita esta semana?</div>
+    <div class="field"><b>Sub:</b> Eventos tech em Angola — num só lugar</div>
+    <div class="field"><b>Visual:</b> UI cards 3D + composição centrada (manter estilo actual)</div>
+    <div class="field"><b>CTA:</b> Explorar eventos</div>
+    <div class="copy-box">A comunidade tech angolana encontra-se na Annita.
+Abre a plataforma, explora o que está a acontecer e não fiques de fora.
+
+Explorar → annita.himersus.com</div>
+  </article>
+
+  <article class="post">
+    <div class="post-head">
+      <div class="post-id">Post 02 · Quarta · Proposta de valor</div>
+      <span class="badge">Clareza de uso</span>
+    </div>
+    <div class="field"><b>Headline:</b> Tudo num só lugar</div>
+    <div class="field"><b>Sub:</b> Meetups, hackathons, palestras e conferências</div>
+    <div class="field"><b>Visual:</b> 4 tags em grelha — Meetup · Hackathon · Palestra · Conferência</div>
+    <div class="field"><b>CTA:</b> Explorar eventos</div>
+    <div class="copy-box">Chega de procura dispersa.
+Na Annita encontras o que está a acontecer no tech em Angola — num só sítio.
+
+Explora → annita.himersus.com</div>
+  </article>
+
+  <article class="post">
+    <div class="post-head">
+      <div class="post-id">Post 03 · Sexta · Dual CTA</div>
+      <span class="badge">Conversão</span>
+    </div>
+    <div class="field"><b>Headline:</b> O que vais fazer hoje?</div>
+    <div class="field"><b>Sub:</b> Descobrir ou publicar — escolhe o teu caminho</div>
+    <div class="field"><b>Visual:</b> Dois botões grandes: Explorar / Publicar</div>
+    <div class="field"><b>CTA:</b> annita.himersus.com</div>
+    <div class="copy-box">Queres encontrar o próximo evento — ou queres ser tu a criar o momento?
+Na Annita podes fazer os dois.
+
+annita.himersus.com</div>
+  </article>
+
+  <p><strong>Stories S1:</strong> 3 frames — “O que podes fazer na Annita?” → Explorar / Publicar → link</p>
+
+  <!-- WEEK 2 -->
+  <div class="week-banner">
+    <h2>Semana 2 — Descobrir (participantes)</h2>
+    <p>Incentivar exploração de eventos e hábito de visita</p>
+  </div>
+
+  <article class="post">
+    <div class="post-head">
+      <div class="post-id">Post 04 · Segunda · Descoberta</div>
+      <span class="badge">Participantes</span>
+    </div>
+    <div class="field"><b>Headline:</b> O teu próximo evento pode estar aqui</div>
+    <div class="field"><b>Sub:</b> Descobre oportunidades e experiências na Annita</div>
+    <div class="field"><b>Visual:</b> Notepad + stylus / objectos 3D (referência existente)</div>
+    <div class="field"><b>CTA:</b> Explorar eventos</div>
+    <div class="copy-box">O próximo meetup, hackathon ou palestra pode estar à tua espera.
+Abre a Annita e descobre o que está a acontecer.
+
+annita.himersus.com</div>
+  </article>
+
+  <article class="post">
+    <div class="post-head">
+      <div class="post-id">Post 05 · Quarta · Esta semana</div>
+      <span class="badge">Template reutilizável</span>
+    </div>
+    <div class="field"><b>Headline:</b> Esta semana na Annita</div>
+    <div class="field"><b>Sub:</b> Não percas o que está a acontecer</div>
+    <div class="field"><b>Visual:</b> Smartphone com 2–3 cards de eventos (slots editáveis)</div>
+    <div class="field"><b>CTA:</b> Ver esta semana</div>
+    <div class="copy-box">Esta semana na Annita:
+• [Evento 1]
+• [Evento 2]
+• [Evento 3]
+
+Vê tudo em annita.himersus.com</div>
+    <p class="muted" style="margin-top:8px"><strong>Nota designer:</strong> slots para título, data, tags (Gratuito/Pago · Presencial/Remoto).</p>
+  </article>
+
+  <article class="post">
+    <div class="post-head">
+      <div class="post-id">Post 06 · Sexta · Benefício concreto</div>
+      <span class="badge">Participantes</span>
+    </div>
+    <div class="field"><b>Headline:</b> Fica a par do mundo tech</div>
+    <div class="field"><b>Sub:</b> Desde meetups a conferências — tudo o que precisas</div>
+    <div class="field"><b>Visual:</b> Mockup do feed/filtros da plataforma</div>
+    <div class="field"><b>CTA:</b> Explorar eventos</div>
+    <div class="copy-box">Queres estar a par do que se passa no tech em Angola?
+Filtra por tipo, modalidade e encontra o evento certo para ti.
+
+Começa em annita.himersus.com</div>
+  </article>
+
+  <p><strong>Stories S2:</strong> Poll “Já exploraste eventos na Annita esta semana?” → CTA</p>
+
+  <!-- WEEK 3 -->
+  <div class="week-banner">
+    <h2>Semana 3 — Publicar (organizadores)</h2>
+    <p>Incentivar criação de eventos e uso por empresas/comunidades</p>
+  </div>
+
+  <article class="post">
+    <div class="post-head">
+      <div class="post-id">Post 07 · Segunda · Organizadores</div>
+      <span class="badge">Publicar</span>
+    </div>
+    <div class="field"><b>Headline:</b> O teu evento merece ser visto</div>
+    <div class="field"><b>Sub:</b> Publica na Annita e chega à comunidade tech</div>
+    <div class="field"><b>Visual:</b> Ecrã “Publicar evento” + seta/CTA azul</div>
+    <div class="field"><b>CTA:</b> Publicar evento</div>
+    <div class="copy-box">Organizas meetups, workshops ou hackathons?
+Publica na Annita e coloca o teu evento à frente de quem importa.
+
+Publica agora → annita.himersus.com</div>
+  </article>
+
+  <article class="post">
+    <div class="post-head">
+      <div class="post-id">Post 08 · Quarta · Empresas</div>
+      <span class="badge">Parcerias</span>
+    </div>
+    <div class="field"><b>Headline:</b> A tua empresa também pode publicar</div>
+    <div class="field"><b>Sub:</b> Cria parceria e gere os teus eventos na Annita</div>
+    <div class="field"><b>Visual:</b> Tom institucional leve + marca Annita/Himersus</div>
+    <div class="field"><b>CTA:</b> Criar parceria / Acede já</div>
+    <div class="copy-box">Empresas e comunidades: a Annita é o canal para anunciar os vossos eventos tech.
+Cria conta, publica e chega à comunidade.
+
+annita.himersus.com</div>
+  </article>
+
+  <article class="post">
+    <div class="post-head">
+      <div class="post-id">Post 09 · Sexta · Simplicidade</div>
+      <span class="badge">Publicar</span>
+    </div>
+    <div class="field"><b>Headline:</b> Publicar é simples</div>
+    <div class="field"><b>Sub:</b> Capa · data · local · publicar</div>
+    <div class="field"><b>Visual:</b> 3 passos numerados — 01 Cria · 02 Detalha · 03 Publica</div>
+    <div class="field"><b>CTA:</b> Publicar evento</div>
+    <div class="copy-box">Sem complicação.
+Crias o evento, adicionas os detalhes e publicas.
+A comunidade encontra-te na Annita.
+
+Experimenta → annita.himersus.com</div>
+  </article>
+
+  <p><strong>Stories S3:</strong> Tutorial 4 frames — abrir site → publicar → preencher → partilhar</p>
+
+  <!-- WEEK 4 -->
+  <div class="week-banner">
+    <h2>Semana 4 — Hábito &amp; comunidade</h2>
+    <p>Retenção, recorrência semanal e fecho com chamada à acção</p>
+  </div>
+
+  <article class="post">
+    <div class="post-head">
+      <div class="post-id">Post 10 · Segunda · Comunidade</div>
+      <span class="badge">Pertença</span>
+    </div>
+    <div class="field"><b>Headline:</b> Feito para a comunidade tech angolana</div>
+    <div class="field"><b>Sub:</b> Conecta. Aprende. Cresce.</div>
+    <div class="field"><b>Visual:</b> Rede/conexões abstractas + wordmark Annita forte</div>
+    <div class="field"><b>CTA:</b> Entra na comunidade / Acede já</div>
+    <div class="copy-box">A Annita existe para a comunidade tech angolana.
+Menos dispersão. Mais encontros. Mais oportunidades.
+
+Junta-te → annita.himersus.com</div>
+  </article>
+
+  <article class="post">
+    <div class="post-head">
+      <div class="post-id">Post 11 · Quarta · Esta semana #2</div>
+      <span class="badge">Template</span>
+    </div>
+    <div class="field"><b>Headline:</b> Esta semana na Annita</div>
+    <div class="field"><b>Sub:</b> Novos eventos. Novas oportunidades.</div>
+    <div class="field"><b>Visual:</b> Reutilizar template do Post 05 com novos eventos</div>
+    <div class="field"><b>CTA:</b> Ver esta semana</div>
+    <div class="copy-box">Nova semana, novos eventos.
+Vê o que está a acontecer agora em annita.himersus.com</div>
+  </article>
+
+  <article class="post">
+    <div class="post-head">
+      <div class="post-id">Post 12 · Sexta · Fecho do mês</div>
+      <span class="badge">Conversão</span>
+    </div>
+    <div class="field"><b>Headline:</b> Não fiques de fora</div>
+    <div class="field"><b>Sub:</b> O teu próximo evento começa aqui</div>
+    <div class="field"><b>Visual:</b> Hero forte, pouco texto, CTA dominante</div>
+    <div class="field"><b>CTA:</b> Acede já</div>
+    <div class="copy-box">O próximo movimento da comunidade tech pode ser o teu.
+Explora. Publica. Participa.
+
+annita.himersus.com</div>
+  </article>
+
+  <p><strong>Stories S4:</strong> Recap do mês (3 frames) + CTA final</p>
+
+  <!-- DELIVERABLES -->
+  <section class="section">
+    <h2 class="section-title">4. Entregáveis (designer)</h2>
+
+    <h3 class="subtitle">Peças únicas (10)</h3>
+    <p>P01, P02, P03, P04, P06, P07, P08, P09, P10, P12</p>
+
+    <h3 class="subtitle">Template reutilizável (1)</h3>
+    <p><strong>“Esta semana na Annita”</strong> — usado em P05 e P11 (e semanas futuras). Slots: 2–3 cards (título, data, tags, modalidade, preço).</p>
+
+    <h3 class="subtitle">Stories (4 packs)</h3>
+    <p>S1 Uso · S2 Poll · S3 Tutorial publicar · S4 Recap</p>
+
+    <h3 class="subtitle">Checklist por peça</h3>
+    <ul class="checklist">
+      <li>Formato 1080×1350</li>
+      <li>Logos Annita + Himersus</li>
+      <li>Headline + sub (máx. 2 linhas cada)</li>
+      <li>CTA visual com URL</li>
+      <li>Export PNG/JPG + ficheiro Figma editável</li>
+    </ul>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">5. O que evitar neste mês</h2>
+    <ul>
+      <li>“Algo novo”, “lançamento”, “já está no ar”, “chegámos”</li>
+      <li>Copy de first-time awareness como se a marca fosse desconhecida</li>
+      <li>Mais de uma mensagem forte por post</li>
+      <li>CTA sem URL ou URL sem CTA claro</li>
+    </ul>
+  </section>
+
+  <p class="footer-note">
+    Annita · Himersus · Post Plan 1 mês · Foco: incentivar uso da plataforma ·
+    Contacto produto: geral.annita@gmail.com · URL: https://annita.himersus.com
+  </p>
+
+</body>
+</html>

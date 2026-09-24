@@ -81,9 +81,13 @@ Copia `.env.example` para `.env` e preenche:
 cp .env.example .env
 ```
 
-| Variável              | Descrição                                         |
-| --------------------- | ------------------------------------------------- |
-| `NEXT_PUBLIC_API_URL` | URL base da API (ex: `http://localhost:8080/api`) |
+| Variável                      | Descrição                                         |
+| ----------------------------- | ------------------------------------------------- |
+| `NEXT_PUBLIC_API_URL`         | URL base da API (ex: `http://localhost:8080/api`) |
+| `CLOUDINARY_CLOUD_NAME`       | Cloud name do Cloudinary (Settings → API Keys)    |
+| `CLOUDINARY_API_KEY`          | API Key do Cloudinary                             |
+| `CLOUDINARY_API_SECRET`       | API Secret do Cloudinary (só no servidor)         |
+| `NEXT_PUBLIC_GOOGLE_CLIENT_ID`| Client ID do Google OAuth                         |
 
 ---
 
