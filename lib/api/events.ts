@@ -93,7 +93,7 @@ export interface CreateEventPayload {
   modality: EventModality;
   startDate: string;
   type: EventType;
-  coverImage: string;
+  coverImage?: string;
   location?: string;
 }
 

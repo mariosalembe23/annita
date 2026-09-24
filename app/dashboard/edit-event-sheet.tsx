@@ -126,7 +126,7 @@ export default function EditEventSheet({
           modality: payload.modality,
           startDate: new Date(payload.startDate).toISOString(),
           type: payload.type,
-          coverImage: finalCoverImage,
+          ...(finalCoverImage ? { coverImage: finalCoverImage } : {}),
         },
         token ?? "",
       );

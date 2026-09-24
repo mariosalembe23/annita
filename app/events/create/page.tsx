@@ -205,7 +205,9 @@ export default function CreateEventPage() {
           | "HYBRID",
         startDate: (formData.startDate as Date).toISOString(),
         type: TYPE_MAP[formData.type] as "PAID" | "FREE",
-        coverImage: coverImageUrl,
+        // A capa é opcional. String vazia falha o @Pattern da API
+        // ("extensão de imagem válida") mesmo sem ficheiro.
+        ...(coverImageUrl ? { coverImage: coverImageUrl } : {}),
       };
 
       return createEvent(payload, token);
