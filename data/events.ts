@@ -198,27 +198,12 @@ export function timeAgoFromDate(dateStr: string): string {
   return `Há ${Math.floor(days / 30)}m`;
 }
 
+import { formatEventDate } from "@/lib/date";
+
 export function formatDate(dateStr: string): string {
-  const date = new Date(dateStr);
-  if (isNaN(date.getTime())) return dateStr;
-  const day = date.getDate();
-  const months = [
-    "Jan",
-    "Fev",
-    "Mar",
-    "Abr",
-    "Mai",
-    "Jun",
-    "Jul",
-    "Ago",
-    "Set",
-    "Out",
-    "Nov",
-    "Dez"
-  ];
-  const month = months[date.getMonth()];
-  const year = date.getFullYear();
-  return `${day} de ${month}. ${year}`;
+  // Event start dates are noon-UTC calendar days; use UTC parts.
+  // Also fine for createdAt timestamps near day boundaries in AO.
+  return formatEventDate(dateStr);
 }
 
 export function getOptimisticVoteState(

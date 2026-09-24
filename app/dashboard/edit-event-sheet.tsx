@@ -7,6 +7,10 @@ import { updateEvent, getCategories } from "@/lib/api/events";
 import type { ApiEvent, EventModality, EventType } from "@/lib/api/events";
 import { uploadImage } from "@/lib/upload-image";
 import {
+  datetimeLocalToCalendarISO,
+  toDatetimeLocalValue,
+} from "@/lib/date";
+import {
   BottomSheet,
   BottomSheetContent,
   BottomSheetHeader,
@@ -86,9 +90,7 @@ export default function EditEventSheet({
           : (event.modality as EventModality),
       );
       setStartDate(
-        event.startDate
-          ? new Date(event.startDate).toISOString().slice(0, 16)
-          : "",
+        event.startDate ? toDatetimeLocalValue(event.startDate) : "",
       );
       setType(event.type);
       setCoverImageUrl(event.coverImage);
@@ -124,7 +126,7 @@ export default function EditEventSheet({
           link: payload.link,
           categoryId: payload.categoryId,
           modality: payload.modality,
-          startDate: new Date(payload.startDate).toISOString(),
+          startDate: datetimeLocalToCalendarISO(payload.startDate),
           type: payload.type,
           coverImage: finalCoverImage,
         },

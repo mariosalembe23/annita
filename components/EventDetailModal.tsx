@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   RiCloseLine,
   RiThumbUpLine,
@@ -10,7 +10,8 @@ import {
   RiUserStarFill,
 } from "@remixicon/react";
 import { AnimatePresence, motion } from "framer-motion";
-import type { ApiEvent } from "@/lib/api/events";
+import type { QueryKey } from "@tanstack/react-query";
+import type { ApiEvent, EventsResponse } from "@/lib/api/events";
 import {
   badgeVariantFromStatus,
   badgeVariantFromType,
@@ -42,6 +43,27 @@ interface EventDetailModalProps {
   event: ApiEvent;
 }
 
+type VoteCacheContext = {
+  previousEventsData: [QueryKey, EventsResponse | undefined][];
+  previousMyEventsData: [QueryKey, EventsResponse | undefined][];
+  previousEventDetails: ApiEvent | undefined;
+};
+
+function getErrorMessage(error: unknown, fallback: string) {
+  if (
+    typeof error === "object" &&
+    error !== null &&
+    "response" in error &&
+    typeof (error as { response?: { data?: { message?: string } } }).response
+      ?.data?.message === "string"
+  ) {
+    return (error as { response: { data: { message: string } } }).response.data
+      .message;
+  }
+  if (error instanceof Error && error.message) return error.message;
+  return fallback;
+}
+
 export function EventDetailModal({
   open,
   onClose,
@@ -56,12 +78,26 @@ export function EventDetailModal({
   const [localDownvotes, setLocalDownvotes] = useState(
     event.downvoteCount ?? 0,
   );
+  const [syncedVote, setSyncedVote] = useState(event.userVote);
+  const [syncedUpvotes, setSyncedUpvotes] = useState(event.upvoteCount ?? 0);
+  const [syncedDownvotes, setSyncedDownvotes] = useState(
+    event.downvoteCount ?? 0,
+  );
 
-  useEffect(() => {
+  const nextUpvotes = event.upvoteCount ?? 0;
+  const nextDownvotes = event.downvoteCount ?? 0;
+  if (
+    event.userVote !== syncedVote ||
+    nextUpvotes !== syncedUpvotes ||
+    nextDownvotes !== syncedDownvotes
+  ) {
+    setSyncedVote(event.userVote);
+    setSyncedUpvotes(nextUpvotes);
+    setSyncedDownvotes(nextDownvotes);
     setLocalVote(event.userVote);
-    setLocalUpvotes(event.upvoteCount ?? 0);
-    setLocalDownvotes(event.downvoteCount ?? 0);
-  }, [event.userVote, event.upvoteCount, event.downvoteCount]);
+    setLocalUpvotes(nextUpvotes);
+    setLocalDownvotes(nextDownvotes);
+  }
 
   const { token, payload } = useUser();
   const { toast } = useToast();
@@ -73,51 +109,57 @@ export function EventDetailModal({
   const voteMutation = useMutation({
     mutationFn: (voteType: "UPVOTE" | "DOWNVOTE") =>
       voteEvent(event.id, { type: voteType }, token ?? ""),
-    onMutate: async (voteType) => {
+    onMutate: async (voteType): Promise<VoteCacheContext> => {
       await queryClient.cancelQueries({ queryKey: ["events"] });
       await queryClient.cancelQueries({ queryKey: ["my-events"] });
       await queryClient.cancelQueries({
         queryKey: ["event-details", event.id],
       });
 
-      const previousEventsData = queryClient.getQueriesData({
+      const previousEventsData = queryClient.getQueriesData<EventsResponse>({
         queryKey: ["events"],
       });
-      const previousMyEventsData = queryClient.getQueriesData({
+      const previousMyEventsData = queryClient.getQueriesData<EventsResponse>({
         queryKey: ["my-events"],
       });
-      const previousEventDetails = queryClient.getQueryData([
+      const previousEventDetails = queryClient.getQueryData<ApiEvent>([
         "event-details",
         event.id,
       ]);
 
       const nextState = getOptimisticVoteState(event, voteType);
 
-      const updateEventsList = (oldData: any) => {
-        if (!oldData || !oldData.data) return oldData;
+      const updateEventsList = (oldData: EventsResponse | undefined) => {
+        if (!oldData?.data) return oldData;
         return {
           ...oldData,
-          data: oldData.data.map((e: ApiEvent) =>
+          data: oldData.data.map((e) =>
             e.id === event.id ? { ...e, ...nextState } : e,
           ),
         };
       };
 
-      queryClient.setQueriesData({ queryKey: ["events"] }, updateEventsList);
-      queryClient.setQueriesData({ queryKey: ["my-events"] }, updateEventsList);
-      queryClient.setQueryData(["event-details", event.id], (oldData: any) => {
-        if (!oldData) return oldData;
-        return { ...oldData, ...nextState };
-      });
+      queryClient.setQueriesData<EventsResponse>(
+        { queryKey: ["events"] },
+        updateEventsList,
+      );
+      queryClient.setQueriesData<EventsResponse>(
+        { queryKey: ["my-events"] },
+        updateEventsList,
+      );
+      queryClient.setQueryData<ApiEvent>(
+        ["event-details", event.id],
+        (oldData) => (oldData ? { ...oldData, ...nextState } : oldData),
+      );
 
       return { previousEventsData, previousMyEventsData, previousEventDetails };
     },
-    onError: (error: any, voteType, context: any) => {
+    onError: (error: unknown, _voteType, context) => {
       if (context) {
-        context.previousEventsData?.forEach(([queryKey, queryData]: any) => {
+        context.previousEventsData.forEach(([queryKey, queryData]) => {
           queryClient.setQueryData(queryKey, queryData);
         });
-        context.previousMyEventsData?.forEach(([queryKey, queryData]: any) => {
+        context.previousMyEventsData.forEach(([queryKey, queryData]) => {
           queryClient.setQueryData(queryKey, queryData);
         });
         if (context.previousEventDetails) {
@@ -128,12 +170,7 @@ export function EventDetailModal({
         }
       }
 
-      toast(
-        "error",
-        error?.response?.data?.message ||
-          error?.message ||
-          "Erro ao registar voto",
-      );
+      toast("error", getErrorMessage(error, "Erro ao registar voto"));
     },
     // Não invalidar as listas após votar: o GET /events não devolve o
     // userVote, e o refetch apagaria o voto acabado de registar. A cache
@@ -176,7 +213,7 @@ export function EventDetailModal({
     });
   };
 
-  // Computed properties:
+  // Computed properties
   const categoryName = event.category.name;
   const timeAgo = timeAgoFromDate(event.createdAt);
   const dateFormatted = formatDate(event.startDate);

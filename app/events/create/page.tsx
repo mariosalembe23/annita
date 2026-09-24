@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/popover";
 import { PublishConfirmationModal } from "@/components/PublishConfirmationModal";
 import { createEvent, getCategories } from "@/lib/api/events";
+import { toCalendarDateISO } from "@/lib/date";
 import { uploadImage } from "@/lib/upload-image";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/hooks/use-user";
@@ -153,7 +154,7 @@ export default function CreateEventPage() {
               ...rest,
               startDate:
                 rest.startDate instanceof Date
-                  ? rest.startDate.toISOString()
+                  ? toCalendarDateISO(rest.startDate)
                   : rest.startDate,
             },
           }),
@@ -203,7 +204,7 @@ export default function CreateEventPage() {
           | "PRESENTIAL"
           | "REMOTE"
           | "HYBRID",
-        startDate: (formData.startDate as Date).toISOString(),
+        startDate: toCalendarDateISO(formData.startDate as Date),
         type: TYPE_MAP[formData.type] as "PAID" | "FREE",
         coverImage: coverImageUrl,
       };

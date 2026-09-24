@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ApiEvent, approveEvent, rejectEvent, deleteEvent } from "@/lib/api/events";
+import { canEditEvent } from "@/lib/date";
 import { useUser } from "@/hooks/use-user";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -142,7 +143,7 @@ export default function EventCard({ event, onSelect, onEdit }: EventCardProps) {
                   <RiTimelineView className="size-4" />
                   Detalhes
                 </DropdownMenuItem>
-                {event.status !== "APPROVED" && (
+                {canEditEvent(event) && (
                   <DropdownMenuItem
                     className="cursor-pointer py-1 px-3 gap-2"
                     onClick={() => onEdit?.(event)}

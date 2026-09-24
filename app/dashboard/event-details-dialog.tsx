@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { format } from "date-fns";
 import Image from "next/image";
+import { formatDate } from "@/data/events";
 import {
   RiCheckboxMultipleLine,
   RiCloseLine,
@@ -170,10 +171,7 @@ export default function EventDetailsDialog({
                     Data de Início
                   </span>
                   <p className="text-zinc-800 dark:text-zinc-200 text-sm mt-0.5">
-                    {format(
-                      new Date(event.startDate),
-                      "dd/MM/yyyy 'às' HH:mm",
-                    )}
+                    {formatDate(event.startDate)}
                   </p>
                 </div>
                 <div className="py-2 border-b border-zinc-200 dark:border-zinc-700">
